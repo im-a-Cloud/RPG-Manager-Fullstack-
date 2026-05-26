@@ -29,7 +29,8 @@ public record PersonagemResponseDTO(
             int dadoDeVida,
             boolean isConjurador,
             Atributos atributoConjuracao,
-            TipoConjuracao tipo
+            TipoConjuracao tipo,
+            List<Atributos> proficienciaSalvaguarda
     ) {}
 
     public record AtributosInfo(
@@ -114,7 +115,8 @@ public record PersonagemResponseDTO(
                         classe.getDadoDeVida(),
                         classe.isConjurador(),
                         classe.getAtributoConjuracao(),
-                        classe.getTipoConjuracao()
+                        classe.getTipoConjuracao(),
+                        classe.getProficienciaSalvaguarda()
                 ),
                 new AtributosInfo(
                         personagem.getValorForca(),
