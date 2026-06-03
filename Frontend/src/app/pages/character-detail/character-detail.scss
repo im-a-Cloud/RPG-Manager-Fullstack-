@@ -1,0 +1,300 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    padding: 20px;
+    background: cyan;
+}
+
+/* GRID PRINCIPAL com alturas relativas */
+.pagina {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: white;
+    min-height: 100vh;
+}
+
+/* Container principal do cabeçalho */
+#gridCabeçalho {
+    background-color: red;
+    display: grid;
+    grid-template-areas: 
+    'foto conteudoCabeçalho'
+    'foto nivelXp';
+    grid-template-columns: auto 1fr;  /* Adicione isso - foto tamanho automático, conteúdo ocupa resto */
+
+}
+
+.conteudoCabeçalho  {
+    display: flex;  /* ESSENCIAL - adicionar esta linha */
+    background-color: red;
+    grid-area:conteudoCabeçalho;
+    gap: 15px;
+    padding: 10px;
+    flex-direction: row;  /* Alinha horizontalmente */
+}
+.foto{
+    grid-area: foto;
+  
+}
+.nivelXp {
+    gap: 30px;
+    display: flex;  /* Muda de grid para flex */
+    flex-direction: row;  /* Alinha horizontalmente */
+    background-color: yellow;
+    grid-area:nivelXp;
+    margin-top: 10px;
+}
+
+.cabeçalho h3 {
+    margin: 0;
+    white-space: nowrap;  /* Impede quebra de texto dentro de cada h3 */
+
+}
+.nivelXp h3 {
+    margin: 0;
+}
+.gridTopo{
+    background-color: forestgreen;
+    display: grid;
+    grid-template-columns: 100px 150px 1fr;  /* Adicione isso - foto tamanho automático, conteúdo ocupa resto */
+    grid-template-areas: 
+    "atributos bonusProf caVidaIniMov"
+    "atributos testesResistencia testesResistencia"
+    "atributos listaPericia listaPericia"
+    "percepcaoPassiva percepcaoPassiva percepcaoPassiva"; 
+}
+.atributos {
+    background-color: purple;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    grid-area: atributos;
+}
+
+.bonusProf {
+    background-color: pink;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    grid-area: bonusProf;
+
+}
+
+.testesResistencia {
+    background-color: red;
+    align-items: right;
+    text-align: left;
+    width: fit-content;  /* Ajusta ao conteúdo */
+    grid-area: testesResistencia;
+}
+
+.caVidaIniMov {
+    background-color: orange;
+    grid-area: caVidaIniMov;
+    width: fit-content;  /* Ajusta ao conteúdo */
+    display: flex;
+
+}
+.listaPericia {
+    background-color: chartreuse;
+    grid-area: listaPericia;
+    width: 200px
+}
+.percepcaoPassiva{
+    background-color: cyan;
+    grid-area: percepcaoPassiva;
+
+}
+.inventario {
+    background-color: lightgreen;
+    display: flex;
+    justify-content: space-between;  /* ou space-around, space-evenly */
+    padding: 20px;
+}
+
+.containerMagias {
+    background-color: lightblue;
+    overflow-y: auto;
+}
+
+.detalhesConjuracao {
+    background-color: palevioletred;
+    display: flex;
+    justify-content: space-around;
+}
+
+.detalhesConjuracao h3 {
+    margin: 0;
+}
+
+/* Elementos extras que não estavam no grid */
+.fotoPersonagem, 
+img,
+h1, 
+h3,
+h2,
+.grimorio,
+.anotacoes {
+    grid-column: 1 / 5;
+    padding: clamp(5px, 1.5vh, 10px);
+}
+
+/* Ajuste para títulos */
+h1 {
+    font-size: clamp(20px, 4vw, 32px);
+}
+
+h2 {
+    font-size: clamp(18px, 3vw, 28px);
+    text-align: center;
+}
+
+h3 {
+    font-size: clamp(14px, 2vw, 20px);
+}
+
+
+.atributos h6, .atributos h3, .atributos h4 {
+    margin: clamp(2px, 0.8vh, 5px) 0;
+}
+
+.atributos h6 {
+    font-size: clamp(11px, 1.5vw, 14px);
+}
+
+.atributos h3 {
+    font-size: clamp(18px, 3vw, 24px);
+}
+
+.atributos h4 {
+    font-size: clamp(12px, 1.8vw, 16px);
+}
+
+/* Estilos das magias */
+.quadrinhoMagiaExpandido {
+    background-color: gold;
+    margin: clamp(3px, 1vh, 8px) 0;
+    padding: clamp(5px, 1.5vh, 10px);
+    font-size: clamp(10px, 1.5vw, 14px);
+    border-radius: 5px;
+}
+
+.nomeMagia {
+    background-color: red;
+    padding: clamp(5px, 1.5vh, 10px);
+    margin: clamp(3px, 1vh, 8px) 0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: transform 0.2s;
+}
+
+.nomeMagia:hover {
+    transform: scale(1.02);
+}
+
+.nomeMagia h4 {
+    margin: 0;
+    font-size: clamp(12px, 1.8vw, 16px);
+}
+
+.listaMagias {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(8px, 2vw, 15px);
+}
+
+.listaMagiasSeção1,
+.listaMagiasSeção2,
+.listaMagiasSeção3 {
+    background-color: forestgreen;
+    padding: clamp(8px, 2vh, 15px);
+    border-radius: 5px;
+}
+
+.listaMagiasSeção1 h3,
+.listaMagiasSeção2 h3,
+.listaMagiasSeção3 h3 {
+    margin: clamp(5px, 1.5vh, 10px) 0;
+    font-size: clamp(14px, 2vw, 18px);
+    text-align: center;
+}
+
+img {
+    width: min(200px, 30vw);
+    height: auto;
+    object-fit: cover;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .pagina {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .caVidaIniMov {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+    
+    .listaMagias {
+        grid-template-columns: 1fr;
+    }
+    
+    .containerMagias {
+        grid-row: auto;
+    }
+    
+    /* Reorganização em mobile */
+    .parent-cabeçalho,
+    .atributos,
+    .bonusProf,
+    .caVidaIniMov,
+    .testesResistencia,
+    .listaPericia,
+    .inventario,
+    .containerMagias,
+    .detalhesConjuracao {
+        grid-column: 1 / 3;
+    }
+}
+
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Barra de rolagem personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
