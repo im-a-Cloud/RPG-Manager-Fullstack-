@@ -1,21 +1,46 @@
-<h1>Essa é a página inicial</h1>
-
-<h2>Olá usuário logado</h2>
-
-<table>
-  <tr>
-    <th>Foto do personagem</th>
-    <th>Nome</th>
-    <th>Classe e nível</th>
-  </tr>
-  <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Durnheviir</td>
-    <td>Mago, nível 18</td>
-  </tr>
-  <tr>
-    <td>Centro comercial Moctezuma</td>
-    <td>Azazel</td>
-    <td>Guerreiro, nível 5</td>
-  </tr>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial - RPG Manager</title>
+    <link rel="stylesheet" href="home.scss">
+</head>
+<body>
+    <h1>Essa é a página inicial</h1>
+    <h2>Olá usuário logado</h2>
+    <h2>Seus personagens</h2>
+<table class="listaPersonagens">
+    <thead>
+        <tr>
+            <th>Foto do personagem</th>
+            <th>Nome do personagem</th>
+            <th>Classe e nível</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="img">
+                <img src="https://i.pinimg.com/736x/a9/f5/12/a9f5120257a00545c686a494ac64f902.jpg" alt="Foto de Durnehviir" class="foto-tabela">
+            </td>
+            <td>Durnehviir</td>
+            <td>Mago, nível 18</td>
+        </tr>
+        <tr>
+            <td class="img">
+                <img src="https://i.pinimg.com/736x/85/89/05/858905db2ccd8ae352d8ab4bbf992eb7.jpg" alt="Foto de Azazel" class="foto-tabela">
+            </td>
+            <td>Azazel</td>
+            <td>Guerreiro, nível 5</td>
+        </tr>
+        <tr>
+            <td class="img">
+                <img src="https://i.pinimg.com/1200x/78/b7/37/78b737c5a7e438c61f1f988fbb88f82c.jpg" alt="Foto de Legolas" class="foto-tabela">
+            </td>
+            <td>Akira</td>
+            <td>Feiticeiro, nível 5</td>
+        </tr>
+    </tbody>
 </table>
+    <input type="submit" value="Criar personagem">
+</body>
+</html>

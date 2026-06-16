@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Ficha Personagem - D&D 5e</title>
+    <link rel="stylesheet" href="criar-ficha-personagem.scss">
+</head>
+<body>
+    <form>
+        <!-- CABEÇALHO -->
+        <div id="cabeçalho">
+            <div class="fotoPersonagem">
+                <label for="imagemPersonagem">Foto do Personagem</label><br>
+                <input type="file" id="imagemPersonagem" name="imagemPersonagem" (change)="onSelectedFile($event)" accept="image/*"><br><br>
+                <div *ngIf="imagemPreview" class="preview-container"><br>
+                    <img [src]="imagemPreview" class="preview-imagem"><br>
+                    <button type="button" (click)="removerImagem()" class="btn-remover">Remover</button><br><br>
+                </div>
+            </div>
+
+            <div class="nomeClasse">
+                <label for="nomePersonagem">Nome</label><br>
+                <input type="text" id="nomePersonagem" name="nomePersonagem" required><br>
+                <label>Classe</label><br>
+                <select name="classePersonagem">
+                    <option value="BARBARO">Bárbaro</option>
+                    <option value="BARDO">Bardo</option>
+                    <option value="BRUXO">Bruxo</option>
+                    <option value="CLERIGO">Clérigo</option>
+                    <option value="DRUIDA">Druida</option>
+                    <option value="FEITICEIRO">Feiticeiro</option>
+                    <option value="GUERREIRO">Guerreiro</option>
+                    <option value="LADINO">Ladino</option>
+                    <option value="MAGO">Mago</option>
+                    <option value="MONGE">Monge</option>
+                    <option value="PALADINO">Paladino</option>
+                    <option value="PATRULHEIRO">Patrulheiro</option>
+                </select><br>
+            </div>
+
+            <div class="raçaAntecedente">
+                <label for="raçaPersonagem">Raça</label><br>
+                <input type="text" id="raçaPersonagem" name="raçaPersonagem" required><br>
+                <label for="antecedentePersonagem">Antecedente</label><br>
+                <input type="text" id="antecedentePersonagem" name="antecedentePersonagem" required><br>
+            </div>
+
+            <div class="escalaNivel">
+                <label for="escalaPersonagem">Escala</label><br>
+                <input type="text" id="escalaPersonagem" name="escalaPersonagem" required><br>
+                <label for="nivelPersonagem">Nível</label><br>
+                <input type="text" id="nivelPersonagem" name="nivelPersonagem" required><br>
+                <label for="xpPersonagem">XP</label><br>
+                <input type="text" id="xpPersonagem" name="xpPersonagem" required><br>
+            </div>
+        </div>
+    <div class="cabeçalhoSuperior">
+            <div class="atributos">
+                <h1>Atributos</h1>
+                <label for="forcaPersonagem">Força</label><br>
+                <input type="number" id="forcaPersonagem" name="forcaPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusForça">+0</label><br>
+
+                <label for="destrezaPersonagem">Destreza</label><br>
+                <input type="number" id="destrezaPersonagem" name="destrezaPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusDestreza">+0</label><br>
+
+                <label for="constituicaoPersonagem">Constituição</label><br>
+                <input type="number" id="constituicaoPersonagem" name="constituicaoPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusConstituicao">+0</label><br>
+
+                <label for="inteligenciaPersonagem">Inteligência</label><br>
+                <input type="number" id="inteligenciaPersonagem" name="inteligenciaPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusInteligencia">+0</label><br>
+
+                <label for="sabedoriaPersonagem">Sabedoria</label><br>
+                <input type="number" id="sabedoriaPersonagem" name="sabedoriaPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusSabedoria">+0</label><br>
+
+                <label for="carismaPersonagem">Carisma</label><br>
+                <input type="number" id="carismaPersonagem" name="carismaPersonagem" min="1" max="20" value="10" required><br>
+                <label for="bonusCarisma">+0</label><br>
+
+            </div>
+            <div class="bonusProf">
+                <label for="profPersonagem">Bônus proficiência</label><br>
+                <input type="number" id="profPersonagem" name="profPersonagem" required><br>
+                <label for="bonusCarisma">+0</label><br>
+            </div>
+            <div class="testesResistencia">
+                <h2>Testes de resistência</h2>
+                <input type="checkbox" id="forca" name="atributo" value="FORCA">
+                <label for="forca">Força</label><br>
+
+                <input type="checkbox" id="destreza" name="atributo" value="DESTREZA">
+                <label for="destreza">Destreza</label><br>
+
+                <input type="checkbox" id="constituicao" name="atributo" value="CONSTITUICAO">
+                <label for="constituicao">Constituição</label><br>
+
+                <input type="checkbox" id="inteligencia" name="atributo" value="INTELIGENCIA">
+                <label for="inteligencia">Inteligência</label><br>
+
+                <input type="checkbox" id="sabedoria" name="atributo" value="SABEDORIA">
+                <label for="sabedoria">Sabedoria</label><br>
+
+                <input type="checkbox" id="carisma" name="atributo" value="CARISMA">
+                <label for="carisma">Carisma</label><br>
+            </div>
+            <div class="CaIniMov">
+                <div class="campo">
+                    <label for="caPersonagem">Classe de Armadura (CA)</label>
+                    <input type="number" id="caPersonagem" name="caPersonagem" value="10" min="1" max="30" step="1" required>
+                    <small>10 + modificador de Destreza</small>
+                </div>
+
+                <div class="campo">
+                    <label for="iniciativaPersonagem">Iniciativa</label>
+                    <input type="number" id="iniciativaPersonagem" name="iniciativaPersonagem" value="0" required>
+                    <small>modificador de Destreza</small>
+                </div>
+
+                <div class="campo">
+                    <label for="movimentoPersonagem">Movimentação</label>
+                    <input type="text" id="movimentoPersonagem" name="movimentoPersonagem" value="9m" required>
+                    <small>definido pela raça</small>
+                </div>
+
+                <div class="campo">
+                    <label for="vidaPersonagem">Pontos de vida</label>
+                    <input type="number" id="vidaPersonagem" name="vidaPersonagem" value="0" required>
+                    <small>bônus de CON + dado de vida</small>
+                </div>
+            </div>
+            <div class="pericias">
+                <h1>Perícias</h1>
+                <input type="checkbox" id="acrobacia" name="pericia" value="Acrobacia">
+                <label for="acrobacia">Acrobacia (DES)</label><br>
+
+                <input type="checkbox" id="adestrarAnimais" name="pericia" value="AdestrarAnimais">
+                <label for="adestrarAnimais">Adestrar animais (SAB)</label><br>
+
+                <input type="checkbox" id="arcanismo" name="pericia" value="Arcanismo">
+                <label for="arcanismo">Arcanismo (INT)</label><br>
+
+                <input type="checkbox" id="atletismo" name="pericia" value="Atletismo">
+                <label for="atletismo">Atletismo (FOR)</label><br>
+
+                <input type="checkbox" id="enganacao" name="pericia" value="Enganacao">
+                <label for="enganacao">Enganação (CAR)</label><br>
+
+                <input type="checkbox" id="historia" name="pericia" value="Historia">
+                <label for="historia">História (INT)</label><br>
+
+                <input type="checkbox" id="intuicao" name="pericia" value="Intuicao">
+                <label for="intuicao">Intuição (SAB)</label><br>
+
+                <input type="checkbox" id="intimidacao" name="pericia" value="Intimidacao">
+                <label for="intimidacao">Intimidação (CAR)</label><br>
+
+                <input type="checkbox" id="investigacao" name="pericia" value="Investigacao">
+                <label for="investigacao">Investigação (INT)</label><br>
+
+                <input type="checkbox" id="medicina" name="pericia" value="Medicina">
+                <label for="medicina">Medicina (SAB)</label><br>
+
+                <input type="checkbox" id="natureza" name="pericia" value="Natureza">
+                <label for="natureza">Natureza (INT)</label><br>
+
+                <input type="checkbox" id="percepcao" name="pericia" value="Percepcao">
+                <label for="percepcao">Percepção (SAB)</label><br>
+
+                <input type="checkbox" id="atuacao" name="pericia" value="Atuacao">
+                <label for="atuacao">Atuação (CAR)</label><br>
+
+                <input type="checkbox" id="persuacao" name="pericia" value="Persuacao">
+                <label for="persuacao">Persuasão (CAR)</label><br>
+                
+                <input type="checkbox" id="religiao" name="pericia" value="Religiao">
+                <label for="religiao">Religião (INT)</label><br>
+
+                <input type="checkbox" id="prestidigitacao" name="pericia" value="Prestidigitacao">
+                <label for="prestidigitacao">Prestidigitação (DES)</label><br>
+
+                <input type="checkbox" id="furtividade" name="pericia" value="Furtividade">
+                <label for="furtividade">Furtividade (DES)</label><br>
+
+                <input type="checkbox" id="sobrevivencia" name="pericia" value="Sobrevivencia">
+                <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
+            </div>
+        </div>
+        <br>
+        <!-- PROFICIÊNCIAS -->
+        <div class="proficiencias">
+            <table class="tabelaProficiencia">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>proficiência</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Idiomas</th>
+                    <th>Elfico, Anão</th>
+                </tr>
+                <tr>
+                    <th>Armas</th>
+                    <th>Adagas, Espadas</th>
+                </tr>
+            </tbody>
+            </table>
+            <br>
+            <input type="submit" value="Adicionar proficiência"><br><br>
+
+            <label>Tipo proficiência</label><br>
+            <select name="tipoProfPersonagem">
+                <option value="ARMA">Arma</option>
+                <option value="ARMADURA">Armadura</option>
+                <option value="IDIOMAS">Idiomas</option>
+                <option value="OUTROS">Outros</option>
+            </select><br>
+            <label for="listaProficiencias">Proficiências</label><br>
+            <input type="text" id="listaProficiencias" name="listaProficiencias" required><br><br>
+        </div>
+
+        <!-- INVENTÁRIO -->
+        <h1>Inventário</h1>
+        <div class="inventario">
+            <table class="mochilaPersonagem">
+                <thead>
+                    <th>Nome item</th>
+                    <th>Peso item</th>
+                    <th>Quantidade</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Espada Longa</td>
+                        <td>2.5 kg</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Poção de Cura</td>
+                        <td>0.5 kg</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>Kit de Ferramentas</td>
+                        <td>1.0 kg</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Moedas de Ouro</td>
+                        <td>0.1 kg</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>Pergaminho de Magia</td>
+                        <td>0.2 kg</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+            <label for="nomeItem">Nome item</label><br>
+            <input type="text" id="nomeItem" name="nomeItem" required><br>
+            
+            <label for="raridadeItem">Raridade item</label><br>
+            <select name="raridadeItem" required>
+                <option value="" disabled selected>Selecione a raridade...</option>
+                <option value="COMUM">Comum</option>
+                <option value="INCOMUM">Incomum</option>
+                <option value="RARO">Raro</option>
+                <option value="MUITO_RARO">Muito raro</option>
+                <option value="LENDARIO">Lendário</option>
+                <option value="ARTEFATO">Artefato</option>
+            </select><br>
+            
+            <label for="descricaoItem">Descrição item</label><br>
+            <textarea id="descricaoItem" name="descricaoItem" rows="4" cols="50"></textarea><br>
+            <input type="submit" value="Adicionar item"><br><br>
+            <div class="moedas">
+                <label>Bolsa de moedas</label><br>
+                <div class="moedas-container">
+                    <div class="moeda-item">
+                        <label for="moedaPC">PC (Platina)</label><br>
+                        <input type="number" id="moedaPC" name="moedaPC" value="0" min="0"><br>
+                    </div>
+                    <div class="moeda-item">
+                        <label for="moedaPO">PO (Ouro)</label><br>
+                        <input type="number" id="moedaPO" name="moedaPO" value="0" min="0"><br>
+                    </div>
+                    <div class="moeda-item">
+                        <label for="moedaPE">PE (Prata)</label><br>
+                        <input type="number" id="moedaPE" name="moedaPE" value="0" min="0"><br>
+                    </div>
+                    <div class="moeda-item">
+                        <label for="moedaPCobre">PC (Cobre)</label><br>
+                        <input type="number" id="moedaPCobre" name="moedaPCobre" value="0" min="0"><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- HABILIDADES -->
+        <h1>Habilidades</h1>
+        <div class="listaHabilidades">
+            <div class="itemHabilidade">
+                <h3>Nome</h3>
+                <small>Fonte habilidade</small>
+                <h4>Descrição bla bla bla</h4>
+            </div>
+                <div class="itemHabilidade">
+                <h3>Nome</h3>
+                <small>Fonte habilidade</small>
+                <h4>Descrição bla bla bla</h4>
+            </div>
+                <div class="itemHabilidade">
+                    <h3>Nome</h3>
+                    <small>Fonte habilidade</small>
+                    <h4>Descrição bla bla bla</h4>
+                </div>
+            </div>
+        <div class="habilidades">
+            <label for="nomeHabilidade">Nome Habilidade</label><br>
+            <input type="text" id="nomeHabilidade" name="nomeHabilidade" required><br>
+            <label for="origemHabilidade">Origem Habilidade</label><br>
+            <input type="text" id="origemHabilidade" name="origemHabilidade" required><br>
+            <label for="descricaoHabilidade">Descrição Habilidade</label><br>
+            <textarea id="descricaoHabilidade" name="descricaoHabilidade" rows="4" cols="50"></textarea><br>
+            <input type="submit" value="Adicionar Habilidade">
+        </div>
+
+        <!-- GRIMÓRIO -->
+        <h1>Grimório</h1>
+        <div class="blocoGrimorio">
+            <div class="detalhesConjuracao">
+                <h3>CD Magia</h3>
+                <h3>Bônus ataque mágico</h3>
+                <h3>Atributo-chave</h3>
+            </div>
+            <div class="grimorioPersonagem">
+                <div class="listaMagiasSeção1">
+                    <h3>Truques</h3>
+                        <div class="nomeMagiaMenu">
+                            <h4>Nome Truque</h4><br>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 1</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4><br>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 2</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 3</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                </div>
+                <div class="listaMagiasSeção2">
+                    <h3>Nível 4</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 5</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 6</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+
+                        </div>
+                </div>
+                <div class="listaMagiasSeção3">
+                    <h3>Nível 7</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 8</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                    <h3>Nível 9</h3>
+                        <div class="nomeMagia">
+                            <h4>Nome magia</h4>
+                            <input type="submit" value="Adicionar magia">
+                        </div>
+                </div>
+                <div class="adicionarMagia">
+                    <label for="nomeMagia">Nome magia</label><br>
+                    <input type="text" id="nomeMagia" name="nomeMagia" required><br>
+                    
+                    <label for="nivelMagia">Nível magia</label><br>
+                    <input type="text" id="nivelMagia" name="nivelMagia" required><br>
+                    
+                    <label for="tempoConjuracaoMagia">Tempo conjuração</label><br>
+                    <input type="text" id="tempoConjuracaoMagia" name="tempoConjuracaoMagia" required><br>
+                    
+                    <label for="areaMagia">Área/Alcance</label><br>
+                    <input type="text" id="areaMagia" name="areaMagia" required><br>
+                    
+                    <label for="componentesMagia">Componentes</label><br>
+                    <input type="checkbox" name="componentesMagia" value="V"> V
+                    <input type="checkbox" name="componentesMagia" value="S"> S
+                    <input type="checkbox" name="componentesMagia" value="M"> M
+                    <input type="text" id="componentesMaterial" name="componentesMaterial" placeholder="Material (se houver)"><br>
+                    
+                    <input type="checkbox" id="ritualMagia" name="ritualMagia"> Ritual<br>
+                    <input type="checkbox" id="concentracaoMagia" name="concentracaoMagia"> Concentração<br>
+                    
+                    <label for="duracaoMagia">Duração</label><br>
+                    <input type="text" id="duracaoMagia" name="duracaoMagia" required><br>
+
+                    <label for="escolaMagia">Escola magia</label><br>
+                    <select name="escolaMagia" required>
+                        <option value="" disabled selected>Selecione a escola de magia...</option>
+                        <option value="ABJURACAO">Abjuração</option>
+                        <option value="ADIVINHACAO">Adivinhação</option>
+                        <option value="CONJURACAO">Conjuração</option>
+                        <option value="ENCANTACAO">Encantação</option>
+                        <option value="EVOCACAO">Evocação</option>
+                        <option value="ILUSAO">Ilusão</option>
+                        <option value="NECROMANCIA">Necromancia</option>
+                        <option value="TRANSMUTACAO">Transmutação</option>
+                    </select><br>
+                    
+                    <label for="descricaoMagia">Descrição da magia</label><br>
+                    <textarea id="descricaoMagia" name="descricaoMagia" rows="4" cols="50"></textarea><br>
+                    <input type="submit" value="Adicionar magia">
+                </div>
+            </div>
+        </div>
+        <!-- ANOTAÇÕES & EXTRAS -->
+        <div class="extras">
+            <h1>Anotações & Extras</h1>
+        </div>
+        <div class="anotacoes">
+        <div class="dadosPessoaisPersonagem">
+            <div class="idadeContainer">
+                <label for="idadePersonagem">Idade</label>
+                <input type="text" id="idadePersonagem" name="idadePersonagem">
+            </div>
+            
+            <div class="alturaContainer">
+                <label for="alturaPersonagem">Altura</label>
+                <input type="text" id="alturaPersonagem" name="alturaPersonagem">
+            </div>
+            
+            <div class="pesoContainer">
+                <label for="pesoPersonagem">Peso</label>
+                <input type="text" id="pesoPersonagem" name="pesoPersonagem">
+            </div>
+            
+            <div class="tamanhoContainer">
+                <label for="tamanhoPersonagem">Tamanho</label>
+                <input type="text" id="tamanhoPersonagem" name="tamanhoPersonagem">
+            </div>
+            
+            <div class="generoContainer">
+                <label for="generoPersonagem">Gênero</label>
+                <input type="text" id="generoPersonagem" name="generoPersonagem">
+            </div>
+            
+            <div class="alinhamentoContainer">
+                <label for="alinhamentoPersonagem">Alinhamento</label>
+                <input type="text" id="alinhamentoPersonagem" name="alinhamentoPersonagem">
+            </div>
+        </div>
+            <div class="anotacoesInferior">
+                <div class="historiaContainer">
+                        <label for="historiaPersonagem">História do personagem</label>
+                        <textarea id="historiaPersonagem" name="historiaPersonagem" rows="4" cols="50"></textarea>
+                    </div>
+                    
+                    <div class="aparenciaContainer">
+                        <label for="aparenciaPersonagem">Aparência do personagem</label><br>
+                        <textarea id="aparenciaPersonagem" name="aparenciaPersonagem" rows="4" cols="50"></textarea>
+                    </div>
+                    
+                    <div class="personalidadeContainer">
+                        <label for="personalidadePersonagem">Traços de personalidade</label><br>
+                        <textarea id="personalidadePersonagem" name="personalidadePersonagem" rows="4" cols="50"></textarea>
+                    </div>
+                    
+                    <div class="ideaisContainer">
+                        <label for="ideaisPersonagem">Ideais</label><br>
+                        <textarea id="ideaisPersonagem" name="ideaisPersonagem" rows="4" cols="50"></textarea>
+                    </div>
+                    
+                    <div class="defeitosContainer">
+                        <label for="defeitosPersonagem">Defeitos</label><br>
+                        <textarea id="defeitosPersonagem" name="defeitosPersonagem" rows="4" cols="50"></textarea>
+                    </div>
+                    
+                    <div class="anotacoesContainer">
+                        <label for="anotacoesPersonagem">Anotações</label><br>
+                        <textarea id="anotacoesPersonagem" name="anotacoesPersonagem" rows="4" cols="50"></textarea>
+                    </div>      
+                </div>
+            </div>
+    </form>
+</body>
+</html>

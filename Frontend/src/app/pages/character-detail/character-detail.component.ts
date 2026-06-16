@@ -23,5 +23,4 @@ constructor(
   voltar() {
     this.router.navigate(['/characters']);
   }
-
 }
