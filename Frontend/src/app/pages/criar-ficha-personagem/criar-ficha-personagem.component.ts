@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'
+import fa from '@angular/common/locales/fa';
 
 @Component({
   selector: 'app-criar-ficha-personagem',
@@ -13,6 +14,12 @@ export class CriarFichaPersonagemComponent implements OnInit {
   id: string | null = null;
   imagemPreview: string | null = null;
   nomeArquivo: string = '';
+  visivel: {[key: string]: boolean} = {
+    addProficiencia: false,
+    addMagia: false,
+    addItem: false,
+    addHabilidade: false 
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +57,18 @@ export class CriarFichaPersonagemComponent implements OnInit {
       fileInput.value = '';
     }
     console.log('Imagem removida'); // Debug
+  }
+
+  toggleSecao(secao: string){
+    this.visivel[secao] = !this.visivel[secao];
+  }
+
+  mostrarSecao(secao: string){
+    this.visivel[secao] = true;
+  }
+
+  esconderSecao(secao: string){
+    this.visivel[secao] = false;
   }
 
   voltar() {

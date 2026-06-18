@@ -211,19 +211,22 @@
             </tbody>
             </table>
             <br>
-            <input type="submit" value="Adicionar proficiência"><br><br>
 
-            <label>Tipo proficiência</label><br>
-            <select name="tipoProfPersonagem">
-                <option value="ARMA">Arma</option>
-                <option value="ARMADURA">Armadura</option>
-                <option value="IDIOMAS">Idiomas</option>
-                <option value="OUTROS">Outros</option>
-            </select><br>
-            <label for="listaProficiencias">Proficiências</label><br>
-            <input type="text" id="listaProficiencias" name="listaProficiencias" required><br><br>
-        </div>
-
+            <button (click)="toggleSecao('proficiencia')">Nova proficiência</button>
+            <br>
+                <div class="addProficiencia" [hidden]="!visivel['proficiencia']">
+                    <label>Tipo proficiência</label><br>
+                    <select name="tipoProfPersonagem">
+                        <option value="ARMA">Arma</option>
+                        <option value="ARMADURA">Armadura</option>
+                        <option value="IDIOMAS">Idiomas</option>
+                        <option value="OUTROS">Outros</option>
+                    </select><br>
+                    <label for="listaProficiencias">Proficiências</label><br>
+                    <input type="text" id="listaProficiencias" name="listaProficiencias" required><br><br>
+                    <input type="submit" value="Adicionar proficiência">
+                </div>
+            </div>
         <!-- INVENTÁRIO -->
         <h1>Inventário</h1>
         <div class="inventario">
@@ -261,23 +264,28 @@
                     </tr>
                 </tbody>
             </table>
-            <label for="nomeItem">Nome item</label><br>
-            <input type="text" id="nomeItem" name="nomeItem" required><br>
-            
-            <label for="raridadeItem">Raridade item</label><br>
-            <select name="raridadeItem" required>
-                <option value="" disabled selected>Selecione a raridade...</option>
-                <option value="COMUM">Comum</option>
-                <option value="INCOMUM">Incomum</option>
-                <option value="RARO">Raro</option>
-                <option value="MUITO_RARO">Muito raro</option>
-                <option value="LENDARIO">Lendário</option>
-                <option value="ARTEFATO">Artefato</option>
-            </select><br>
-            
-            <label for="descricaoItem">Descrição item</label><br>
-            <textarea id="descricaoItem" name="descricaoItem" rows="4" cols="50"></textarea><br>
-            <input type="submit" value="Adicionar item"><br><br>
+            <br>
+            <button (click)="toggleSecao('item')">Nova proficiência</button>
+
+            <div class="addItem" [hidden]="!visivel['item']">
+                <label for="nomeItem">Nome item</label><br>
+                <input type="text" id="nomeItem" name="nomeItem" required><br>
+                
+                <label for="raridadeItem">Raridade item</label><br>
+                <select name="raridadeItem" required>
+                    <option value="" disabled selected>Selecione a raridade...</option>
+                    <option value="COMUM">Comum</option>
+                    <option value="INCOMUM">Incomum</option>
+                    <option value="RARO">Raro</option>
+                    <option value="MUITO_RARO">Muito raro</option>
+                    <option value="LENDARIO">Lendário</option>
+                    <option value="ARTEFATO">Artefato</option>
+                </select><br>
+                
+                <label for="descricaoItem">Descrição item</label><br>
+                <textarea id="descricaoItem" name="descricaoItem" rows="4" cols="50"></textarea><br>
+                <input type="submit" value="Adicionar item"><br><br>
+            </div>
             <div class="moedas">
                 <label>Bolsa de moedas</label><br>
                 <div class="moedas-container">
@@ -320,16 +328,19 @@
                     <h4>Descrição bla bla bla</h4>
                 </div>
             </div>
-        <div class="habilidades">
-            <label for="nomeHabilidade">Nome Habilidade</label><br>
-            <input type="text" id="nomeHabilidade" name="nomeHabilidade" required><br>
-            <label for="origemHabilidade">Origem Habilidade</label><br>
-            <input type="text" id="origemHabilidade" name="origemHabilidade" required><br>
-            <label for="descricaoHabilidade">Descrição Habilidade</label><br>
-            <textarea id="descricaoHabilidade" name="descricaoHabilidade" rows="4" cols="50"></textarea><br>
-            <input type="submit" value="Adicionar Habilidade">
-        </div>
+            <button (click)="toggleSecao('habilidade')">Nova Habilidade</button>
+            <div class="addHabildiade" [hidden]="!visivel['habilidade']">
 
+            <div class="habilidades">
+                <label for="nomeHabilidade">Nome Habilidade</label><br>
+                <input type="text" id="nomeHabilidade" name="nomeHabilidade" required><br>
+                <label for="origemHabilidade">Origem Habilidade</label><br>
+                <input type="text" id="origemHabilidade" name="origemHabilidade" required><br>
+                <label for="descricaoHabilidade">Descrição Habilidade</label><br>
+                <textarea id="descricaoHabilidade" name="descricaoHabilidade" rows="4" cols="50"></textarea><br>
+                <input type="submit" value="Adicionar Habilidade">
+            </div>
+        </div>
         <!-- GRIMÓRIO -->
         <h1>Grimório</h1>
         <div class="blocoGrimorio">
@@ -342,61 +353,60 @@
                 <div class="listaMagiasSeção1">
                     <h3>Truques</h3>
                         <div class="nomeMagiaMenu">
-                            <h4>Nome Truque</h4><br>
-                            <input type="submit" value="Adicionar magia">
+                            <h4>Nome Truque</h4>
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 1</h3>
                         <div class="nomeMagia">
-                            <h4>Nome magia</h4><br>
-                            <input type="submit" value="Adicionar magia">
+                            <h4>Nome magia</h4>
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 2</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 3</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                 </div>
                 <div class="listaMagiasSeção2">
                     <h3>Nível 4</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 5</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 6</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
-
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                 </div>
                 <div class="listaMagiasSeção3">
                     <h3>Nível 7</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 8</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                     <h3>Nível 9</h3>
                         <div class="nomeMagia">
                             <h4>Nome magia</h4>
-                            <input type="submit" value="Adicionar magia">
+                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
                         </div>
                 </div>
-                <div class="adicionarMagia">
+                <div class="adicionarMagia" [hidden]="!visivel['habilidade']">
                     <label for="nomeMagia">Nome magia</label><br>
                     <input type="text" id="nomeMagia" name="nomeMagia" required><br>
                     

@@ -348,7 +348,7 @@
     transition: transform 0.2s, background-color 0.2s;
     display: flex;
     flex-direction: column; 
-    align-items: center;    
+    align-items: left;    
     gap: 8px;               
 }
 
@@ -438,7 +438,7 @@
     
     .nomeMagia, .nomeMagiaMenu {
         flex-direction: column;
-        text-align: center;
+        text-align: left;
     }
     
     .nomeMagia input, .nomeMagiaMenu input {

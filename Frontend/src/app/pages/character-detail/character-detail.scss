@@ -298,3 +298,174 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+.anotacoes{
+    background-color: cyan;
+}
+.dadosPessoaisPersonagem {
+    background-color: #1a1a2e;
+    padding: clamp(10px, 2vh, 20px);
+    border-radius: 10px;
+    margin: clamp(5px, 1vh, 10px) 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.idadeContainer,
+.alturaContainer,
+.pesoContainer,
+.tamanhoContainer,
+.generoContainer,
+.alinhamentoContainer {
+    background-color: #2a2a4e;
+    padding: clamp(10px, 2vh, 15px);
+    border-radius: 8px;
+    transition: transform 0.2s, background-color 0.2s;
+    /* Alinhamento vertical */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.idadeContainer {
+    border-left: 4px solid #FF6B6B;
+}
+
+.alturaContainer {
+    border-left: 4px solid #4ECDC4;
+}
+
+.pesoContainer {
+    border-left: 4px solid #45B7D1;
+}
+
+.tamanhoContainer {
+    border-left: 4px solid #96CEB4;
+}
+
+.generoContainer {
+    border-left: 4px solid #FFEAA7;
+}
+
+.alinhamentoContainer {
+    border-left: 4px solid #DDA0DD;
+}
+
+.idadeContainer:hover,
+.alturaContainer:hover,
+.pesoContainer:hover,
+.tamanhoContainer:hover,
+.generoContainer:hover,
+.alinhamentoContainer:hover {
+    background-color: #3a3a5e;
+    transform: translateX(5px);
+}
+
+.idadeContainer label,
+.alturaContainer label,
+.pesoContainer label,
+.tamanhoContainer label,
+.generoContainer label,
+.alinhamentoContainer label {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: clamp(12px, 1.8vw, 14px);
+    min-width: 100px;
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.idadeContainer input,
+.alturaContainer input,
+.pesoContainer input,
+.tamanhoContainer input,
+.generoContainer input,
+.alinhamentoContainer input {
+    flex: 1;
+    padding: 8px 10px;
+    background-color: #1a1a2e;
+    border: 1px solid #4a4a6a;
+    border-radius: 5px;
+    color: white;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.idadeContainer input:focus,
+.alturaContainer input:focus,
+.pesoContainer input:focus,
+.tamanhoContainer input:focus,
+.generoContainer input:focus,
+.alinhamentoContainer input:focus {
+    outline: none;
+    border-color: #ffd700;
+}
+
+@media (min-width: 600px) {
+    .dadosPessoaisPersonagem {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .dadosPessoaisPersonagem {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+}
+.anotacoesInferior{
+    background-color: aquamarine;
+    display: grid;
+    grid-template-columns: 30% auto; 
+    grid-template-areas: 
+    "aparenciaContainer ideaisContainer"
+    "aparenciaContainer defeitosContainer"
+    "historiaContainer anotacoesContainer"
+    "historiaContainer personalidadeContainer";
+    gap: 15px;
+    padding: 15px;
+}
+.historiaContainer{
+    background-color: chartreuse;
+    grid-area: historiaContainer;
+
+}
+.aparenciaContainer{
+    background-color: #ffd700;
+    grid-area: aparenciaContainer;
+}
+
+.historiaContainer textarea,
+.aparenciaContainer textarea {
+    width: 90%;
+    height: 80%;
+    padding: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    border: 2px solid #4a4a6a;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+}
+
+.personalidadeContainer{
+    background-color: blueviolet;
+    grid-area:personalidadeContainer
+}
+.ideaisContainer{
+    background-color: cornflowerblue;
+    grid-area:ideaisContainer
+}
+.defeitosContainer{
+    background-color: darkgreen;
+    grid-area:defeitosContainer
+}
+.anotacoesContainer{
+    background-color: hotpink;
+    grid-area:anotacoesContainer
+}
