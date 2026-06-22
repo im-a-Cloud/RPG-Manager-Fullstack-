@@ -49,7 +49,14 @@
                 <label for="escalaPersonagem">Escala</label><br>
                 <input type="text" id="escalaPersonagem" name="escalaPersonagem" required><br>
                 <label for="nivelPersonagem">Nível</label><br>
-                <input type="text" id="nivelPersonagem" name="nivelPersonagem" required><br>
+                <input type="number" 
+                id="nivelPersonagem" 
+                name="nivelPersonagem" 
+                required
+                min="1"
+                max="20"
+                [(ngModel)]="nivelPersonagem"]>
+                <br>
                 <label for="xpPersonagem">XP</label><br>
                 <input type="text" id="xpPersonagem" name="xpPersonagem" required><br>
             </div>
@@ -58,54 +65,128 @@
             <div class="atributos">
                 <h1>Atributos</h1>
                 <label for="forcaPersonagem">Força</label><br>
-                <input type="number" id="forcaPersonagem" name="forcaPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusForça">+0</label><br>
+                <input type="number" 
+                    id="forcaPersonagem" 
+                    name="forcaPersonagem" 
+                    min="1" 
+                    max="30" 
+                    [(ngModel)]="forcaPersonagem"
+                    required><br>
+                <label for="bonusForça">{{ bonusForca }}</label><br>
 
                 <label for="destrezaPersonagem">Destreza</label><br>
-                <input type="number" id="destrezaPersonagem" name="destrezaPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusDestreza">+0</label><br>
+                <input type="number" 
+                    id="destrezaPersonagem" 
+                    name="destrezaPersonagem" 
+                    min="1" 
+                    max="20" 
+                    [(ngModel)]="destrezaPersonagem"
+                    required><br>
+                <label for="bonusDestreza">{{ bonusDestreza }}</label><br>
 
                 <label for="constituicaoPersonagem">Constituição</label><br>
-                <input type="number" id="constituicaoPersonagem" name="constituicaoPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusConstituicao">+0</label><br>
+                <input type="number" 
+                    id="constituicaoPersonagem" 
+                    name="constituicaoPersonagem" 
+                    min="1" 
+                    max="20" 
+                    [(ngModel)]="constituicaoPersonagem"
+                    required><br>
+                <label for="bonusConstituicao">{{ bonusConstituicao }}</label><br>
 
                 <label for="inteligenciaPersonagem">Inteligência</label><br>
-                <input type="number" id="inteligenciaPersonagem" name="inteligenciaPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusInteligencia">+0</label><br>
+                <input type="number" 
+                    id="inteligenciaPersonagem" 
+                    name="inteligenciaPersonagem" 
+                    min="1" 
+                    max="20" 
+                    [(ngModel)]="inteligenciaPersonagem"
+                    required><br>
+                <label for="bonusInteligencia">{{ bonusInteligencia }}</label><br>
 
                 <label for="sabedoriaPersonagem">Sabedoria</label><br>
-                <input type="number" id="sabedoriaPersonagem" name="sabedoriaPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusSabedoria">+0</label><br>
+                <input type="number" 
+                    id="sabedoriaPersonagem" 
+                    name="sabedoriaPersonagem" 
+                    min="1" 
+                    max="20" 
+                    [(ngModel)]="sabedoriaPersonagem"
+                    required><br>
+                <label for="bonusSabedoria">{{ bonusSabedoria }}</label><br>
 
                 <label for="carismaPersonagem">Carisma</label><br>
-                <input type="number" id="carismaPersonagem" name="carismaPersonagem" min="1" max="20" value="10" required><br>
-                <label for="bonusCarisma">+0</label><br>
-
+                <input type="number" 
+                    id="carismaPersonagem" 
+                    name="carismaPersonagem" 
+                    min="1" 
+                    max="20" 
+                    [(ngModel)]="carismaPersonagem"
+                    required><br>
+                <label for="bonusCarisma">{{ bonusCarisma }}</label><br>
             </div>
             <div class="bonusProf">
-                <label for="profPersonagem">Bônus proficiência</label><br>
-                <input type="number" id="profPersonagem" name="profPersonagem" required><br>
-                <label for="bonusCarisma">+0</label><br>
+                <label for="profPersonagem" class="profPersonagem">Bônus proficiência</label><br>
+                <label for="bonusProficiencia" class="bonusProficiencia"> {{bonusProficiencia}}</label><br>
             </div>
             <div class="testesResistencia">
-                <h2>Testes de resistência</h2>
-                <input type="checkbox" id="forca" name="atributo" value="FORCA">
-                <label for="forca">Força</label><br>
+                <input type="checkbox" 
+                id="resistenciaForca" 
+                name="resistencia" 
+                value="forca"
+                [(ngModel)]="resistencias['forca']">
+                <label>{{ getTesteResistencia('forca') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaForca">Força</label><br>
 
-                <input type="checkbox" id="destreza" name="atributo" value="DESTREZA">
-                <label for="destreza">Destreza</label><br>
+                <!-- Destreza -->
+                <input type="checkbox" 
+                id="resistenciaDestreza" 
+                name="resistencia" 
+                value="destreza"
+                [(ngModel)]="resistencias['destreza']">
+                <label>{{ getTesteResistencia('destreza') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaDestreza">Destreza</label><br>
 
-                <input type="checkbox" id="constituicao" name="atributo" value="CONSTITUICAO">
-                <label for="constituicao">Constituição</label><br>
+                <!-- Constituição -->
+                <input type="checkbox" 
+                id="resistenciaConstituicao" 
+                name="resistencia" 
+                value="constituicao"
+                [(ngModel)]="resistencias['constituicao']">
+                <label>{{ getTesteResistencia('constituicao') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaConstituicao">Constituição</label><br>
 
-                <input type="checkbox" id="inteligencia" name="atributo" value="INTELIGENCIA">
-                <label for="inteligencia">Inteligência</label><br>
+                <!-- Inteligência -->
+                <input type="checkbox" 
+                id="resistenciaInteligencia" 
+                name="resistencia" 
+                value="inteligencia"
+                [(ngModel)]="resistencias['inteligencia']">
+                <label>{{ getTesteResistencia('inteligencia') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaInteligencia">Inteligência</label><br>
 
-                <input type="checkbox" id="sabedoria" name="atributo" value="SABEDORIA">
-                <label for="sabedoria">Sabedoria</label><br>
+                <!-- Sabedoria -->
+                <input type="checkbox" 
+                id="resistenciaSabedoria" 
+                name="resistencia" 
+                value="sabedoria"
+                [(ngModel)]="resistencias['sabedoria']">
+                <label>{{ getTesteResistencia('sabedoria') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaSabedoria">Sabedoria</label><br>
 
-                <input type="checkbox" id="carisma" name="atributo" value="CARISMA">
-                <label for="carisma">Carisma</label><br>
+                <!-- Carisma -->
+                <input type="checkbox" 
+                id="resistenciaCarisma" 
+                name="resistencia" 
+                value="carisma"
+                [(ngModel)]="resistencias['carisma']">
+                <label>{{ getTesteResistencia('carisma') }}</label>
+                <span style="margin: 0 3px;"></span>
+                <label for="resistenciaCarisma">Carisma</label><br>
             </div>
             <div class="CaIniMov">
                 <div class="campo">
@@ -132,99 +213,234 @@
                     <small>bônus de CON + dado de vida</small>
                 </div>
             </div>
-            <div class="pericias">
-                <h1>Perícias</h1>
-                <input type="checkbox" id="acrobacia" name="pericia" value="Acrobacia">
-                <label for="acrobacia">Acrobacia (DES)</label><br>
+        <div class="pericias">
+            <h1>Perícias</h1>
+            
+            <!-- Acrobacia -->
+            <input type="checkbox" 
+                id="acrobacia" 
+                name="pericia" 
+                value="Acrobacia"
+                [(ngModel)]="pericias['acrobacia']">
+            <label>{{ getValorPericia('acrobacia') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="acrobacia">Acrobacia (DES)</label><br>
 
-                <input type="checkbox" id="adestrarAnimais" name="pericia" value="AdestrarAnimais">
-                <label for="adestrarAnimais">Adestrar animais (SAB)</label><br>
+            <!-- Adestrar Animais -->
+            <input type="checkbox" 
+                id="adestrarAnimais" 
+                name="pericia" 
+                value="AdestrarAnimais"
+                [(ngModel)]="pericias['adestrarAnimais']">
+            <label>{{ getValorPericia('adestrarAnimais') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="adestrarAnimais">Adestrar animais (SAB)</label><br>
 
-                <input type="checkbox" id="arcanismo" name="pericia" value="Arcanismo">
-                <label for="arcanismo">Arcanismo (INT)</label><br>
+            <!-- Arcanismo -->
+            <input type="checkbox" 
+                id="arcanismo" 
+                name="pericia" 
+                value="Arcanismo"
+                [(ngModel)]="pericias['arcanismo']">
+            <label>{{ getValorPericia('arcanismo') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="arcanismo">Arcanismo (INT)</label><br>
 
-                <input type="checkbox" id="atletismo" name="pericia" value="Atletismo">
-                <label for="atletismo">Atletismo (FOR)</label><br>
+            <!-- Atletismo -->
+            <input type="checkbox" 
+                id="atletismo" 
+                name="pericia" 
+                value="Atletismo"
+                [(ngModel)]="pericias['atletismo']">
+            <label>{{ getValorPericia('atletismo') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="atletismo">Atletismo (FOR)</label><br>
 
-                <input type="checkbox" id="enganacao" name="pericia" value="Enganacao">
-                <label for="enganacao">Enganação (CAR)</label><br>
+            <!-- Enganação -->
+            <input type="checkbox" 
+                id="enganacao" 
+                name="pericia" 
+                value="Enganacao"
+                [(ngModel)]="pericias['enganacao']">
+            <label>{{ getValorPericia('enganacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="enganacao">Enganação (CAR)</label><br>
 
-                <input type="checkbox" id="historia" name="pericia" value="Historia">
-                <label for="historia">História (INT)</label><br>
+            <!-- História -->
+            <input type="checkbox" 
+                id="historia" 
+                name="pericia" 
+                value="Historia"
+                [(ngModel)]="pericias['historia']">
+            <label>{{ getValorPericia('historia') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="historia">História (INT)</label><br>
 
-                <input type="checkbox" id="intuicao" name="pericia" value="Intuicao">
-                <label for="intuicao">Intuição (SAB)</label><br>
+            <!-- Intuição -->
+            <input type="checkbox" 
+                id="intuicao" 
+                name="pericia" 
+                value="Intuicao"
+                [(ngModel)]="pericias['intuicao']">
+            <label>{{ getValorPericia('intuicao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="intuicao">Intuição (SAB)</label><br>
 
-                <input type="checkbox" id="intimidacao" name="pericia" value="Intimidacao">
-                <label for="intimidacao">Intimidação (CAR)</label><br>
+            <!-- Intimidação -->
+            <input type="checkbox" 
+                id="intimidacao" 
+                name="pericia" 
+                value="Intimidacao"
+                [(ngModel)]="pericias['intimidacao']">
+            <label>{{ getValorPericia('intimidacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="intimidacao">Intimidação (CAR)</label><br>
 
-                <input type="checkbox" id="investigacao" name="pericia" value="Investigacao">
-                <label for="investigacao">Investigação (INT)</label><br>
+            <!-- Investigação -->
+            <input type="checkbox" 
+                id="investigacao" 
+                name="pericia" 
+                value="Investigacao"
+                [(ngModel)]="pericias['investigacao']">
+            <label>{{ getValorPericia('investigacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="investigacao">Investigação (INT)</label><br>
 
-                <input type="checkbox" id="medicina" name="pericia" value="Medicina">
-                <label for="medicina">Medicina (SAB)</label><br>
+            <!-- Medicina -->
+            <input type="checkbox" 
+                id="medicina" 
+                name="pericia" 
+                value="Medicina"
+                [(ngModel)]="pericias['medicina']">
+            <label>{{ getValorPericia('medicina') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="medicina">Medicina (SAB)</label><br>
 
-                <input type="checkbox" id="natureza" name="pericia" value="Natureza">
-                <label for="natureza">Natureza (INT)</label><br>
+            <!-- Natureza -->
+            <input type="checkbox" 
+                id="natureza" 
+                name="pericia" 
+                value="Natureza"
+                [(ngModel)]="pericias['natureza']">
+            <label>{{ getValorPericia('natureza') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="natureza">Natureza (INT)</label><br>
 
-                <input type="checkbox" id="percepcao" name="pericia" value="Percepcao">
-                <label for="percepcao">Percepção (SAB)</label><br>
+            <!-- Percepção -->
+            <input type="checkbox" 
+                id="percepcao" 
+                name="pericia" 
+                value="Percepcao"
+                [(ngModel)]="pericias['percepcao']">
+            <label>{{ getValorPericia('percepcao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="percepcao">Percepção (SAB)</label><br>
 
-                <input type="checkbox" id="atuacao" name="pericia" value="Atuacao">
-                <label for="atuacao">Atuação (CAR)</label><br>
+            <!-- Atuação -->
+            <input type="checkbox" 
+                id="atuacao" 
+                name="pericia" 
+                value="Atuacao"
+                [(ngModel)]="pericias['atuacao']">
+            <label>{{ getValorPericia('atuacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="atuacao">Atuação (CAR)</label><br>
 
-                <input type="checkbox" id="persuacao" name="pericia" value="Persuacao">
-                <label for="persuacao">Persuasão (CAR)</label><br>
-                
-                <input type="checkbox" id="religiao" name="pericia" value="Religiao">
-                <label for="religiao">Religião (INT)</label><br>
+            <!-- Persuasão -->
+            <input type="checkbox" 
+                id="persuacao" 
+                name="pericia" 
+                value="Persuacao"
+                [(ngModel)]="pericias['persuacao']">
+            <label>{{ getValorPericia('persuacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="persuacao">Persuasão (CAR)</label><br>
+            
+            <!-- Religião -->
+            <input type="checkbox" 
+                id="religiao" 
+                name="pericia" 
+                value="Religiao"
+                [(ngModel)]="pericias['religiao']">
+            <label>{{ getValorPericia('religiao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="religiao">Religião (INT)</label><br>
 
-                <input type="checkbox" id="prestidigitacao" name="pericia" value="Prestidigitacao">
-                <label for="prestidigitacao">Prestidigitação (DES)</label><br>
+            <!-- Prestidigitação -->
+            <input type="checkbox" 
+                id="prestidigitacao" 
+                name="pericia" 
+                value="Prestidigitacao"
+                [(ngModel)]="pericias['prestidigitacao']">
+            <label>{{ getValorPericia('prestidigitacao') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="prestidigitacao">Prestidigitação (DES)</label><br>
 
-                <input type="checkbox" id="furtividade" name="pericia" value="Furtividade">
-                <label for="furtividade">Furtividade (DES)</label><br>
+            <!-- Furtividade -->
+            <input type="checkbox" 
+                id="furtividade" 
+                name="pericia" 
+                value="Furtividade"
+                [(ngModel)]="pericias['furtividade']">
+            <label>{{ getValorPericia('furtividade') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="furtividade">Furtividade (DES)</label><br>
 
-                <input type="checkbox" id="sobrevivencia" name="pericia" value="Sobrevivencia">
-                <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
-            </div>
+            <!-- Sobrevivência -->
+            <input type="checkbox" 
+                id="sobrevivencia" 
+                name="pericia" 
+                value="Sobrevivencia"
+                [(ngModel)]="pericias['sobrevivencia']">
+            <label>{{ getValorPericia('sobrevivencia') }}</label>
+            <span style="margin: 0 3px;"></span>
+            <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
+        </div>
         </div>
         <br>
         <!-- PROFICIÊNCIAS -->
-        <div class="proficiencias">
-            <table class="tabelaProficiencia">
+      <div class="proficiencias">
+    <!-- Tabela de Proficiências -->
+        <table class="tabelaProficiencia">
             <thead>
                 <tr>
                     <th>Tipo</th>
-                    <th>proficiência</th>
+                    <th>Proficiência</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th>Idiomas</th>
-                    <th>Elfico, Anão</th>
-                </tr>
-                <tr>
-                    <th>Armas</th>
-                    <th>Adagas, Espadas</th>
+                <tr *ngFor="let proficiencia of proficiencias; let i = index">
+                    <td>{{ proficiencia.tipo }}</td>
+                    <td>{{ proficiencia.lista }}</td>
+                    <td>
+                    </td>
                 </tr>
             </tbody>
-            </table>
-            <br>
+        </table>
+
+        <br>
 
             <button (click)="toggleSecao('proficiencia')">Nova proficiência</button>
             <br>
                 <div class="addProficiencia" [hidden]="!visivel['proficiencia']">
                     <label>Tipo proficiência</label><br>
-                    <select name="tipoProfPersonagem">
+                    <select name="tipoProfPersonagem"
+                    id = "tipoProfPersonagem"
+                    name="tipoProfPersonagem"
+                    [(ngModel)]="novaProficiencia.tipoProfPersonagem"
+                    required="">
                         <option value="ARMA">Arma</option>
                         <option value="ARMADURA">Armadura</option>
                         <option value="IDIOMAS">Idiomas</option>
                         <option value="OUTROS">Outros</option>
                     </select><br>
                     <label for="listaProficiencias">Proficiências</label><br>
-                    <input type="text" id="listaProficiencias" name="listaProficiencias" required><br><br>
-                    <input type="submit" value="Adicionar proficiência">
+                    <input type="text" 
+                    id="listaProficiencias" 
+                    name="listaProficiencias" 
+                    [(ngModel)]="novaProficiencia.listaProficiencias"
+                    required><br><br>
+                    <button (click)="adicionarProficiencia()">Adicionar Proficiência</button>
                 </div>
             </div>
         <!-- INVENTÁRIO -->
@@ -235,56 +451,82 @@
                     <th>Nome item</th>
                     <th>Peso item</th>
                     <th>Quantidade</th>
+                    <th>Peso Total</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Espada Longa</td>
-                        <td>2.5 kg</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Poção de Cura</td>
-                        <td>0.5 kg</td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <td>Kit de Ferramentas</td>
-                        <td>1.0 kg</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Moedas de Ouro</td>
-                        <td>0.1 kg</td>
-                        <td>50</td>
-                    </tr>
-                    <tr>
-                        <td>Pergaminho de Magia</td>
-                        <td>0.2 kg</td>
-                        <td>2</td>
-                    </tr>
-                </tbody>
+            <tr *ngFor="let item of inventario; let i = index">
+                <td><strong>{{ item.nome }}</strong></td>
+                <td>{{ item.peso }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>{{ item.quantidade * item.peso}}</td>
+            </tr>
+            </tbody>
             </table>
             <br>
-            <button (click)="toggleSecao('item')">Nova proficiência</button>
+            <button (click)="toggleSecao('item')">Novo item</button>
 
-            <div class="addItem" [hidden]="!visivel['item']">
-                <label for="nomeItem">Nome item</label><br>
-                <input type="text" id="nomeItem" name="nomeItem" required><br>
-                
-                <label for="raridadeItem">Raridade item</label><br>
-                <select name="raridadeItem" required>
-                    <option value="" disabled selected>Selecione a raridade...</option>
-                    <option value="COMUM">Comum</option>
-                    <option value="INCOMUM">Incomum</option>
-                    <option value="RARO">Raro</option>
-                    <option value="MUITO_RARO">Muito raro</option>
-                    <option value="LENDARIO">Lendário</option>
-                    <option value="ARTEFATO">Artefato</option>
-                </select><br>
-                
-                <label for="descricaoItem">Descrição item</label><br>
-                <textarea id="descricaoItem" name="descricaoItem" rows="4" cols="50"></textarea><br>
-                <input type="submit" value="Adicionar item"><br><br>
+<div class="addItem" [hidden]="!visivel['item']">
+    <label for="nomeItem">Nome item</label><br>
+    <input type="text" 
+           id="nomeItem" 
+           name="nomeItem" 
+           [(ngModel)]="novoItem.nomeItem"
+           required><br>
+    
+    <label for="raridadeItem">Raridade item</label><br>
+    <select 
+        name="raridadeItem" 
+        id="raridadeItem"
+        [(ngModel)]="novoItem.raridadeItem"
+        required>
+        <option value="" disabled selected>Selecione a raridade...</option>
+        <option value="COMUM">Comum</option>
+        <option value="INCOMUM">Incomum</option>
+        <option value="RARO">Raro</option>
+        <option value="MUITO_RARO">Muito raro</option>
+        <option value="LENDARIO">Lendário</option>
+        <option value="ARTEFATO">Artefato</option>
+    </select><br>
+    
+    <label for="quantidadeItem">Quantidade item</label><br>
+    <input type="number" 
+           id="quantidadeItem" 
+           name="quantidadeItem" 
+           [(ngModel)]="novoItem.quantidadeItem"
+           min="1"
+           placeholder="1"
+           required><br>
+    
+    <label for="pesoItem">Peso item</label><br>
+    <input type="number" 
+           id="pesoItem" 
+           name="pesoItem" 
+           [(ngModel)]="novoItem.pesoItem"
+           min="0"
+           placeholder="0"
+           step="0.1"
+           required><br>
+    
+    <label for="tipoItem">Tipo item</label><br>
+    <input type="text" 
+           id="tipoItem" 
+           name="tipoItem" 
+           [(ngModel)]="novoItem.tipoItem"
+           placeholder="Ex: Arma, Armadura, Poção"><br>
+    
+    <label for="descricaoItem">Descrição item</label><br>
+    <textarea 
+        id="descricaoItem" 
+        name="descricaoItem" 
+        rows="3"
+        [(ngModel)]="novoItem.descricaoItem"
+        placeholder="Descreva o item..."></textarea><br>
+    
+    <button (click)="adicionarItem()" class="btn-adicionar">Adicionar Item</button>
+</div>
+            <div class="resumo-inventario" *ngIf="inventario.length > 0">
+                <p><strong>Total de Itens:</strong> {{ quantidadeTotal }}</p>
+                <p><strong>Peso Total:</strong> {{ pesoTotal }} kg</p>
             </div>
             <div class="moedas">
                 <label>Bolsa de moedas</label><br>
@@ -298,7 +540,7 @@
                         <input type="number" id="moedaPO" name="moedaPO" value="0" min="0"><br>
                     </div>
                     <div class="moeda-item">
-                        <label for="moedaPE">PE (Prata)</label><br>
+                        <label for="moedaPE">PP (Prata)</label><br>
                         <input type="number" id="moedaPE" name="moedaPE" value="0" min="0"><br>
                     </div>
                     <div class="moeda-item">
@@ -310,35 +552,39 @@
             </div>
 
         <!-- HABILIDADES -->
-        <h1>Habilidades</h1>
-        <div class="listaHabilidades">
-            <div class="itemHabilidade">
-                <h3>Nome</h3>
-                <small>Fonte habilidade</small>
-                <h4>Descrição bla bla bla</h4>
+        <h1>Habilidades personagem</h1>
+        <div class="listaHabilidades" *ngIf="habilidades.length">
+            <div *ngFor="let habilidade of habilidades; let i = index" class="habilidade-item">
+                <h3>Nome:{{ habilidade.nome }}</h3>
+                <p><strong>Origem:</strong> {{ habilidade.origem }}</p>
+                <p><strong>Descrição:</strong> {{ habilidade.descricao }}</p>
+            <hr>
             </div>
-                <div class="itemHabilidade">
-                <h3>Nome</h3>
-                <small>Fonte habilidade</small>
-                <h4>Descrição bla bla bla</h4>
-            </div>
-                <div class="itemHabilidade">
-                    <h3>Nome</h3>
-                    <small>Fonte habilidade</small>
-                    <h4>Descrição bla bla bla</h4>
-                </div>
             </div>
             <button (click)="toggleSecao('habilidade')">Nova Habilidade</button>
             <div class="addHabildiade" [hidden]="!visivel['habilidade']">
 
             <div class="habilidades">
                 <label for="nomeHabilidade">Nome Habilidade</label><br>
-                <input type="text" id="nomeHabilidade" name="nomeHabilidade" required><br>
+                <input type="text" 
+                id="nomeHabilidade" 
+                name="nomeHabilidade" 
+                [(ngModel)]="novaHabilidade.nome"
+                required><br>
                 <label for="origemHabilidade">Origem Habilidade</label><br>
-                <input type="text" id="origemHabilidade" name="origemHabilidade" required><br>
+                <input type="text" 
+                id="origemHabilidade" 
+                name="origemHabilidade" 
+                [(ngModel)]="novaHabilidade.origem"
+                required><br>
                 <label for="descricaoHabilidade">Descrição Habilidade</label><br>
-                <textarea id="descricaoHabilidade" name="descricaoHabilidade" rows="4" cols="50"></textarea><br>
-                <input type="submit" value="Adicionar Habilidade">
+                <textarea 
+                id="descricaoHabilidade" 
+                name="descricaoHabilidade" rows="4" cols="50"
+                [(ngModel)]="novaHabilidade.descricao"
+                required
+                ></textarea><br>
+                <button (click)="adicionarHabilidade()">Adicionar Habilidade</button>
             </div>
         </div>
         <!-- GRIMÓRIO -->

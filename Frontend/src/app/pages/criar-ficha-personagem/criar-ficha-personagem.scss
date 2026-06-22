@@ -27,6 +27,7 @@
     "atributos bonusProf CaIniMov"
     "atributos testesResistencia CaIniMov"
     "atributos pericias pericias"
+    
 }
 .atributos{
     background-color: red;
@@ -47,14 +48,16 @@
     justify-content: center; 
     align-items: center;   
 }
-.bonusProf input {
-    font-weight: bold;
-    width: 80%;
-}
 .bonusProf{
     grid-area: bonusProf;
     background-color: aqua;
     text-align: center;
+}
+.profPersonagem{
+    font-size: 20px;
+}
+.bonusProficiencia{
+    font-size: 40px;
 }
 .testesResistencia{
     background-color: brown;
