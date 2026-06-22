@@ -78,6 +78,28 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
     descricaoItem:''
   }
 
+  magias: any [] = [];
+  magiaSelecionada: any = null;
+
+
+ novaMagia = {
+    nomeMagia: '',
+    nivelMagia: '0',
+    tempoConjuracaoMagia: '',
+    areaMagia: '',
+    componentesMagia: {
+      V: false,
+      S: false,
+      M: false
+    },
+    componentesMaterial: '',
+    ritualMagia: false,
+    concentracaoMagia: false,
+    duracaoMagia: '',
+    escolaMagia: '',
+    descricaoMagia: ''
+  };
+
   valorTotalPericia: number = 0;
 
   forcaPersonagem: number = 0;
@@ -297,4 +319,114 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
       return total + item.quantidade;
     }, 0);
   }
+  adicionarMagia() {
+    // Validação
+    if (!this.novaMagia.nomeMagia.trim()) {
+      alert('O campo Nome da Magia é obrigatório!');
+      return;
+    }
+
+    if (!this.novaMagia.nivelMagia.trim()) {
+      alert('O campo Nível da Magia é obrigatório!');
+      return;
+    }
+
+    if (!this.novaMagia.escolaMagia) {
+      alert('Selecione a Escola de Magia!');
+      return;
+    }
+    const nivel = Number(this.novaMagia.nivelMagia);
+    if (isNaN(nivel) || nivel < 0 || nivel > 9) {
+      alert('Nível inválido! Digite um número entre 0 e 9.');
+      return;
+    }
+    // Monta a lista de componentes
+    const componentes = [];
+    if (this.novaMagia.componentesMagia.V) componentes.push('V');
+    if (this.novaMagia.componentesMagia.S) componentes.push('S');
+    if (this.novaMagia.componentesMagia.M) componentes.push('M');
+
+    // Adiciona a magia
+    this.magias.push({
+      nome: this.novaMagia.nomeMagia,
+      nivel: nivel, // Salva como número
+      nivelDisplay: nivel === 0 ? 'Truque' : `${nivel}º Nível`,
+      tempoConjuracao: this.novaMagia.tempoConjuracaoMagia || '1 ação',
+      area: this.novaMagia.areaMagia || 'Próprio',
+      componentes: componentes.join(', '),
+      componentesMaterial: this.novaMagia.componentesMaterial || '',
+      ritual: this.novaMagia.ritualMagia,
+      concentracao: this.novaMagia.concentracaoMagia,
+      duracao: this.novaMagia.duracaoMagia || 'Instantânea',
+      escola: this.novaMagia.escolaMagia,
+      descricao: this.novaMagia.descricaoMagia || 'Sem descrição'
+    });
+
+    // Limpa o formulário
+    this.novaMagia = {
+      nomeMagia: '',
+      nivelMagia: '',
+      tempoConjuracaoMagia: '',
+      areaMagia: '',
+      componentesMagia: {
+        V: false,
+        S: false,
+        M: false
+      },
+      componentesMaterial: '',
+      ritualMagia: false,
+      concentracaoMagia: false,
+      duracaoMagia: '',
+      escolaMagia: '',
+      descricaoMagia: ''
+    };
+  }
+
+  get magiasPorNivel(): { [key: string]: any[] } {
+      const agrupado: { [key: string]: any[] } = {};
+      
+      this.magias.forEach(magia => {
+        const nivel = magia.nivelDisplay || 'Sem nível';
+        if (!agrupado[nivel]) {
+          agrupado[nivel] = [];
+        }
+        agrupado[nivel].push(magia);
+      });
+
+      // Ordenar os níveis (Truque, 1, 2, 3, ...)
+      const niveisOrdenados = Object.keys(agrupado).sort((a, b) => {
+        if (a === 'Truque') return -1;
+        if (b === 'Truque') return 1;
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        return numA - numB;
+      });
+
+      const resultado: { [key: string]: any[] } = {};
+      niveisOrdenados.forEach(nivel => {
+        resultado[nivel] = agrupado[nivel];
+      });
+
+      return resultado;
+    }
+  getNivelFormatado(nivel: number): string {
+    if (nivel === 0) return 'Truque';
+    if (nivel >= 1 && nivel <= 9) return `${nivel}º Nível`;
+    return 'Nível inválido';
+  }
+  getMagiaIndex(magia: any): number {
+    return this.magias.indexOf(magia);
+  }
+  getMagiasPorNivel(nivel: number): any[] {
+    return this.magias.filter(magia => magia.nivel === nivel);
+  }
+    selecionarMagia(magia: any) {
+    this.magiaSelecionada = this.magiaSelecionada === magia ? null : magia;
+  }
+
+  // Verifica se a magia está selecionada
+  isMagiaSelecionada(magia: any): boolean {
+    return this.magiaSelecionada === magia;
+  }
+
 }

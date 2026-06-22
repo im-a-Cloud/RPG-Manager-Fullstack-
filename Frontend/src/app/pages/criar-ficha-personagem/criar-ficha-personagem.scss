@@ -650,3 +650,81 @@
     background-color: hotpink;
     grid-area:anotacoesContainer
 }
+.magia-container {
+    margin-bottom: 5px;
+}
+
+.magia-container .nomeMagia {
+    background-color: red;
+    padding: clamp(5px, 1.5vh, 10px);
+    margin: clamp(3px, 1vh, 8px) 0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: transform 0.2s;
+}
+
+.magia-container .nomeMagia:hover {
+    transform: scale(1.02);
+}
+
+.magia-container .nomeMagia h4 {
+    margin: 0;
+    color: white;
+}
+
+.quadrinhoMagiaExpandido {
+    background-color: gold;
+    margin: clamp(3px, 1vh, 8px) 0;
+    padding: clamp(5px, 1.5vh, 10px);
+    font-size: clamp(10px, 1.5vw, 14px);
+    border-radius: 5px;
+    animation: slideDown 0.3s ease;
+}
+
+.quadrinhoMagiaExpandido h4 {
+    margin: 5px 0;
+    font-weight: normal;
+}
+
+.quadrinhoMagiaExpandido h4 strong {
+    color: #333;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-remover {
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-remover:hover {
+    background-color: #a93226;
+}
+
+.btn-nova-magia {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.btn-nova-magia:hover {
+    background-color: #45a049;
+}

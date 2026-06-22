@@ -596,104 +596,351 @@
                 <h3>Atributo-chave</h3>
             </div>
             <div class="grimorioPersonagem">
-                <div class="listaMagiasSeção1">
-                    <h3>Truques</h3>
-                        <div class="nomeMagiaMenu">
-                            <h4>Nome Truque</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 1</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 2</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 3</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
+        <div class="listaMagiasSeção1">
+        <!-- Truques -->
+        <h3>Truques</h3>
+        <div class="nomeMagiaMenu">
+        <div *ngFor="let magia of getMagiasPorNivel(0)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
                 </div>
-                <div class="listaMagiasSeção2">
-                    <h3>Nível 4</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 5</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 6</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                </div>
-                <div class="listaMagiasSeção3">
-                    <h3>Nível 7</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 8</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                    <h3>Nível 9</h3>
-                        <div class="nomeMagia">
-                            <h4>Nome magia</h4>
-                            <button (click)="toggleSecao('habilidade')">Nova Magia</button>
-                        </div>
-                </div>
-                <div class="adicionarMagia" [hidden]="!visivel['habilidade']">
-                    <label for="nomeMagia">Nome magia</label><br>
-                    <input type="text" id="nomeMagia" name="nomeMagia" required><br>
-                    
-                    <label for="nivelMagia">Nível magia</label><br>
-                    <input type="text" id="nivelMagia" name="nivelMagia" required><br>
-                    
-                    <label for="tempoConjuracaoMagia">Tempo conjuração</label><br>
-                    <input type="text" id="tempoConjuracaoMagia" name="tempoConjuracaoMagia" required><br>
-                    
-                    <label for="areaMagia">Área/Alcance</label><br>
-                    <input type="text" id="areaMagia" name="areaMagia" required><br>
-                    
-                    <label for="componentesMagia">Componentes</label><br>
-                    <input type="checkbox" name="componentesMagia" value="V"> V
-                    <input type="checkbox" name="componentesMagia" value="S"> S
-                    <input type="checkbox" name="componentesMagia" value="M"> M
-                    <input type="text" id="componentesMaterial" name="componentesMaterial" placeholder="Material (se houver)"><br>
-                    
-                    <input type="checkbox" id="ritualMagia" name="ritualMagia"> Ritual<br>
-                    <input type="checkbox" id="concentracaoMagia" name="concentracaoMagia"> Concentração<br>
-                    
-                    <label for="duracaoMagia">Duração</label><br>
-                    <input type="text" id="duracaoMagia" name="duracaoMagia" required><br>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
 
-                    <label for="escolaMagia">Escola magia</label><br>
-                    <select name="escolaMagia" required>
-                        <option value="" disabled selected>Selecione a escola de magia...</option>
-                        <option value="ABJURACAO">Abjuração</option>
-                        <option value="ADIVINHACAO">Adivinhação</option>
-                        <option value="CONJURACAO">Conjuração</option>
-                        <option value="ENCANTACAO">Encantação</option>
-                        <option value="EVOCACAO">Evocação</option>
-                        <option value="ILUSAO">Ilusão</option>
-                        <option value="NECROMANCIA">Necromancia</option>
-                        <option value="TRANSMUTACAO">Transmutação</option>
-                    </select><br>
-                    
-                    <label for="descricaoMagia">Descrição da magia</label><br>
-                    <textarea id="descricaoMagia" name="descricaoMagia" rows="4" cols="50"></textarea><br>
-                    <input type="submit" value="Adicionar magia">
+        <!-- Nível 1 -->
+        <h3>Nível 1</h3>
+        <div class="nomeMagiaMenu">
+            <div *ngFor="let magia of getMagiasPorNivel(1)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
                 </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+        <!-- Nível 2 -->
+        <h3>Nível 2</h3>
+        <div class="nomeMagia">
+        <div *ngFor="let magia of getMagiasPorNivel(2)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+
+        <!-- Nível 3 -->
+        <h3>Nível 3</h3>
+        <div class="nomeMagia">
+            <div *ngFor="let magia of getMagiasPorNivel(3)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+    </div>
+
+    <!-- Seção 2: Níveis 4, 5, 6 -->
+    <div class="listaMagiasSeção2">
+        <!-- Nível 4 -->
+        <h3>Nível 4</h3>
+        <div class="nomeMagia">
+             <div *ngFor="let magia of getMagiasPorNivel(4)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+
+        <!-- Nível 5 -->
+        <h3>Nível 5</h3>
+        <div class="nomeMagia">
+               <div *ngFor="let magia of getMagiasPorNivel(5)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+
+        <!-- Nível 6 -->
+        <h3>Nível 6</h3>
+        <div class="nomeMagia">
+   <div *ngFor="let magia of getMagiasPorNivel(6)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+    </div>
+
+    <!-- Seção 3: Níveis 7, 8, 9 -->
+    <div class="listaMagiasSeção3">
+        <!-- Nível 7 -->
+        <h3>Nível 7</h3>
+        <div class="nomeMagia">
+   <div *ngFor="let magia of getMagiasPorNivel(7)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+
+        <!-- Nível 8 -->
+        <h3>Nível 8</h3>
+        <div class="nomeMagia">
+   <div *ngFor="let magia of getMagiasPorNivel(8)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+
+        <!-- Nível 9 -->
+        <h3>Nível 9</h3>
+        <div class="nomeMagia">
+   <div *ngFor="let magia of getMagiasPorNivel(9)" class="magia-container">
+                <!-- Nome da magia (clicável) -->
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.nome }}</h4>
+                </div>
+        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+            <h4><strong>Nível:</strong> {{ magia.nivelDisplay }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.area }}</h4>
+            <h4><strong>Componentes:</strong> {{ magia.componentes }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
+            </div>
+        </div>
+            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
+        </div>
+    </div>
+            <div class="adicionarMagia" [hidden]="!visivel['habilidade']">
+                <h2>Adicionar Magia</h2>
+                
+                <label for="nomeMagia">Nome magia</label><br>
+                <input type="text" 
+                    id="nomeMagia" 
+                    name="nomeMagia" 
+                    [(ngModel)]="novaMagia.nomeMagia"
+                    required><br>
+                
+                <label for="nivelMagia">Nível magia</label><br>
+                <input type="text" 
+                    id="nivelMagia" 
+                    name="nivelMagia" 
+                    [(ngModel)]="novaMagia.nivelMagia"
+                    min = "0"
+                    max = "9"
+                    placeholder="0 = Truque, 1-9 = Nível"
+                    required><br>
+                
+                <label for="tempoConjuracaoMagia">Tempo conjuração</label><br>
+                <input type="text" 
+                    id="tempoConjuracaoMagia" 
+                    name="tempoConjuracaoMagia" 
+                    [(ngModel)]="novaMagia.tempoConjuracaoMagia"
+                    placeholder="Ex: 1 ação, 1 minuto, 1 hora"
+                    required><br>
+                
+                <label for="areaMagia">Área/Alcance</label><br>
+                <input type="text" 
+                    id="areaMagia" 
+                    name="areaMagia" 
+                    [(ngModel)]="novaMagia.areaMagia"
+                    placeholder="Ex: Próprio, Toque, 30 pés"
+                    required><br>
+                
+                <label>Componentes</label><br>
+                <input type="checkbox" 
+                    name="componentesMagia" 
+                    value="V"
+                    [(ngModel)]="novaMagia.componentesMagia.V"> V
+                <input type="checkbox" 
+                    name="componentesMagia" 
+                    value="S"
+                    [(ngModel)]="novaMagia.componentesMagia.S"> S
+                <input type="checkbox" 
+                    name="componentesMagia" 
+                    value="M"
+                    [(ngModel)]="novaMagia.componentesMagia.M"> M
+                <input type="text" 
+                    id="componentesMaterial" 
+                    name="componentesMaterial" 
+                    [(ngModel)]="novaMagia.componentesMaterial"
+                    placeholder="Material (se houver)"><br>
+                
+                <input type="checkbox" 
+                    id="ritualMagia" 
+                    name="ritualMagia"
+                    [(ngModel)]="novaMagia.ritualMagia"> Ritual<br>
+                
+                <input type="checkbox" 
+                    id="concentracaoMagia" 
+                    name="concentracaoMagia"
+                    [(ngModel)]="novaMagia.concentracaoMagia"> Concentração<br>
+                
+                <label for="duracaoMagia">Duração</label><br>
+                <input type="text" 
+                    id="duracaoMagia" 
+                    name="duracaoMagia" 
+                    [(ngModel)]="novaMagia.duracaoMagia"
+                    placeholder="Ex: Instantânea, 1 minuto, 1 hora"
+                    required><br>
+
+                <label for="escolaMagia">Escola magia</label><br>
+                <select 
+                    name="escolaMagia" 
+                    id="escolaMagia"
+                    [(ngModel)]="novaMagia.escolaMagia"
+                    required>
+                    <option value="" disabled selected>Selecione a escola de magia...</option>
+                    <option value="ABJURACAO">Abjuração</option>
+                    <option value="ADIVINHACAO">Adivinhação</option>
+                    <option value="CONJURACAO">Conjuração</option>
+                    <option value="ENCANTACAO">Encantação</option>
+                    <option value="EVOCACAO">Evocação</option>
+                    <option value="ILUSAO">Ilusão</option>
+                    <option value="NECROMANCIA">Necromancia</option>
+                    <option value="TRANSMUTACAO">Transmutação</option>
+                </select><br>
+                
+                <label for="descricaoMagia">Descrição da magia</label><br>
+                <textarea id="descricaoMagia" 
+                        name="descricaoMagia" 
+                        rows="4" 
+                        cols="50"
+                        [(ngModel)]="novaMagia.descricaoMagia"></textarea><br>
+                
+                <button (click)="adicionarMagia()" class="btn-adicionar">Adicionar Magia</button>
+            </div>
             </div>
         </div>
         <!-- ANOTAÇÕES & EXTRAS -->
