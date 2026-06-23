@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ɵEmptyOutletComponent } from '@angular/router';
 import { FormsModule } from '@angular/forms'
 import fa from '@angular/common/locales/fa';
 import th from '@angular/common/locales/th';
+import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'app-criar-ficha-personagem',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ɵEmptyOutletComponent],
   templateUrl: './criar-ficha-personagem.html',
   styleUrl: './criar-ficha-personagem.scss',
 })
@@ -68,6 +69,7 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
   };
 
   inventario: any [] =[];
+  itemSelecionado: any = null;
 
   novoItem={
     nomeItem: '',
@@ -80,7 +82,6 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
 
   magias: any [] = [];
   magiaSelecionada: any = null;
-
 
  novaMagia = {
     nomeMagia: '',
@@ -429,4 +430,14 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
     return this.magiaSelecionada === magia;
   }
 
+  selecionarItem(item: any){
+    this.itemSelecionado = this.itemSelecionado === item ? null : item;
+  }
+
+  isItemSelecionado(item: any): boolean{
+    return this.itemSelecionado === item;
+  }
+  getItemIndex(item: any): number {
+  return this.inventario.indexOf(item);
+}
 }

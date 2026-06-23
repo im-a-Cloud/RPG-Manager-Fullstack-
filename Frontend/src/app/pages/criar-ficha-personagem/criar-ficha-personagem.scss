@@ -728,3 +728,17 @@
 .btn-nova-magia:hover {
     background-color: #45a049;
 }
+.mochilaPersonagem tbody tr.selecionado {
+    background-color: #d4edda;
+    border-left: 3px solid #28a745;
+}
+.mochilaPersonagem tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.mochilaPersonagem tbody tr:hover {
+    background-color: #f0f0f0;
+}
+.itemExpandido{
+    text-align: left;
+}

@@ -63,7 +63,7 @@
         </div>
     <div class="cabeçalhoSuperior">
             <div class="atributos">
-                <h1>Atributos</h1>
+                <h2>Atributos</h2>
                 <label for="forcaPersonagem">Força</label><br>
                 <input type="number" 
                     id="forcaPersonagem" 
@@ -446,84 +446,98 @@
         <!-- INVENTÁRIO -->
         <h1>Inventário</h1>
         <div class="inventario">
-            <table class="mochilaPersonagem">
-                <thead>
+        <table class="mochilaPersonagem">
+            <thead>
+                <tr>
                     <th>Nome item</th>
                     <th>Peso item</th>
                     <th>Quantidade</th>
                     <th>Peso Total</th>
-                </thead>
-                <tbody>
-            <tr *ngFor="let item of inventario; let i = index">
-                <td><strong>{{ item.nome }}</strong></td>
-                <td>{{ item.peso }}</td>
-                <td>{{ item.quantidade }}</td>
-                <td>{{ item.quantidade * item.peso}}</td>
-            </tr>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of inventario; let i = index">
+                    <!-- Linha do item (clicável) -->
+                    <tr (click)="selecionarItem(item)">
+                        <td><strong>{{ item.nome }}</strong></td>
+                        <td>{{ item.peso }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>{{ item.quantidade * item.peso }}</td>
+                    </tr>
+                    <!-- Linha de detalhes (aparece ao clicar) -->
+                    <tr *ngIf="isItemSelecionado(item)">
+                        <td colspan="4">
+                            <div class="itemExpandido">
+                                <p><strong>Raridade:</strong> {{ item.raridade }}</p>
+                                <p><strong>Descrição:</strong> {{ item.descricao }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
             </tbody>
-            </table>
+        </table>   
             <br>
             <button (click)="toggleSecao('item')">Novo item</button>
 
-<div class="addItem" [hidden]="!visivel['item']">
-    <label for="nomeItem">Nome item</label><br>
-    <input type="text" 
-           id="nomeItem" 
-           name="nomeItem" 
-           [(ngModel)]="novoItem.nomeItem"
-           required><br>
-    
-    <label for="raridadeItem">Raridade item</label><br>
-    <select 
-        name="raridadeItem" 
-        id="raridadeItem"
-        [(ngModel)]="novoItem.raridadeItem"
-        required>
-        <option value="" disabled selected>Selecione a raridade...</option>
-        <option value="COMUM">Comum</option>
-        <option value="INCOMUM">Incomum</option>
-        <option value="RARO">Raro</option>
-        <option value="MUITO_RARO">Muito raro</option>
-        <option value="LENDARIO">Lendário</option>
-        <option value="ARTEFATO">Artefato</option>
-    </select><br>
-    
-    <label for="quantidadeItem">Quantidade item</label><br>
-    <input type="number" 
-           id="quantidadeItem" 
-           name="quantidadeItem" 
-           [(ngModel)]="novoItem.quantidadeItem"
-           min="1"
-           placeholder="1"
-           required><br>
-    
-    <label for="pesoItem">Peso item</label><br>
-    <input type="number" 
-           id="pesoItem" 
-           name="pesoItem" 
-           [(ngModel)]="novoItem.pesoItem"
-           min="0"
-           placeholder="0"
-           step="0.1"
-           required><br>
-    
-    <label for="tipoItem">Tipo item</label><br>
-    <input type="text" 
-           id="tipoItem" 
-           name="tipoItem" 
-           [(ngModel)]="novoItem.tipoItem"
-           placeholder="Ex: Arma, Armadura, Poção"><br>
-    
-    <label for="descricaoItem">Descrição item</label><br>
-    <textarea 
-        id="descricaoItem" 
-        name="descricaoItem" 
-        rows="3"
-        [(ngModel)]="novoItem.descricaoItem"
-        placeholder="Descreva o item..."></textarea><br>
-    
-    <button (click)="adicionarItem()" class="btn-adicionar">Adicionar Item</button>
-</div>
+        <div class="addItem" [hidden]="!visivel['item']">
+            <label for="nomeItem">Nome item</label><br>
+            <input type="text" 
+                id="nomeItem" 
+                name="nomeItem" 
+                [(ngModel)]="novoItem.nomeItem"
+                required><br>
+            
+            <label for="raridadeItem">Raridade item</label><br>
+            <select 
+                name="raridadeItem" 
+                id="raridadeItem"
+                [(ngModel)]="novoItem.raridadeItem"
+                required>
+                <option value="" disabled selected>Selecione a raridade...</option>
+                <option value="COMUM">Comum</option>
+                <option value="INCOMUM">Incomum</option>
+                <option value="RARO">Raro</option>
+                <option value="MUITO_RARO">Muito raro</option>
+                <option value="LENDARIO">Lendário</option>
+                <option value="ARTEFATO">Artefato</option>
+            </select><br>
+            
+            <label for="quantidadeItem">Quantidade item</label><br>
+            <input type="number" 
+                id="quantidadeItem" 
+                name="quantidadeItem" 
+                [(ngModel)]="novoItem.quantidadeItem"
+                min="1"
+                placeholder="1"
+                required><br>
+            
+            <label for="pesoItem">Peso item</label><br>
+            <input type="number" 
+                id="pesoItem" 
+                name="pesoItem" 
+                [(ngModel)]="novoItem.pesoItem"
+                min="0"
+                placeholder="0"
+                step="0.1"
+                required><br>
+            
+            <label for="tipoItem">Tipo item</label><br>
+            <input type="text" 
+                id="tipoItem" 
+                name="tipoItem" 
+                [(ngModel)]="novoItem.tipoItem"
+                placeholder="Ex: Arma, Armadura, Poção"><br>
+            
+            <label for="descricaoItem">Descrição item</label><br>
+            <textarea 
+                id="descricaoItem" 
+                name="descricaoItem" 
+                rows="3"
+                [(ngModel)]="novoItem.descricaoItem"
+                placeholder="Descreva o item..."></textarea><br>
+            
+            <button (click)="adicionarItem()" class="btn-adicionar">Adicionar Item</button>
+        </div>
             <div class="resumo-inventario" *ngIf="inventario.length > 0">
                 <p><strong>Total de Itens:</strong> {{ quantidadeTotal }}</p>
                 <p><strong>Peso Total:</strong> {{ pesoTotal }} kg</p>
@@ -615,7 +629,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -639,7 +652,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -662,7 +674,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -686,7 +697,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -713,7 +723,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -737,7 +746,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -761,7 +769,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -788,7 +795,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -812,7 +818,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -836,7 +841,6 @@
             <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
             <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
             <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
-            <h4><strong>Classes que podem usar:</strong> {{ magia.classes || 'Qualquer' }}</h4>
             </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
