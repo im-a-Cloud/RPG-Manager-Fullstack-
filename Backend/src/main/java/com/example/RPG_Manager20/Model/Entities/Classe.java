@@ -3,11 +3,9 @@ package com.example.RPG_Manager20.Model.Entities;
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,10 +13,14 @@ import java.util.List;
 public class Classe extends AbstractModel{
     private Classes nomeClasse;
     private int dadoDeVida;
-    private List<String> proficienciasArmas;
-    private List<String> proficienciasArmaduras;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "classe_id")  // ← ADICIONE ESTA ANOTAÇÃO
+    private List<Proficiencia> listaProficienciasClasse;
+    @ElementCollection
+    @CollectionTable(name = "classe_salvaguardas", joinColumns = @JoinColumn(name = "classe_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "atributo")
     private List<Atributos> proficienciaSalvaguarda;
-    private List<String> proficienciaFerramentas;
 
     private boolean isConjurador;
 
@@ -27,19 +29,20 @@ public class Classe extends AbstractModel{
 
     private TipoConjuracao tipoConjuracao;
 
-    public Classe() {
-    }
-
-    public Classe(Classes nomeClasse, int dadoDeVida, List<String> proficienciasArmas, List<String> proficienciasArmaduras, List<Atributos> proficienciaSalvaguarda, List<String> proficienciaFerramentas, boolean isConjurador, Atributos atributoConjuracao, TipoConjuracao tipoConjuracao) {
+    public Classe(Classes nomeClasse, int dadoDeVida, List<Proficiencia> listaProficienciasClasse,
+                  List<Atributos> proficienciaSalvaguarda, boolean isConjurador,
+                  Atributos atributoConjuracao, TipoConjuracao tipoConjuracao) {
         this.nomeClasse = nomeClasse;
         this.dadoDeVida = dadoDeVida;
-        this.proficienciasArmas = proficienciasArmas;
-        this.proficienciasArmaduras = proficienciasArmaduras;
-        this.proficienciaSalvaguarda = proficienciaSalvaguarda;
-        this.proficienciaFerramentas = proficienciaFerramentas;
+        this.listaProficienciasClasse = listaProficienciasClasse != null ? listaProficienciasClasse : new ArrayList<>();
+        this.proficienciaSalvaguarda = proficienciaSalvaguarda != null ? proficienciaSalvaguarda : new ArrayList<>();
         this.isConjurador = isConjurador;
         this.atributoConjuracao = atributoConjuracao;
         this.tipoConjuracao = tipoConjuracao;
+    }
+
+
+    public Classe() {
     }
 
     public Classes getNomeClasse() {
@@ -58,20 +61,12 @@ public class Classe extends AbstractModel{
         this.dadoDeVida = dadoDeVida;
     }
 
-    public List<String> getProficienciasArmas() {
-        return proficienciasArmas;
+    public List<Proficiencia> getListaProficienciasClasse() {
+        return listaProficienciasClasse;
     }
 
-    public void setProficienciasArmas(List<String> proficienciasArmas) {
-        this.proficienciasArmas = proficienciasArmas;
-    }
-
-    public List<String> getProficienciasArmaduras() {
-        return proficienciasArmaduras;
-    }
-
-    public void setProficienciasArmaduras(List<String> proficienciasArmaduras) {
-        this.proficienciasArmaduras = proficienciasArmaduras;
+    public void setListaProficienciasClasse(List<Proficiencia> listaProficienciasClasse) {
+        this.listaProficienciasClasse = listaProficienciasClasse;
     }
 
     public List<Atributos> getProficienciaSalvaguarda() {
@@ -80,14 +75,6 @@ public class Classe extends AbstractModel{
 
     public void setProficienciaSalvaguarda(List<Atributos> proficienciaSalvaguarda) {
         this.proficienciaSalvaguarda = proficienciaSalvaguarda;
-    }
-
-    public List<String> getProficienciaFerramentas() {
-        return proficienciaFerramentas;
-    }
-
-    public void setProficienciaFerramentas(List<String> proficienciaFerramentas) {
-        this.proficienciaFerramentas = proficienciaFerramentas;
     }
 
     public boolean isConjurador() {

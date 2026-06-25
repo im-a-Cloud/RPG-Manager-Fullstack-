@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, ɵEmptyOutletComponent } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'
 import fa from '@angular/common/locales/fa';
 import th from '@angular/common/locales/th';
@@ -8,7 +8,7 @@ import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'app-criar-ficha-personagem',
-  imports: [CommonModule, FormsModule, ɵEmptyOutletComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './criar-ficha-personagem.html',
   styleUrl: './criar-ficha-personagem.scss',
 })
@@ -103,12 +103,12 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
 
   valorTotalPericia: number = 0;
 
-  forcaPersonagem: number = 0;
-  destrezaPersonagem: number = 0;
-  constituicaoPersonagem: number = 0;
-  inteligenciaPersonagem: number = 0;
-  sabedoriaPersonagem: number = 0;
-  carismaPersonagem: number = 0;
+  forcaPersonagem: number = 10;
+  destrezaPersonagem: number = 10;
+  constituicaoPersonagem: number = 10;
+  inteligenciaPersonagem: number = 10;
+  sabedoriaPersonagem: number = 10;
+  carismaPersonagem: number = 10;
 
   nivelPersonagem: number = 1;
 

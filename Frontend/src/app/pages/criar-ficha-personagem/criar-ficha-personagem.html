@@ -54,7 +54,7 @@
                 name="nivelPersonagem" 
                 required
                 min="1"
-                max="20"
+                max="30"
                 [(ngModel)]="nivelPersonagem"]>
                 <br>
                 <label for="xpPersonagem">XP</label><br>
@@ -79,7 +79,7 @@
                     id="destrezaPersonagem" 
                     name="destrezaPersonagem" 
                     min="1" 
-                    max="20" 
+                    max="30" 
                     [(ngModel)]="destrezaPersonagem"
                     required><br>
                 <label for="bonusDestreza">{{ bonusDestreza }}</label><br>
@@ -89,7 +89,7 @@
                     id="constituicaoPersonagem" 
                     name="constituicaoPersonagem" 
                     min="1" 
-                    max="20" 
+                    max="30" 
                     [(ngModel)]="constituicaoPersonagem"
                     required><br>
                 <label for="bonusConstituicao">{{ bonusConstituicao }}</label><br>
@@ -99,7 +99,7 @@
                     id="inteligenciaPersonagem" 
                     name="inteligenciaPersonagem" 
                     min="1" 
-                    max="20" 
+                    max="30" 
                     [(ngModel)]="inteligenciaPersonagem"
                     required><br>
                 <label for="bonusInteligencia">{{ bonusInteligencia }}</label><br>
@@ -109,7 +109,7 @@
                     id="sabedoriaPersonagem" 
                     name="sabedoriaPersonagem" 
                     min="1" 
-                    max="20" 
+                    max="30" 
                     [(ngModel)]="sabedoriaPersonagem"
                     required><br>
                 <label for="bonusSabedoria">{{ bonusSabedoria }}</label><br>
@@ -119,7 +119,7 @@
                     id="carismaPersonagem" 
                     name="carismaPersonagem" 
                     min="1" 
-                    max="20" 
+                    max="30" 
                     [(ngModel)]="carismaPersonagem"
                     required><br>
                 <label for="bonusCarisma">{{ bonusCarisma }}</label><br>
@@ -211,6 +211,11 @@
                     <label for="vidaPersonagem">Pontos de vida</label>
                     <input type="number" id="vidaPersonagem" name="vidaPersonagem" value="0" required>
                     <small>bônus de CON + dado de vida</small>
+                </div>
+                <div class="campo">
+                    <label for="dadoVidaPersonagem">Dado de vida</label>
+                    <label for="dadoVidaPersonagem">Quantidade = nível</label>
+                    <label for="dadoVidaPersonagem">valor pela classe</label>
                 </div>
             </div>
         <div class="pericias">
@@ -396,6 +401,10 @@
             <span style="margin: 0 3px;"></span>
             <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
         </div>
+            <div class="percepcaoPassiva">
+                <span style="margin: 0 3px; font-size: 18px;">Valor</span>
+                <label style="font-size: 24px; font-weight: bold;">{{ getValorPericia('percepcao') +10}}</label>
+            </div>
         </div>
         <br>
         <!-- PROFICIÊNCIAS -->

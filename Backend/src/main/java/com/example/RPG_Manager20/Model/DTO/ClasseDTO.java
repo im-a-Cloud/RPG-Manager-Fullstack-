@@ -1,8 +1,10 @@
 package com.example.RPG_Manager20.Model.DTO;
 
+import com.example.RPG_Manager20.Model.Entities.Proficiencia;
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,12 +17,11 @@ public record ClasseDTO(
         @Min(value = 6, message = "Dado de vida deve ser no mínimo 6")
         int dadoDeVida,
 
-        List<String> proficienciasArmas,
-        List<String> proficienciasArmaduras,
+        List<Proficiencia> listaProficienciasClasse,
         List<Atributos> proficienciaSalvaguarda,
-        List<String> proficienciaFerramentas,
 
         // Novos campos
+        @JsonProperty("conjurador")  // ← Mapeia o campo JSON
         boolean isConjurador,
 
         Atributos atributoConjuracao,

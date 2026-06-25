@@ -29,8 +29,6 @@ public class PersonagemService {
     @Autowired
     private PersonagemMapper personagemMapper;
 
-    // ===== MÉTODOS PRINCIPAIS (com Request/Response) =====
-
     // Criar personagem
     public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO) {
         // 1. Buscar a classe

@@ -11,17 +11,56 @@ import java.util.List;
 @Table(name = "tb_personagem")
 public class Personagem extends AbstractModel {
 
-    private String nomePersonagem;
-    private int nivelPersonagem;
+    @Column(nullable = false)
+    private String nomePersonagem = "Personagem sem nome";
+    @Column(nullable = false)
+    private int nivelPersonagem = 1;
 
     // Atributos
+    @Column(nullable = false)
+    private int valorForca = 10;
+    @Column(nullable = false)
+    private int valorDestreza = 10;
+    @Column(nullable = false)
+    private int valorConstituicao = 10;
+    @Column(nullable = false)
+    private int valorInteligencia = 10;
+    @Column(nullable = false)
+    private int valorSabedoria = 10;
+    @Column(nullable = false)
+    private int valorCarisma = 10;
 
-    private int valorForca;
-    private int valorDestreza;
-    private int valorConstituicao;
-    private int valorInteligencia;
-    private int valorSabedoria;
-    private int valorCarisma;
+    //Descritivos(não obrigatorios para criar o personagem, inicialmente)
+    @Column(columnDefinition = "TEXT")
+    private String historiaPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String aparenciaPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String ideaisPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String defeitosPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String anotacoesPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String personalidadePersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String racaPersonagem ="";
+    private double pesoPersonagem = 0;
+    private double alturaPersonagem = 0;
+    @Column(columnDefinition = "TEXT")
+    private String escalaPersonagem = "";
+    @Column(columnDefinition = "TEXT")
+    private String alinhamentoPersonagem = "";
+
+    //CA, iniciativa, movimento, dado de vida, pontos de vida
+    @Column(nullable = false)
+    private int caPersonagem = 10;
+    @Column(nullable = false)
+    private int iniciativaPersonagem = this.getValorDestreza();
+    @Column(nullable = false)
+    private int movimentoPersonagem = 9;
+    @Column(nullable = false)
+    private int pontosVidaPersonagem = 10;
 
     //Ligacção com classe, permitindo que um personagem tenha classe
 
@@ -55,6 +94,15 @@ public class Personagem extends AbstractModel {
             inverseJoinColumns = @JoinColumn(name = "habilidade_id")
     )
     private List<Habilidade> habilidadesPersonagem = new ArrayList<>();
+
+    //ligacão com proficiencias
+    @ManyToMany
+    @JoinTable(
+            name = "personagem_proficiencia",
+            joinColumns = @JoinColumn(name = "personagem_id"),
+            inverseJoinColumns = @JoinColumn(name ="proficiencia_id")
+    )
+    private List<Proficiencia> proficienciasPersonagem = new ArrayList<>();
 
 
     public Personagem() {
@@ -200,5 +248,129 @@ public class Personagem extends AbstractModel {
 
     public void setValorCarisma(int valorCarisma) {
         this.valorCarisma = valorCarisma;
+    }
+
+
+    public String getHistoriaPersonagem() {
+        return historiaPersonagem;
+    }
+
+    public void setHistoriaPersonagem(String historiaPersonagem) {
+        this.historiaPersonagem = historiaPersonagem;
+    }
+
+    public String getAparenciaPersonagem() {
+        return aparenciaPersonagem;
+    }
+
+    public void setAparenciaPersonagem(String aparenciaPersonagem) {
+        this.aparenciaPersonagem = aparenciaPersonagem;
+    }
+
+    public String getIdeaisPersonagem() {
+        return ideaisPersonagem;
+    }
+
+    public void setIdeaisPersonagem(String ideaisPersonagem) {
+        this.ideaisPersonagem = ideaisPersonagem;
+    }
+
+    public String getDefeitosPersonagem() {
+        return defeitosPersonagem;
+    }
+
+    public void setDefeitosPersonagem(String defeitosPersonagem) {
+        this.defeitosPersonagem = defeitosPersonagem;
+    }
+
+    public String getAnotacoesPersonagem() {
+        return anotacoesPersonagem;
+    }
+
+    public void setAnotacoesPersonagem(String anotacoesPersonagem) {
+        this.anotacoesPersonagem = anotacoesPersonagem;
+    }
+
+    public String getPersonalidadePersonagem() {
+        return personalidadePersonagem;
+    }
+
+    public void setPersonalidadePersonagem(String personalidadePersonagem) {
+        this.personalidadePersonagem = personalidadePersonagem;
+    }
+
+    public String getRacaPersonagem() {
+        return racaPersonagem;
+    }
+
+    public void setRacaPersonagem(String racaPersonagem) {
+        this.racaPersonagem = racaPersonagem;
+    }
+
+    public double getPesoPersonagem() {
+        return pesoPersonagem;
+    }
+
+    public void setPesoPersonagem(double pesoPersonagem) {
+        this.pesoPersonagem = pesoPersonagem;
+    }
+
+    public double getAlturaPersonagem() {
+        return alturaPersonagem;
+    }
+
+    public void setAlturaPersonagem(double alturaPersonagem) {
+        this.alturaPersonagem = alturaPersonagem;
+    }
+
+    public String getEscalaPersonagem() {
+        return escalaPersonagem;
+    }
+
+    public void setEscalaPersonagem(String escalaPersonagem) {
+        this.escalaPersonagem = escalaPersonagem;
+    }
+
+    public String getAlinhamentoPersonagem() {
+        return alinhamentoPersonagem;
+    }
+
+    public void setAlinhamentoPersonagem(String alinhamentoPersonagem) {
+        this.alinhamentoPersonagem = alinhamentoPersonagem;
+    }
+
+    public int getCaPersonagem() {
+        return caPersonagem;
+    }
+
+    public void setCaPersonagem(int caPersonagem) {
+        this.caPersonagem = caPersonagem;
+    }
+
+    public int getIniciativaPersonagem() {
+        return iniciativaPersonagem;
+    }
+
+    public void setIniciativaPersonagem(int iniciativaPersonagem) {
+        this.iniciativaPersonagem = iniciativaPersonagem;
+    }
+
+    public int getMovimentoPersonagem() {
+        return movimentoPersonagem;
+    }
+
+    public void setMovimentoPersonagem(int movimentoPersonagem) {
+        this.movimentoPersonagem = movimentoPersonagem;
+    }
+
+    public int getQuantidadeDadosVida() {
+        return this.nivelPersonagem;
+    }
+    public int getPontosVidaPersonagem() {
+        return pontosVidaPersonagem;
+    }
+
+    public void setPontosVidaPersonagem(int pontosVidaPersonagem) {
+        this.pontosVidaPersonagem = pontosVidaPersonagem;
     }
 }

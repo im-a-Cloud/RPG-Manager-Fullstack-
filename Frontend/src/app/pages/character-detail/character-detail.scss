@@ -12,7 +12,8 @@ body {
     right: 0;
     overflow: auto;
     padding: 20px;
-    background: cyan;
+    background: #1a1a2e;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* GRID PRINCIPAL com alturas relativas */
@@ -20,132 +21,206 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
-    background: white;
+    padding: 25px;
+    background: #16213e;
     min-height: 100vh;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Container principal do cabeçalho */
 #gridCabeçalho {
-    background-color: red;
+    background: #0f3460;
     display: grid;
     grid-template-areas: 
     'foto conteudoCabeçalho'
     'foto nivelXp';
-    grid-template-columns: auto 1fr;  /* Adicione isso - foto tamanho automático, conteúdo ocupa resto */
-
+    grid-template-columns: auto 1fr;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.conteudoCabeçalho  {
-    display: flex;  /* ESSENCIAL - adicionar esta linha */
-    background-color: red;
-    grid-area:conteudoCabeçalho;
-    gap: 15px;
+.conteudoCabeçalho {
+    display: flex;
+    background: transparent;
+    grid-area: conteudoCabeçalho;
+    gap: 20px;
     padding: 10px;
-    flex-direction: row;  /* Alinha horizontalmente */
+    flex-direction: row;
+    align-items: center;
 }
-.foto{
+
+.foto {
     grid-area: foto;
-  
+    padding: 10px;
 }
+
+.foto img {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.foto img:hover {
+    transform: scale(1.03);
+}
+
 .nivelXp {
     gap: 30px;
-    display: flex;  /* Muda de grid para flex */
-    flex-direction: row;  /* Alinha horizontalmente */
-    background-color: yellow;
-    grid-area:nivelXp;
+    display: flex;
+    flex-direction: row;
+    background: rgba(255, 255, 255, 0.05);
+    grid-area: nivelXp;
     margin-top: 10px;
+    padding: 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .cabeçalho h3 {
     margin: 0;
-    white-space: nowrap;  /* Impede quebra de texto dentro de cada h3 */
-
+    white-space: nowrap;
+    color: #e0e0e0;
+    font-weight: 400;
 }
+
 .nivelXp h3 {
     margin: 0;
+    color: #e0e0e0;
+    font-weight: 400;
 }
-.gridTopo{
-    background-color: forestgreen;
+
+.gridTopo {
+    background: #1a1a2e;
     display: grid;
-    grid-template-columns: 100px 150px 1fr;  /* Adicione isso - foto tamanho automático, conteúdo ocupa resto */
+    grid-template-columns: 100px 150px 1fr;
     grid-template-areas: 
     "atributos bonusProf caVidaIniMov"
     "atributos testesResistencia testesResistencia"
     "atributos listaPericia listaPericia"
-    "percepcaoPassiva percepcaoPassiva percepcaoPassiva"; 
+    "percepcaoPassiva percepcaoPassiva percepcaoPassiva";
+    border-radius: 15px;
+    padding: 20px;
+    gap: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .atributos {
-    background-color: purple;
-    color: white;
+    background: rgba(255, 255, 255, 0.03);
+    color: #e0e0e0;
     text-align: center;
     display: flex;
     flex-direction: column;
     grid-area: atributos;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .bonusProf {
-    background-color: pink;
+    background: rgba(255, 255, 255, 0.03);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     width: auto;
     grid-area: bonusProf;
-
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .testesResistencia {
-    background-color: red;
+    background: rgba(255, 255, 255, 0.03);
     align-items: right;
     text-align: left;
-    width: fit-content;  /* Ajusta ao conteúdo */
+    width: fit-content;
     grid-area: testesResistencia;
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .caVidaIniMov {
-    background-color: orange;
+    background: rgba(255, 255, 255, 0.03);
     grid-area: caVidaIniMov;
-    width: fit-content;  /* Ajusta ao conteúdo */
+    width: fit-content;
     display: flex;
-
+    text-align: center;
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    gap: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .listaPericia {
-    background-color: chartreuse;
+    background: rgba(255, 255, 255, 0.03);
     grid-area: listaPericia;
-    width: 200px
+    width: 200px;
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.percepcaoPassiva{
-    background-color: cyan;
-    grid-area: percepcaoPassiva;
 
+.percepcaoPassiva {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: percepcaoPassiva;
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .inventario {
-    background-color: lightgreen;
+    background: #0f3460;
     display: flex;
-    justify-content: space-between;  /* ou space-around, space-evenly */
-    padding: 20px;
+    justify-content: space-between;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .containerMagias {
-    background-color: lightblue;
+    background: #1a1a2e;
     overflow-y: auto;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .detalhesConjuracao {
-    background-color: palevioletred;
+    background: rgba(255, 255, 255, 0.03);
     display: flex;
     justify-content: space-around;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 20px;
 }
 
 .detalhesConjuracao h3 {
     margin: 0;
+    color: #e0e0e0;
+    font-weight: 400;
 }
 
 /* Elementos extras que não estavam no grid */
-.fotoPersonagem, 
+.fotoPersonagem,
 img,
-h1, 
+h1,
 h3,
 h2,
 .grimorio,
@@ -157,59 +232,85 @@ h2,
 /* Ajuste para títulos */
 h1 {
     font-size: clamp(20px, 4vw, 32px);
+    color: #e0e0e0;
+    font-weight: 300;
+    letter-spacing: 2px;
 }
 
 h2 {
     font-size: clamp(18px, 3vw, 28px);
     text-align: center;
+    color: #e0e0e0;
+    margin-bottom: 20px;
+    font-weight: 300;
+    letter-spacing: 2px;
 }
 
 h3 {
     font-size: clamp(14px, 2vw, 20px);
+    font-weight: 400;
 }
 
-
-.atributos h6, .atributos h3, .atributos h4 {
+.atributos h6,
+.atributos h3,
+.atributos h4 {
     margin: clamp(2px, 0.8vh, 5px) 0;
 }
 
 .atributos h6 {
     font-size: clamp(11px, 1.5vw, 14px);
+    opacity: 0.6;
+    font-weight: 300;
 }
 
 .atributos h3 {
     font-size: clamp(18px, 3vw, 24px);
+    font-weight: 500;
 }
 
 .atributos h4 {
     font-size: clamp(12px, 1.8vw, 16px);
+    font-weight: 300;
 }
 
 /* Estilos das magias */
 .quadrinhoMagiaExpandido {
-    background-color: gold;
+    background: rgba(255, 255, 255, 0.03);
     margin: clamp(3px, 1vh, 8px) 0;
     padding: clamp(5px, 1.5vh, 10px);
     font-size: clamp(10px, 1.5vw, 14px);
-    border-radius: 5px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    color: #e0e0e0;
+}
+
+.quadrinhoMagiaExpandido:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
 }
 
 .nomeMagia {
-    background-color: red;
+    background: #0f3460;
     padding: clamp(5px, 1.5vh, 10px);
     margin: clamp(3px, 1vh, 8px) 0;
     cursor: pointer;
-    border-radius: 3px;
-    transition: transform 0.2s;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nomeMagia:hover {
+    background: #1a4a7a;
     transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .nomeMagia h4 {
     margin: 0;
     font-size: clamp(12px, 1.8vw, 16px);
+    font-weight: 400;
 }
 
 .listaMagias {
@@ -221,9 +322,10 @@ h3 {
 .listaMagiasSeção1,
 .listaMagiasSeção2,
 .listaMagiasSeção3 {
-    background-color: forestgreen;
+    background: rgba(255, 255, 255, 0.02);
     padding: clamp(8px, 2vh, 15px);
-    border-radius: 5px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .listaMagiasSeção1 h3,
@@ -232,6 +334,8 @@ h3 {
     margin: clamp(5px, 1.5vh, 10px) 0;
     font-size: clamp(14px, 2vw, 18px);
     text-align: center;
+    color: #e0e0e0;
+    font-weight: 300;
 }
 
 img {
@@ -245,23 +349,23 @@ img {
     .pagina {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
+        padding: 15px;
     }
-    
+
     .caVidaIniMov {
         flex-direction: column;
         height: auto;
         padding: 10px;
     }
-    
+
     .listaMagias {
         grid-template-columns: 1fr;
     }
-    
+
     .containerMagias {
         grid-row: auto;
     }
-    
-    /* Reorganização em mobile */
+
     .parent-cabeçalho,
     .atributos,
     .bonusProf,
@@ -272,6 +376,17 @@ img {
     .containerMagias,
     .detalhesConjuracao {
         grid-column: 1 / 3;
+    }
+    
+    .gridTopo {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+        "atributos"
+        "bonusProf"
+        "caVidaIniMov"
+        "testesResistencia"
+        "listaPericia"
+        "percepcaoPassiva";
     }
 }
 
@@ -286,29 +401,36 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #0f3460;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #1a4a7a;
 }
-.anotacoes{
-    background-color: cyan;
+
+.anotacoes {
+    background: #0f3460;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .dadosPessoaisPersonagem {
-    background-color: #1a1a2e;
+    background: #1a1a2e;
     padding: clamp(10px, 2vh, 20px);
-    border-radius: 10px;
+    border-radius: 15px;
     margin: clamp(5px, 1vh, 10px) 0;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .idadeContainer,
@@ -317,38 +439,38 @@ html {
 .tamanhoContainer,
 .generoContainer,
 .alinhamentoContainer {
-    background-color: #2a2a4e;
+    background: rgba(255, 255, 255, 0.02);
     padding: clamp(10px, 2vh, 15px);
-    border-radius: 8px;
-    transition: transform 0.2s, background-color 0.2s;
-    /* Alinhamento vertical */
+    border-radius: 10px;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .idadeContainer {
-    border-left: 4px solid #FF6B6B;
+    border-left: 3px solid #4a6fa5;
 }
 
 .alturaContainer {
-    border-left: 4px solid #4ECDC4;
+    border-left: 3px solid #4a6fa5;
 }
 
 .pesoContainer {
-    border-left: 4px solid #45B7D1;
+    border-left: 3px solid #4a6fa5;
 }
 
 .tamanhoContainer {
-    border-left: 4px solid #96CEB4;
+    border-left: 3px solid #4a6fa5;
 }
 
 .generoContainer {
-    border-left: 4px solid #FFEAA7;
+    border-left: 3px solid #4a6fa5;
 }
 
 .alinhamentoContainer {
-    border-left: 4px solid #DDA0DD;
+    border-left: 3px solid #4a6fa5;
 }
 
 .idadeContainer:hover,
@@ -357,7 +479,7 @@ html {
 .tamanhoContainer:hover,
 .generoContainer:hover,
 .alinhamentoContainer:hover {
-    background-color: #3a3a5e;
+    background: rgba(255, 255, 255, 0.04);
     transform: translateX(5px);
 }
 
@@ -367,8 +489,8 @@ html {
 .tamanhoContainer label,
 .generoContainer label,
 .alinhamentoContainer label {
-    color: #ffd700;
-    font-weight: bold;
+    color: #8ab4f8;
+    font-weight: 500;
     font-size: clamp(12px, 1.8vw, 14px);
     min-width: 100px;
     margin-bottom: 0;
@@ -382,13 +504,13 @@ html {
 .generoContainer input,
 .alinhamentoContainer input {
     flex: 1;
-    padding: 8px 10px;
-    background-color: #1a1a2e;
-    border: 1px solid #4a4a6a;
-    border-radius: 5px;
-    color: white;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    color: #e0e0e0;
     font-family: inherit;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
@@ -399,7 +521,9 @@ html {
 .generoContainer input:focus,
 .alinhamentoContainer input:focus {
     outline: none;
-    border-color: #ffd700;
+    border-color: #4a6fa5;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 20px rgba(74, 111, 165, 0.1);
 }
 
 @media (min-width: 600px) {
@@ -417,26 +541,37 @@ html {
         gap: 15px;
     }
 }
-.anotacoesInferior{
-    background-color: aquamarine;
+
+.anotacoesInferior {
+    background: #1a1a2e;
     display: grid;
-    grid-template-columns: 30% auto; 
+    grid-template-columns: 30% auto;
     grid-template-areas: 
     "aparenciaContainer ideaisContainer"
     "aparenciaContainer defeitosContainer"
     "historiaContainer anotacoesContainer"
     "historiaContainer personalidadeContainer";
     gap: 15px;
-    padding: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.historiaContainer{
-    background-color: chartreuse;
-    grid-area: historiaContainer;
 
+.historiaContainer {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: historiaContainer;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.aparenciaContainer{
-    background-color: #ffd700;
+
+.aparenciaContainer {
+    background: rgba(255, 255, 255, 0.03);
     grid-area: aparenciaContainer;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .historiaContainer textarea,
@@ -447,25 +582,115 @@ html {
     font-size: 16px;
     line-height: 1.5;
     resize: vertical;
-    border: 2px solid #4a4a6a;
-    border-radius: 8px;
-    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    color: #e0e0e0;
     font-family: inherit;
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.3s ease;
 }
 
-.personalidadeContainer{
-    background-color: blueviolet;
-    grid-area:personalidadeContainer
+.historiaContainer textarea:focus,
+.aparenciaContainer textarea:focus {
+    outline: none;
+    border-color: #4a6fa5;
+    box-shadow: 0 0 20px rgba(74, 111, 165, 0.1);
 }
-.ideaisContainer{
-    background-color: cornflowerblue;
-    grid-area:ideaisContainer
+
+.personalidadeContainer {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: personalidadeContainer;
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.defeitosContainer{
-    background-color: darkgreen;
-    grid-area:defeitosContainer
+
+.ideaisContainer {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: ideaisContainer;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.anotacoesContainer{
-    background-color: hotpink;
-    grid-area:anotacoesContainer
+
+.defeitosContainer {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: defeitosContainer;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.anotacoesContainer {
+    background: rgba(255, 255, 255, 0.03);
+    grid-area: anotacoesContainer;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos adicionais para containers de texto */
+.personalidadeContainer textarea,
+.ideaisContainer textarea,
+.defeitosContainer textarea,
+.anotacoesContainer textarea {
+    width: 90%;
+    min-height: 60px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    color: #e0e0e0;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.personalidadeContainer textarea:focus,
+.ideaisContainer textarea:focus,
+.defeitosContainer textarea:focus,
+.anotacoesContainer textarea:focus {
+    outline: none;
+    border-color: #4a6fa5;
+    box-shadow: 0 0 20px rgba(74, 111, 165, 0.1);
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pagina {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Títulos dos containers */
+.historiaContainer h3,
+.aparenciaContainer h3,
+.personalidadeContainer h3,
+.ideaisContainer h3,
+.defeitosContainer h3,
+.anotacoesContainer h3 {
+    color: #8ab4f8;
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+/* Labels dos containers de texto */
+.personalidadeContainer label,
+.ideaisContainer label,
+.defeitosContainer label,
+.anotacoesContainer label {
+    color: #8ab4f8;
+    font-weight: 300;
+    display: block;
+    margin-bottom: 5px;
 }
