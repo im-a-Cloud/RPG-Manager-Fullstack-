@@ -3,11 +3,13 @@ package com.example.RPG_Manager20.Model.DTO.Response;
 import com.example.RPG_Manager20.Model.DTO.HabilidadeDTO;
 import com.example.RPG_Manager20.Model.DTO.ItemDTO;
 import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
+import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
 import com.example.RPG_Manager20.Model.Entities.Classe;
+import com.example.RPG_Manager20.Model.Enums.TipoProficiencia;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +23,25 @@ public record PersonagemResponseDTO(
         MagiaInfo magia,
         List<ItemDTO> inventario,
         List<PericiaPersonagemDTO> pericias,
-        List<HabilidadeDTO> habilidades
+        List<HabilidadeDTO> habilidades,
+        List<ProficienciaDTO> proficiencia,
+
+        String historiaPersonagem,
+        String aparenciaPersonagem,
+        String ideaisPersonagem,
+        String defeitosPersonagem,
+        String anotacoesPersonagem,
+        String personalidadePersonagem,
+        String racaPersonagem,
+        String escalaPersonagem,
+        String alinhamentoPersonagem,
+        double pesoPersonagem,
+        double alturaPersonagem,
+        // Combate
+        int caPersonagem,
+        int iniciativaPersonagem,
+        int movimentoPersonagem,
+        int pontosVidaPersonagem
 ) {
 
     public record ClasseInfo(
@@ -54,6 +74,11 @@ public record PersonagemResponseDTO(
             int cd,
             int ataque
     ) {}
+
+    public record ProficienciaInfo(
+            TipoProficiencia tipoProficiencia,
+            String listaProficiencias
+    ){}
 
     public static PersonagemResponseDTO from(Personagem personagem, Classe classe) {
         int nivel = personagem.getNivelPersonagem();
@@ -106,6 +131,13 @@ public record PersonagemResponseDTO(
                 ))
                 .collect(Collectors.toList());
 
+        List<ProficienciaDTO> proficienciaDTO = personagem.getProficienciasPersonagem().stream()
+                .map(proficiencia -> new ProficienciaDTO(
+                        proficiencia.getTipoProficiencia(),
+                        proficiencia.getListaProficiencias()
+                ))
+                .collect(Collectors.toList());
+
         return new PersonagemResponseDTO(
                 personagem.getId(),
                 personagem.getNomePersonagem(),
@@ -129,7 +161,23 @@ public record PersonagemResponseDTO(
                 new MagiaInfo(bonusProficiencia, cd, ataque),
                 inventarioDTO,
                 periciasDTO,
-                habilidadesDTO
+                habilidadesDTO,
+                proficienciaDTO,
+                personagem.getHistoriaPersonagem(),
+                personagem.getAparenciaPersonagem(),
+                personagem.getIdeaisPersonagem(),
+                personagem.getDefeitosPersonagem(),
+                personagem.getAnotacoesPersonagem(),
+                personagem.getPersonalidadePersonagem(),
+                personagem.getRacaPersonagem(),
+                personagem.getEscalaPersonagem(),
+                personagem.getAlinhamentoPersonagem(),
+                personagem.getPesoPersonagem(),
+                personagem.getAlturaPersonagem(),
+                personagem.getCaPersonagem(),
+                personagem.getIniciativaPersonagem(),
+                personagem.getMovimentoPersonagem(),
+                personagem.getPontosVidaPersonagem()
         );
     }
 }

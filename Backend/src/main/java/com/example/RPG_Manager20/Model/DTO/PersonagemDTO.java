@@ -32,7 +32,28 @@ public record PersonagemDTO(
 
         @Min(value = 1, message = "Carisma deve ser entre 1 e 20")
         @Max(value = 20, message = "Carisma deve ser entre 1 e 20")
-        int valorCarisma) {
+        int valorCarisma,
+
+        int caPersonagem,
+        int iniciativaPersonagem,
+        int movimentoPersonagem,
+        int pontosVidaPersonagem,
+
+        // Campos de texto (opcionais)
+        String historiaPersonagem,
+        String aparenciaPersonagem,
+        String ideaisPersonagem,
+        String defeitosPersonagem,
+        String anotacoesPersonagem,
+        String personalidadePersonagem,
+        String racaPersonagem,
+        String escalaPersonagem,
+        String alinhamentoPersonagem,
+
+        // Campos numéricos
+        Double pesoPersonagem,
+        Double alturaPersonagem
+) {
     // Métodos auxiliares para calcular bônus
     public int getBonusForca() {
         return (valorForca - 10) / 2;

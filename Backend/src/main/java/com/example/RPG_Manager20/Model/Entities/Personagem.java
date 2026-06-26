@@ -373,4 +373,12 @@ public class Personagem extends AbstractModel {
     public void setPontosVidaPersonagem(int pontosVidaPersonagem) {
         this.pontosVidaPersonagem = pontosVidaPersonagem;
     }
+
+    public List<Proficiencia> getProficienciasPersonagem() {
+        return proficienciasPersonagem;
+    }
+
+    public void setProficienciasPersonagem(List<Proficiencia> proficienciasPersonagem) {
+        this.proficienciasPersonagem = proficienciasPersonagem;
+    }
 }
