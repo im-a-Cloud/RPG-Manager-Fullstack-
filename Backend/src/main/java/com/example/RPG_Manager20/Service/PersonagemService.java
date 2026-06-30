@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,8 @@ public class PersonagemService {
         // 2. Converter Request → Entity
         Personagem personagem = personagemMapper.toEntity(requestDTO);
         personagem.setClassePersonagem(classe);
+
+        personagem.setProficienciasPersonagem(new ArrayList<>(classe.getListaProficienciasClasse()));
 
         // 3. Salvar no banco
         personagem = personagemRepository.save(personagem);

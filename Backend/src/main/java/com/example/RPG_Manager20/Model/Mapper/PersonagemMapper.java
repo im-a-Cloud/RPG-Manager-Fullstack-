@@ -11,8 +11,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PersonagemMapper {
 
-
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "proficienciasPersonagem", ignore = true)
     @Mapping(target = "classePersonagem", ignore = true)
     Personagem toEntity(PersonagemDTO dto);
 
@@ -26,7 +26,6 @@ public interface PersonagemMapper {
     PersonagemDTO toDto(Personagem entity);
 
     PersonagemResponseDTO toResponseDto(Personagem entity);
-
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "classePersonagem", ignore = true)

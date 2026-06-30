@@ -44,4 +44,7 @@ public record ClasseDTO(
     public boolean isTerciarioConjurador() {
         return tipoConjuracao == TipoConjuracao.TERCIARIO;
     }
+
+    public static record AdicionarProficienciaRequestDTO() {
+    }
 }

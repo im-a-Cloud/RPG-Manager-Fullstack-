@@ -40,17 +40,6 @@ public class ProficienciaController {
         return new ResponseEntity<>(proficienciaMapper.toDto(savedProficiencia), HttpStatus.CREATED);
     }
 
-    // POST - Criar proficiência (endpoint alternativo)
-    @PostMapping("/criar")
-    public ResponseEntity<ProficienciaDTO> novaProf(@Valid @RequestBody ProficienciaDTO proficienciaDTO) {
-        System.out.println("Recebido: " + proficienciaDTO);
-
-        Proficiencia proficiencia = proficienciaMapper.toEntity(proficienciaDTO);
-        Proficiencia savedProficiencia = proficienciaService.save(proficiencia);
-
-        return new ResponseEntity<>(proficienciaMapper.toDto(savedProficiencia), HttpStatus.CREATED);
-    }
-
     // GET - Listar todas
     @GetMapping
     public ResponseEntity<List<ProficienciaDTO>> listarTodas() {

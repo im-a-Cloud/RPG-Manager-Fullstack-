@@ -3,12 +3,18 @@ package com.example.RPG_Manager20.Model.Entities;
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "tb_personagem")
+@Data  // ← ADICIONE (cria getters, setters, toString, equals, hashCode)
+@AllArgsConstructor  // ← ADICIONE (construtor com todos os campos)
 public class Personagem extends AbstractModel {
 
     @Column(nullable = false)
