@@ -7,5 +7,5 @@ public enum TipoItem {
         FERRAMENTA,
         ITEM_MAGICO,
         TESOURO,
-        MISCELLANEOUS
+        VARIADOS
 }

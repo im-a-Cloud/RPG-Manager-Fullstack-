@@ -19,8 +19,6 @@ public interface HabilidadeMapper {
     HabilidadeDTO toDto(Habilidade entity);
 
     HabilidadeResponseDTO toResponseDto(Habilidade entity);
-
-    // Atualizar Entity existente com dados do DTO (para PUT/PATCH)
     @Mapping(target = "id", ignore = true)
     void updateEntity(@MappingTarget Habilidade target, HabilidadeDTO source);
 }

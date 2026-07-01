@@ -62,7 +62,7 @@ public class Personagem extends AbstractModel {
     @Column(nullable = false)
     private int caPersonagem = 10;
     @Column(nullable = false)
-    private int iniciativaPersonagem = this.getValorDestreza();
+    private int iniciativaPersonagem = 0;
     @Column(nullable = false)
     private int movimentoPersonagem = 9;
     @Column(nullable = false)
@@ -255,7 +255,6 @@ public class Personagem extends AbstractModel {
     public void setValorCarisma(int valorCarisma) {
         this.valorCarisma = valorCarisma;
     }
-
 
     public String getHistoriaPersonagem() {
         return historiaPersonagem;

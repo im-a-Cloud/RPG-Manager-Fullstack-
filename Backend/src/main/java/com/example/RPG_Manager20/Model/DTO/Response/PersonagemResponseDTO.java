@@ -10,6 +10,7 @@ import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
 import com.example.RPG_Manager20.Model.Entities.Classe;
 import com.example.RPG_Manager20.Model.Enums.TipoProficiencia;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,10 +38,10 @@ public record PersonagemResponseDTO(
         String alinhamentoPersonagem,
         double pesoPersonagem,
         double alturaPersonagem,
+        @JsonProperty("ca") int ca,
+        @JsonProperty("iniciativa") int iniciativa,
+        @JsonProperty("movimento") int movimento,
         // Combate
-        int caPersonagem,
-        int iniciativaPersonagem,
-        int movimentoPersonagem,
         int pontosVidaPersonagem
 ) {
 
@@ -61,11 +62,22 @@ public record PersonagemResponseDTO(
             int sabedoria,
             int carisma
     ) {
+        @JsonProperty("bonusForca")
         public int getBonusForca() { return (forca - 10) / 2; }
+
+        @JsonProperty("bonusDestreza")
         public int getBonusDestreza() { return (destreza - 10) / 2; }
+
+        @JsonProperty("bonusConstituicao")
         public int getBonusConstituicao() { return (constituicao - 10) / 2; }
+
+        @JsonProperty("bonusInteligencia")
         public int getBonusInteligencia() { return (inteligencia - 10) / 2; }
+
+        @JsonProperty("bonusSabedoria")
         public int getBonusSabedoria() { return (sabedoria - 10) / 2; }
+
+        @JsonProperty("bonusCarisma")
         public int getBonusCarisma() { return (carisma - 10) / 2; }
     }
 
@@ -84,6 +96,11 @@ public record PersonagemResponseDTO(
         int nivel = personagem.getNivelPersonagem();
         int bonusProficiencia = ((nivel + 3) / 4) + 1;
 
+        int bonusDestreza = (personagem.getValorDestreza() - 10) / 2;
+        int ca = 10 + bonusDestreza;
+        int iniciativa = bonusDestreza;
+
+        int movimento = 9;
         int cd = 0;
         int ataque = 0;
 
@@ -116,7 +133,6 @@ public record PersonagemResponseDTO(
                 ))
                 .collect(Collectors.toList());
 
-        // ← Usando o PericiaPersonagemDTO
         List<PericiaPersonagemDTO> periciasDTO = personagem.getPericiasPersonagem().stream()
                 .map(pp -> PericiaPersonagemDTO.from(pp, personagem, bonusProficiencia))
                 .collect(Collectors.toList());
@@ -174,9 +190,9 @@ public record PersonagemResponseDTO(
                 personagem.getAlinhamentoPersonagem(),
                 personagem.getPesoPersonagem(),
                 personagem.getAlturaPersonagem(),
-                personagem.getCaPersonagem(),
-                personagem.getIniciativaPersonagem(),
-                personagem.getMovimentoPersonagem(),
+                ca,
+                iniciativa,
+                movimento,
                 personagem.getPontosVidaPersonagem()
         );
     }
