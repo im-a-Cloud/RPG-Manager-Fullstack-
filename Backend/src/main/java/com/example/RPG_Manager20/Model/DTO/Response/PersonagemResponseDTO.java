@@ -95,11 +95,9 @@ public record PersonagemResponseDTO(
     public static PersonagemResponseDTO from(Personagem personagem, Classe classe) {
         int nivel = personagem.getNivelPersonagem();
         int bonusProficiencia = ((nivel + 3) / 4) + 1;
-
         int bonusDestreza = (personagem.getValorDestreza() - 10) / 2;
         int ca = 10 + bonusDestreza;
         int iniciativa = bonusDestreza;
-
         int movimento = 9;
         int cd = 0;
         int ataque = 0;

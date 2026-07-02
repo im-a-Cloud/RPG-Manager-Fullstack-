@@ -80,6 +80,10 @@ public class PersonagemService {
         personagemExistente.setValorInteligencia(requestDTO.valorInteligencia());
         personagemExistente.setValorSabedoria(requestDTO.valorSabedoria());
         personagemExistente.setValorCarisma(requestDTO.valorCarisma());
+        personagemExistente.setCaPersonagem(requestDTO.ca());
+        personagemExistente.setIniciativaPersonagem(requestDTO.iniciativa());
+        personagemExistente.setMovimentoPersonagem(requestDTO.movimento());
+        personagemExistente.setPontosVidaPersonagem(requestDTO.pontosVida());
 
         // 3. Se a classe mudou, atualizar
         Classe classe = personagemExistente.getClassePersonagem();
@@ -103,8 +107,6 @@ public class PersonagemService {
         Personagem personagem = findById(id);
         personagemRepository.delete(personagem);
     }
-
-    // ===== MÉTODOS LEGADOS (para compatibilidade) =====
 
     public Personagem save(Personagem personagem) {
         return personagemRepository.save(personagem);
