@@ -17,7 +17,10 @@ import com.example.RPG_Manager20.Service.PersonagemMagiaService;
 import com.example.RPG_Manager20.Service.PersonagemProficienciaService;
 import com.example.RPG_Manager20.Service.PersonagemService;
 import com.example.RPG_Manager20.Service.ProficienciaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/personagem")
+@RequiredArgsConstructor
+@Tag(name = "Personagens", description = "API de gerenciamento de personagens")
 public class PersonagemController {
 
     @Autowired
@@ -48,24 +53,28 @@ public class PersonagemController {
     private ProficienciaMapper proficienciaMapper;
 
     @PostMapping("/criar")
+    @Operation(summary = "Criar novo personagem")
     public ResponseEntity<PersonagemResponseDTO> criar(@Valid @RequestBody PersonagemRequestDTO requestDTO) {
         PersonagemResponseDTO response = personagemService.criarPersonagem(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar personagem por ID")
     public ResponseEntity<PersonagemResponseDTO> buscarPorId(@PathVariable Long id) {
         PersonagemResponseDTO response = personagemService.buscarPersonagemPorId(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/listar")
+    @Operation(summary = "Listar todos os personagens")
     public ResponseEntity<List<PersonagemSummaryDTO>> listarTodos() {
         List<PersonagemSummaryDTO> lista = personagemService.listarPersonagens();
         return ResponseEntity.ok(lista);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar personagem")
     public ResponseEntity<PersonagemResponseDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody PersonagemRequestDTO requestDTO) {
