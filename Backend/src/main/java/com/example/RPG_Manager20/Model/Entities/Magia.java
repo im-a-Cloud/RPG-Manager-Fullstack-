@@ -31,7 +31,7 @@ public class Magia extends AbstractModel{
     @ElementCollection
     @CollectionTable(name = "magia_tags", joinColumns = @JoinColumn(name = "magia_id"))
     @Column(name = "tag")
-    private List<String> tags;
+    private List<String> tags; //tags para fazer pesquisa no Json, geralmente classes que podem usar, tipo de dano, etc.
 
     private String type;
 

@@ -7,4 +7,4 @@ public enum RaridadeItem {
     MUITO_RARO,
     LENDARIO,
     ARTEFATO
-    }
+}

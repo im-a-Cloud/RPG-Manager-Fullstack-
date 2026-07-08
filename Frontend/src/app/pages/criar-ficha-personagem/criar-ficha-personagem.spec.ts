@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CriarFichaPersonagemComponent } from './criar-ficha-personagem.component';
 
 describe('CriarFichaPersonagem', () => {

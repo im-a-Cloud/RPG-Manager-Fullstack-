@@ -1,50 +1,89 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'
-import fa from '@angular/common/locales/fa';
-import th from '@angular/common/locales/th';
-import { isNgTemplate } from '@angular/compiler';
+import { FormsModule } from '@angular/forms';
+import { Personagem } from '../../models/personagem';
+import { Pericia } from '../../models/pericia';
+import { Proficiencia } from '../../models/proficiencia';
+import { Habilidade } from '../../models/habilidade';
+import { Magia } from '../../models/magia';
+import { Item } from '../../models/item';
+import { Classe } from '../../models/classe';
+
+import { RpgService } from '../../core/services/rpg.service';
 
 @Component({
   selector: 'app-criar-ficha-personagem',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './criar-ficha-personagem.html',
   styleUrl: './criar-ficha-personagem.scss',
 })
 export class CriarFichaPersonagemComponent implements OnInit {
+
+  private rpgService = inject(RpgService);
+
   id: string | null = null;
+
   imagemPreview: string | null = null;
-  nomeArquivo: string = '';
-  visivel: {[key: string]: boolean} = {
+  nomeArquivo = '';
+
+  visivel: { [key: string]: boolean } = {
     addProficiencia: false,
     addMagia: false,
     addItem: false,
-    addHabilidade: false 
+    addHabilidade: false
   };
- listaPericias = [
-  'acrobacia', 'adestrarAnimais', 'arcanismo', 'atletismo',
-  'enganacao', 'historia', 'intuicao', 'intimidacao',
-  'investigacao', 'medicina', 'natureza', 'percepcao',
-  'atuacao', 'persuacao', 'religiao', 'prestidigitacao',
-  'furtividade', 'sobrevivencia'
-];
 
-pericias: { [key: string]: boolean } = Object.fromEntries(
-  this.listaPericias.map(p => [p, false])
-);
-
-valoresPericias: { [key: string]: number } = Object.fromEntries(
-  this.listaPericias.map(p => [p, 0])
-);
+  listaPericias = [
+    'acrobacia',
+    'adestrarAnimais',
+    'arcanismo',
+    'atletismo',
+    'enganacao',
+    'historia',
+    'intuicao',
+    'intimidacao',
+    'investigacao',
+    'medicina',
+    'natureza',
+    'percepcao',
+    'atuacao',
+    'persuacao',
+    'religiao',
+    'prestidigitacao',
+    'furtividade',
+    'sobrevivencia'
+  ];
 
   periciasPorAtributo = {
     forca: ['atletismo'],
     destreza: ['acrobacia', 'prestidigitacao', 'furtividade'],
-    inteligencia: ['arcanismo', 'historia', 'investigacao', 'natureza', 'religiao'],
-    sabedoria: ['adestrarAnimais', 'intuicao', 'medicina', 'percepcao', 'sobrevivencia'],
-    carisma: ['enganacao', 'intimidacao', 'atuacao', 'persuacao']
+    inteligencia: [
+      'arcanismo',
+      'historia',
+      'investigacao',
+      'natureza',
+      'religiao'
+    ],
+    sabedoria: [
+      'adestrarAnimais',
+      'intuicao',
+      'medicina',
+      'percepcao',
+      'sobrevivencia'
+    ],
+    carisma: [
+      'enganacao',
+      'intimidacao',
+      'atuacao',
+      'persuacao'
+    ]
   };
+
+  pericias: { [key: string]: boolean } = {};
+
+  valoresPericias: { [key: string]: number } = {};
+
   resistencias: { [key: string]: boolean } = {
     forca: false,
     destreza: false,
@@ -54,6 +93,15 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
     carisma: false
   };
 
+  forcaPersonagem = 10;
+  destrezaPersonagem = 10;
+  constituicaoPersonagem = 10;
+  inteligenciaPersonagem = 10;
+  sabedoriaPersonagem = 10;
+  carismaPersonagem = 10;
+
+  nivelPersonagem = 1;
+
   habilidades: any[] = [];
 
   novaHabilidade = {
@@ -61,29 +109,32 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
     origem: '',
     descricao: ''
   };
-  proficiencias: any[]=[];
 
-  novaProficiencia ={
+  proficiencias: any[] = [];
+
+  novaProficiencia = {
     tipoProfPersonagem: '',
     listaProficiencias: ''
   };
 
-  inventario: any [] =[];
+  inventario: any[] = [];
+
   itemSelecionado: any = null;
 
-  novoItem={
+  novoItem = {
     nomeItem: '',
-    raridadeItem:'',
-    quantidadeItem:'',
+    raridadeItem: '',
+    quantidadeItem: '',
     pesoItem: '',
-    tipoItem:'',
-    descricaoItem:''
-  }
+    tipoItem: '',
+    descricaoItem: ''
+  };
 
-  magias: any [] = [];
+  magias: any[] = [];
+
   magiaSelecionada: any = null;
 
- novaMagia = {
+  novaMagia = {
     nomeMagia: '',
     nivelMagia: '0',
     tempoConjuracaoMagia: '',
@@ -101,206 +152,227 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
     descricaoMagia: ''
   };
 
-  valorTotalPericia: number = 0;
+  constructor() {
 
-  forcaPersonagem: number = 10;
-  destrezaPersonagem: number = 10;
-  constituicaoPersonagem: number = 10;
-  inteligenciaPersonagem: number = 10;
-  sabedoriaPersonagem: number = 10;
-  carismaPersonagem: number = 10;
+    const todasPericias =
+      Object.values(this.periciasPorAtributo).flat();
 
-  nivelPersonagem: number = 1;
+    this.pericias =
+      Object.fromEntries(
+        todasPericias.map(p => [p, false])
+      );
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-    
-  ) {
-    const todasPericias = Object.values(this.periciasPorAtributo).flat();
-    this.pericias = Object.fromEntries(todasPericias.map(p => [p, false]));
-    this.valoresPericias = Object.fromEntries(todasPericias.map(p => [p, 0]));
+    this.valoresPericias =
+      Object.fromEntries(
+        todasPericias.map(p => [p, 0])
+      );
   }
 
-  ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
-    console.log('ID do personagem:', this.id);
+  ngOnInit(): void {
+
   }
 
-  onSelectedFile(event: any) {
+  get bonusForca() {
+    return this.rpgService.calcularBonusAtributo(this.forcaPersonagem);
+  }
+
+  get bonusDestreza() {
+    return this.rpgService.calcularBonusAtributo(this.destrezaPersonagem);
+  }
+
+  get bonusConstituicao() {
+    return this.rpgService.calcularBonusAtributo(this.constituicaoPersonagem);
+  }
+
+  get bonusInteligencia() {
+    return this.rpgService.calcularBonusAtributo(this.inteligenciaPersonagem);
+  }
+
+  get bonusSabedoria() {
+    return this.rpgService.calcularBonusAtributo(this.sabedoriaPersonagem);
+  }
+
+  get bonusCarisma() {
+    return this.rpgService.calcularBonusAtributo(this.carismaPersonagem);
+  }
+
+  get bonusProficiencia() {
+    return this.rpgService.calcularBonusProficiencia(this.nivelPersonagem);
+  }
+
+  getBonusAtributo(atributo: string) {
+    return this.rpgService.getBonusAtributo(
+      atributo,
+      {
+        forca: this.forcaPersonagem,
+        destreza: this.destrezaPersonagem,
+        constituicao: this.constituicaoPersonagem,
+        inteligencia: this.inteligenciaPersonagem,
+        sabedoria: this.sabedoriaPersonagem,
+        carisma: this.carismaPersonagem
+      }
+    );
+  }
+
+  getValorPericia(nome: string) {
+    return this.rpgService.getValorPericia(
+      nome,
+      this.pericias,
+      this.nivelPersonagem,
+      {
+        forca: this.forcaPersonagem,
+        destreza: this.destrezaPersonagem,
+        constituicao: this.constituicaoPersonagem,
+        inteligencia: this.inteligenciaPersonagem,
+        sabedoria: this.sabedoriaPersonagem,
+        carisma: this.carismaPersonagem
+      },
+      this.periciasPorAtributo
+    );
+  }
+
+  getTesteResistencia(atributo: string) {
+    return this.rpgService.getTesteResistencia(
+      atributo,
+      this.resistencias,
+      this.nivelPersonagem,
+      {
+        forca: this.forcaPersonagem,
+        destreza: this.destrezaPersonagem,
+        constituicao: this.constituicaoPersonagem,
+        inteligencia: this.inteligenciaPersonagem,
+        sabedoria: this.sabedoriaPersonagem,
+        carisma: this.carismaPersonagem
+      }
+    );
+
+
+  }
+    onSelectedFile(event: any): void {
+
     const file = event.target.files[0];
-    
+
     if (file) {
+
       this.nomeArquivo = file.name;
-      
+
       const reader = new FileReader();
+
       reader.onload = (e: any) => {
         this.imagemPreview = e.target.result;
-        console.log('Imagem carregada com sucesso!'); // Debug
       };
+
       reader.readAsDataURL(file);
-    } else {
-      console.log('Nenhum arquivo selecionado');
     }
+
   }
 
-  removerImagem() {
+  removerImagem(): void {
+
     this.imagemPreview = null;
     this.nomeArquivo = '';
-    const fileInput = document.getElementById('imagemPersonagem') as HTMLInputElement;
+
+    const fileInput = document.getElementById(
+      'imagemPersonagem'
+    ) as HTMLInputElement;
 
     if (fileInput) {
       fileInput.value = '';
     }
-    console.log('Imagem removida'); // Debug
+
   }
 
-  toggleSecao(secao: string){
+  toggleSecao(secao: string): void {
     this.visivel[secao] = !this.visivel[secao];
   }
 
-  mostrarSecao(secao: string){
+  mostrarSecao(secao: string): void {
     this.visivel[secao] = true;
   }
 
-  esconderSecao(secao: string){
+  esconderSecao(secao: string): void {
     this.visivel[secao] = false;
   }
 
-  calcularBonusAtributo(valor: number): number{
-    return Math.floor((valor - 10)/2);
+  voltar(): void {
+
+    // Depois substituímos pelo Router quando
+    // você terminar a navegação da aplicação.
+
+    window.history.back();
+
   }
 
-  get bonusForca(): number{
-    return this.calcularBonusAtributo(this.forcaPersonagem);
-  }
-  get bonusDestreza(): number{
-    return this.calcularBonusAtributo(this.destrezaPersonagem);
-  }
-  get bonusConstituicao(): number{
-    return this.calcularBonusAtributo(this.constituicaoPersonagem);
-  }
-  get bonusInteligencia(): number{
-    return this.calcularBonusAtributo(this.inteligenciaPersonagem);
-  }
-  get bonusSabedoria(): number{
-    return this.calcularBonusAtributo(this.sabedoriaPersonagem);
-  }
-  get bonusCarisma(): number{
-    return this.calcularBonusAtributo(this.carismaPersonagem);
-  }
+  adicionarHabilidade(): void {
 
-  calcularBonusProficiencia(valor: number):number{
-    return Math.floor((valor - 1)/4) +2; 
-  }
+    if (
+      this.novaHabilidade.nome.trim() &&
+      this.novaHabilidade.origem.trim()
+    ) {
 
-  getAtributoPorPericia(pericia: string): string{
-    for (const[atributo, pericias] of Object.entries(this.periciasPorAtributo)){
-      if(pericias.includes(pericia)){
-        return atributo;
-      }
-    }
-    return '';
-  }
-
-  getBonusAtributo(atributo: string): number {
-    switch(atributo) {
-      case 'forca': return this.calcularBonusAtributo(this.forcaPersonagem);
-      case 'destreza': return this.calcularBonusAtributo(this.destrezaPersonagem);
-      case 'constituicao': return this.calcularBonusAtributo(this.constituicaoPersonagem);
-      case 'inteligencia': return this.calcularBonusAtributo(this.inteligenciaPersonagem);
-      case 'sabedoria': return this.calcularBonusAtributo(this.sabedoriaPersonagem);
-      case 'carisma': return this.calcularBonusAtributo(this.carismaPersonagem);
-      default: return 0;
-    }
-  }
-
-  getValorPericia(nome: string):number{
-    const atributo = this.getAtributoPorPericia(nome);
-    const bonusAtributo = this.getBonusAtributo(atributo);
-
-    if(this.pericias[nome]){
-      return bonusAtributo + this.calcularBonusProficiencia(this.nivelPersonagem);
-    }
-    return bonusAtributo;
-  }
-
-  get bonusProficiencia():number{
-    return this.calcularBonusProficiencia(this.nivelPersonagem);
-  }
-
-  getTesteResistencia(atributo:string):number{
-    const bonusAtributo = this.getBonusAtributo(atributo);
-    
-    if(this.resistencias[atributo]){
-    return bonusAtributo + this.calcularBonusProficiencia(this.nivelPersonagem);
-    }
-    return bonusAtributo;
-  }
-
-  voltar() {
-    this.router.navigate(['/characters']);
-  }
-
-  adicionarHabilidade(){
-    if(this.novaHabilidade.nome.trim() && this.novaHabilidade.origem.trim()){
       this.habilidades.push({
+
         nome: this.novaHabilidade.nome,
         origem: this.novaHabilidade.origem,
-        descricao: this.novaHabilidade.descricao || 'Sem descrição'
+        descricao:
+          this.novaHabilidade.descricao || 'Sem descrição'
+
       });
+
       this.novaHabilidade = {
+
         nome: '',
         origem: '',
         descricao: ''
+
       };
-    }else{
-      alert('Por favor, preencha os campos de nome e origem');
+
+    } else {
+
+      alert('Preencha Nome e Origem da habilidade.');
+
     }
+
   }
- adicionarProficiencia() {
-    // Verifica se os campos estão preenchidos
-    if (this.novaProficiencia.tipoProfPersonagem.trim() && 
-        this.novaProficiencia.listaProficiencias.trim()) {
-      
-      // Adiciona a nova proficiência à lista
+
+  adicionarProficiencia(): void {
+
+    if (
+      this.novaProficiencia.tipoProfPersonagem.trim() &&
+      this.novaProficiencia.listaProficiencias.trim()
+    ) {
+
       this.proficiencias.push({
+
         tipo: this.novaProficiencia.tipoProfPersonagem,
         lista: this.novaProficiencia.listaProficiencias
+
       });
 
-      // Limpa o formulário
       this.novaProficiencia = {
+
         tipoProfPersonagem: '',
         listaProficiencias: ''
+
       };
+
     } else {
-      alert('Por favor, preencha o Tipo e a Lista de proficiências!');
+
+      alert(
+        'Preencha o Tipo e a Lista de Proficiências.'
+      );
+
     }
   }
-    adicionarItem() {
-    // Validação
+  adicionarItem(): void {
+
     if (!this.novoItem.nomeItem.trim()) {
-      alert('O campo Nome do Item é obrigatório!');
+      alert('Informe o nome do item.');
       return;
     }
-
-    if (!this.novoItem.quantidadeItem || Number(this.novoItem.quantidadeItem) <= 0) {
-      alert('A quantidade deve ser maior que 0!');
-      return;
-    }
-
-    // Adiciona o item
     this.inventario.push({
-      nome: this.novoItem.nomeItem,
-      raridade: this.novoItem.raridadeItem || 'Comum',
-      quantidade: Number(this.novoItem.quantidadeItem),
-      peso: Number(this.novoItem.pesoItem) || 0,
-      tipo: this.novoItem.tipoItem || 'Diversos',
-      descricao: this.novoItem.descricaoItem || 'Sem descrição'
+      ...this.novoItem
     });
-
-    // Limpa o formulário
     this.novoItem = {
       nomeItem: '',
       raridadeItem: '',
@@ -310,63 +382,83 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
       descricaoItem: ''
     };
   }
-    get pesoTotal(): number {
+  get pesoTotal(): number {
+
     return this.inventario.reduce((total, item) => {
-      return total + (item.peso * item.quantidade);
+
+      const peso = Number(item.pesoItem) || 0;
+      const quantidade = Number(item.quantidadeItem) || 1;
+
+      return total + (peso * quantidade);
+
     }, 0);
+
   }
-   get quantidadeTotal(): number {
+
+  get quantidadeTotal(): number {
+
     return this.inventario.reduce((total, item) => {
-      return total + item.quantidade;
+
+      return total + (Number(item.quantidadeItem) || 1);
+
     }, 0);
+
   }
-  adicionarMagia() {
-    // Validação
+
+  selecionarItem(item: any): void {
+
+    if (this.itemSelecionado === item) {
+
+      this.itemSelecionado = null;
+
+    } else {
+
+      this.itemSelecionado = item;
+
+    }
+
+  }
+
+  isItemSelecionado(item: any): boolean {
+
+    return this.itemSelecionado === item;
+
+  }
+
+  getItemIndex(item: any): number {
+
+    return this.inventario.indexOf(item);
+
+  }
+
+  removerItem(item: any): void {
+
+    const index = this.inventario.indexOf(item);
+
+    if (index > -1) {
+
+      this.inventario.splice(index, 1);
+
+      if (this.itemSelecionado === item) {
+        this.itemSelecionado = null;
+      }
+
+    }
+
+  }  adicionarMagia(): void {
+
     if (!this.novaMagia.nomeMagia.trim()) {
-      alert('O campo Nome da Magia é obrigatório!');
+      alert('Informe o nome da magia.');
       return;
     }
 
-    if (!this.novaMagia.nivelMagia.trim()) {
-      alert('O campo Nível da Magia é obrigatório!');
-      return;
-    }
-
-    if (!this.novaMagia.escolaMagia) {
-      alert('Selecione a Escola de Magia!');
-      return;
-    }
-    const nivel = Number(this.novaMagia.nivelMagia);
-    if (isNaN(nivel) || nivel < 0 || nivel > 9) {
-      alert('Nível inválido! Digite um número entre 0 e 9.');
-      return;
-    }
-    // Monta a lista de componentes
-    const componentes = [];
-    if (this.novaMagia.componentesMagia.V) componentes.push('V');
-    if (this.novaMagia.componentesMagia.S) componentes.push('S');
-    if (this.novaMagia.componentesMagia.M) componentes.push('M');
-
-    // Adiciona a magia
     this.magias.push({
-      nome: this.novaMagia.nomeMagia,
-      nivel: nivel, // Salva como número
-      nivelDisplay: nivel === 0 ? 'Truque' : `${nivel}º Nível`,
-      tempoConjuracao: this.novaMagia.tempoConjuracaoMagia || '1 ação',
-      area: this.novaMagia.areaMagia || 'Próprio',
-      componentes: componentes.join(', '),
-      componentesMaterial: this.novaMagia.componentesMaterial || '',
-      ritual: this.novaMagia.ritualMagia,
-      concentracao: this.novaMagia.concentracaoMagia,
-      duracao: this.novaMagia.duracaoMagia || 'Instantânea',
-      escola: this.novaMagia.escolaMagia,
-      descricao: this.novaMagia.descricaoMagia || 'Sem descrição'
+      ...this.novaMagia
     });
 
-    // Limpa o formulário
     this.novaMagia = {
       nomeMagia: '',
-      nivelMagia: '',
+      nivelMagia: '0',
       tempoConjuracaoMagia: '',
       areaMagia: '',
       componentesMagia: {
@@ -381,63 +473,84 @@ valoresPericias: { [key: string]: number } = Object.fromEntries(
       escolaMagia: '',
       descricaoMagia: ''
     };
+
   }
 
-  get magiasPorNivel(): { [key: string]: any[] } {
-      const agrupado: { [key: string]: any[] } = {};
-      
-      this.magias.forEach(magia => {
-        const nivel = magia.nivelDisplay || 'Sem nível';
-        if (!agrupado[nivel]) {
-          agrupado[nivel] = [];
-        }
-        agrupado[nivel].push(magia);
-      });
+  selecionarMagia(magia: any): void {
 
-      // Ordenar os níveis (Truque, 1, 2, 3, ...)
-      const niveisOrdenados = Object.keys(agrupado).sort((a, b) => {
-        if (a === 'Truque') return -1;
-        if (b === 'Truque') return 1;
-        const numA = parseInt(a);
-        const numB = parseInt(b);
-        return numA - numB;
-      });
+    console.log("Antes:", this.magiaSelecionada);
 
-      const resultado: { [key: string]: any[] } = {};
-      niveisOrdenados.forEach(nivel => {
-        resultado[nivel] = agrupado[nivel];
-      });
-
-      return resultado;
+    if (this.magiaSelecionada === magia) {
+      this.magiaSelecionada = null;
+    } else {
+      this.magiaSelecionada = magia;
     }
-  getNivelFormatado(nivel: number): string {
-    if (nivel === 0) return 'Truque';
-    if (nivel >= 1 && nivel <= 9) return `${nivel}º Nível`;
-    return 'Nível inválido';
-  }
-  getMagiaIndex(magia: any): number {
-    return this.magias.indexOf(magia);
-  }
-  getMagiasPorNivel(nivel: number): any[] {
-    return this.magias.filter(magia => magia.nivel === nivel);
-  }
-    selecionarMagia(magia: any) {
-    this.magiaSelecionada = this.magiaSelecionada === magia ? null : magia;
+
+    console.log("Depois:", this.magiaSelecionada);
+
+    console.log(JSON.stringify(magia, null, 2));
   }
 
-  // Verifica se a magia está selecionada
   isMagiaSelecionada(magia: any): boolean {
+
     return this.magiaSelecionada === magia;
+
   }
 
-  selecionarItem(item: any){
-    this.itemSelecionado = this.itemSelecionado === item ? null : item;
+  getMagiaIndex(magia: any): number {
+
+    return this.magias.indexOf(magia);
+
   }
 
-  isItemSelecionado(item: any): boolean{
-    return this.itemSelecionado === item;
+  removerMagia(magia: any): void {
+
+    const index = this.magias.indexOf(magia);
+
+    if (index > -1) {
+
+      this.magias.splice(index, 1);
+
+      if (this.magiaSelecionada === magia) {
+        this.magiaSelecionada = null;
+      }
+    }
   }
-  getItemIndex(item: any): number {
-  return this.inventario.indexOf(item);
-}
+  get magiasPorNivel() {
+
+    const grupos: { [nivel: string]: any[] } = {};
+
+    for (const magia of this.magias) {
+
+      const nivel = magia.nivelMagia;
+
+      if (!grupos[nivel]) {
+        grupos[nivel] = [];
+      }
+
+      grupos[nivel].push(magia);
+
+    }
+
+    return grupos;
+
+  }
+
+  getNivelFormatado(nivel: string): string {
+
+    if (nivel === '0') {
+      return 'Truques';
+    }
+
+    return `${nivel}º Nível`;
+
+  }
+
+  getMagiasPorNivel(nivel: string): any[] {
+
+    return this.magiasPorNivel[nivel] || [];
+  }
+  testeClique(magia: any): void {
+    console.log("CLIQUE FUNCIONOU", magia);
+  }
 }
