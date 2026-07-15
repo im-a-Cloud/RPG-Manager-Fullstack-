@@ -191,13 +191,14 @@
             <div class="CaIniMov">
                 <div class="campo">
                     <label for="caPersonagem">Classe de Armadura (CA)</label>
-                    <input type="number" id="caPersonagem" name="caPersonagem" value="10" min="1" max="30" step="1" required>
+                    <input type="number" id="caPersonagem" name="caPersonagem" 
+                        [value]="getCaPersonagem()" min="1" max="30" required>                    
                     <small>10 + modificador de Destreza</small>
                 </div>
 
                 <div class="campo">
                     <label for="iniciativaPersonagem">Iniciativa</label>
-                    <input type="number" id="iniciativaPersonagem" name="iniciativaPersonagem" value="0" required>
+                    <input type="number" id="iniciativaPersonagem" name="iniciativaPersonagem" value={{bonusDestreza}} required>
                     <small>modificador de Destreza</small>
                 </div>
 

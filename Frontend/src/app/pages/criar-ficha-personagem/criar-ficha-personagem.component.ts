@@ -296,9 +296,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   voltar(): void {
 
-    // Depois substituímos pelo Router quando
-    // você terminar a navegação da aplicação.
-
+    // Depois substituir pelo Router
     window.history.back();
 
   }
@@ -550,7 +548,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
     return this.magiasPorNivel[nivel] || [];
   }
-  testeClique(magia: any): void {
-    console.log("CLIQUE FUNCIONOU", magia);
+
+  getCaPersonagem() {
+    return 10 + this.bonusDestreza;
   }
 }
