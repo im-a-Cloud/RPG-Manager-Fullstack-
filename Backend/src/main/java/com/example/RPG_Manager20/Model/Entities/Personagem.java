@@ -1,13 +1,9 @@
 package com.example.RPG_Manager20.Model.Entities;
-
-import com.example.RPG_Manager20.Model.Enums.Atributos;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +62,13 @@ public class Personagem extends AbstractModel {
     @Column(nullable = false)
     private int movimentoPersonagem = 9;
     @Column(nullable = false)
-    private int pontosVidaPersonagem = 10;
+    private int pontosVidaPersonagem = 1;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     //Ligacção com classe, permitindo que um personagem tenha classe
 
@@ -385,5 +387,15 @@ public class Personagem extends AbstractModel {
 
     public void setProficienciasPersonagem(List<Proficiencia> proficienciasPersonagem) {
         this.proficienciasPersonagem = proficienciasPersonagem;
+    }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

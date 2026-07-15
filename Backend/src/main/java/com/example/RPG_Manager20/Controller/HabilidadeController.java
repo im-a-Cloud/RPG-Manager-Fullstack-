@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/habilidade")
+@CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class HabilidadeController {
     @Autowired
     private HabilidadeService habilidadeService;

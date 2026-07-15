@@ -32,6 +32,7 @@ import java.util.List;
 @RequestMapping("/personagem")
 @RequiredArgsConstructor
 @Tag(name = "Personagens", description = "API de gerenciamento de personagens")
+@CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class PersonagemController {
 
     @Autowired

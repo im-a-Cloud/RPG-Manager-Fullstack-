@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/item")
+@CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class ItemController {
 
     @Autowired
