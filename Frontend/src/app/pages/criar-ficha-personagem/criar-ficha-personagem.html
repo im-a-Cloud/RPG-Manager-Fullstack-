@@ -429,8 +429,8 @@
     <tbody>
       <!-- 🔥 CORRIGIDO: usando personagem.proficienciasPersonagem -->
       <tr *ngFor="let proficiencia of personagem.proficienciasPersonagem; let i = index">
-        <td>{{ proficiencia.tipoProfPersonagem }}</td>
-        <td>{{ proficiencia.descricaoProficiencia }}</td>
+        <td>{{ proficiencia.tipoProficiencia }}</td>
+        <td>{{ proficiencia.listaProficiencias }}</td>
         <td>
           <button (click)="removerProficiencia(i)" 
                   style="padding: 3px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
@@ -456,20 +456,22 @@
                     <select name="tipoProfPersonagem"
                     id = "tipoProfPersonagem"
                     name="tipoProfPersonagem"
-                    [(ngModel)]="novaProficiencia.tipoProfPersonagem"
+                    [(ngModel)]="novaProficiencia.tipoProficiencia"
                     required="">
-                        <option value="ARMA">Arma</option>
-                        <option value="ARMADURA">Armadura</option>
+                        <option value="ARMAS">Armas</option>
+                        <option value="ARMADURAS">Armaduras</option>
                         <option value="IDIOMAS">Idiomas</option>
+                        <option value="INSTRUMENTOS,">Instrumentos</option>
+                        <option value="FERRAMENTAS,">Ferramentas</option>
                         <option value="OUTROS">Outros</option>
                     </select><br>
                     <label for="listaProficiencias">Proficiências</label><br>
                     <input type="text" 
                     id="listaProficiencias" 
                     name="listaProficiencias" 
-                    [(ngModel)]="novaProficiencia.descricaoProficiencia"
+                    [(ngModel)]="novaProficiencia.listaProficiencias"
                     required><br><br>
-                    <button (click)="adicionarProficiencia()">Adicionar Proficiência</button>
+                    <button (click)="salvarProficiencia()">Adicionar Proficiência</button>
                 </div>
             </div>
         <!-- INVENTÁRIO -->
@@ -659,11 +661,6 @@
             
             <button (click)="salvarHabilidade()">Adicionar Habilidade</button>
         </div>
-
-<!-- 🔥 🔥 🔥 ADICIONE ISSO NO SEU HTML! 🔥 🔥 🔥 -->
-<!-- ========================================== -->
-<!-- LISTA DE HABILIDADES -->
-<!-- ========================================== -->
         <div class="lista-habilidades" style="margin-top: 20px; border-top: 2px solid #ddd; padding-top: 15px;">
             <h4>📋 Habilidades do Personagem ({{ personagem.habilidadesPersonagem?.length || 0 }})</h4>
             

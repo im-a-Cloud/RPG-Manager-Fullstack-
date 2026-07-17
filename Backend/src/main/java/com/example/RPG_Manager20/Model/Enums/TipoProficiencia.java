@@ -5,5 +5,6 @@ public enum TipoProficiencia {
     ARMADURAS,
     FERRAMENTAS,
     INSTRUMENTOS,
-    IDIOMAS
+    IDIOMAS,
+    OUTROS
 }

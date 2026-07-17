@@ -3,7 +3,6 @@ package com.example.RPG_Manager20.Controller;
 import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
 import com.example.RPG_Manager20.Model.Entities.Proficiencia;
 import com.example.RPG_Manager20.Model.Mapper.ProficienciaMapper;
-import com.example.RPG_Manager20.Repository.ProficienciaRepository;
 import com.example.RPG_Manager20.Service.ProficienciaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/proficiencias")  // <- Melhor prática
+@RequestMapping("/proficiencias")
 public class ProficienciaController {
 
     @Autowired
@@ -48,6 +47,14 @@ public class ProficienciaController {
                 .map(proficienciaMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(proficiencias);
+    }
+
+    @PutMapping("/{idProficiencia}")
+    public ResponseEntity<ProficienciaDTO> atualizar(@Valid @RequestBody ProficienciaDTO proficienciaDTO, Long idProficiencia) {
+        Proficiencia proficiencia = proficienciaMapper.toEntity(proficienciaDTO);
+        Proficiencia updatedProficiencia = proficienciaService.update(proficienciaDTO, idProficiencia);
+        ProficienciaDTO proficienciaDTOUpdated = proficienciaMapper.toDto(updatedProficiencia);
+        return new ResponseEntity<>(proficienciaDTOUpdated, HttpStatus.OK);
     }
 
     // GET - Listar todas (endpoint alternativo)

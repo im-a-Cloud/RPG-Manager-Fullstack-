@@ -1,5 +1,6 @@
 package com.example.RPG_Manager20.Service;
 
+import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
 import com.example.RPG_Manager20.Model.Entities.Proficiencia;
 import com.example.RPG_Manager20.Model.Entities.Proficiencia;
 import com.example.RPG_Manager20.Model.Enums.ErrorMessageUtils;
@@ -33,5 +34,10 @@ public class ProficienciaService {
             throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageUtils.ERROR_NOT_FOUND.getMessage("Proficiencia", idProficiencia));
         }
         return pericia;
+    }
+    public Proficiencia update(ProficienciaDTO proficienciaDTO, Long idProficiencia) {
+        Proficiencia proficienciaAntigo = findById(idProficiencia);
+        proficienciaMapper.updateEntity(proficienciaAntigo, proficienciaDTO);
+        return proficienciaRepository.save(proficienciaAntigo);
     }
 }

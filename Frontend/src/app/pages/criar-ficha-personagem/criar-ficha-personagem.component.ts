@@ -20,6 +20,7 @@ import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
 
 import { ClasseService } from '../../core/services/classe.service';
 import { HabilidadeService} from '../../core/services/habilidade.service';
+import { ProficienciaService} from '../../core/services/proficiencia.service'; 
 import { Classe } from '../../models/classe';
 
 @Component({
@@ -33,8 +34,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   private rpgService = inject(RpgService);
   private personagemService = inject(PersonagemService);
-  private classeService = inject(ClasseService);  // ← Inject
-  private habilidadeService = inject(HabilidadeService);  // ← Inject
+  private classeService = inject(ClasseService);
+  private habilidadeService = inject(HabilidadeService);  
+  private proficienciaService = inject(ProficienciaService);
   classesDisponiveis: Classe[] = [];
 
   
@@ -96,8 +98,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
   };
 
   novaProficiencia: Partial<Proficiencia> = {
-    tipoProfPersonagem: TipoProficiencia.OUTRO,
-    descricaoProficiencia: ''
+    tipoProficiencia: TipoProficiencia.OUTRO,
+    listaProficiencias: ''
   };
 
   itemSelecionado: Item | null = null;
@@ -449,14 +451,14 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // PROFICIÊNCIAS
   // ============================================
   adicionarProficiencia(): void {
-  if (!this.novaProficiencia.tipoProfPersonagem) {
+  if (!this.novaProficiencia.tipoProficiencia) {
     this.mostrarMensagem('⚠️ Selecione o tipo de proficiência.', 'error');
     return;
   }
 
   // Verifica se já existe esse tipo
   const jaExiste = this.personagem.proficienciasPersonagem?.some(
-    p => p.tipoProfPersonagem === this.novaProficiencia.tipoProfPersonagem
+    p => p.tipoProficiencia === this.novaProficiencia.tipoProficiencia
   );
 
   if (jaExiste) {
@@ -465,8 +467,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   const proficiencia: Proficiencia = {
-    tipoProfPersonagem: this.novaProficiencia.tipoProfPersonagem as TipoProficiencia,
-    descricaoProficiencia: this.novaProficiencia.descricaoProficiencia || ''
+    tipoProficiencia: this.novaProficiencia.tipoProficiencia as TipoProficiencia,
+    listaProficiencias: this.novaProficiencia.listaProficiencias || ''
   };
 
   if (!this.personagem.proficienciasPersonagem) {
@@ -480,7 +482,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   removerProficiencia(index: number): void {
     if (this.personagem.proficienciasPersonagem) {
-      const removido = this.personagem.proficienciasPersonagem[index].tipoProfPersonagem;
+      const removido = this.personagem.proficienciasPersonagem[index].tipoProficiencia;
       this.personagem.proficienciasPersonagem.splice(index, 1);
       this.mostrarMensagem(`🗑️ "${removido}" removido.`, 'info');
     }
@@ -784,7 +786,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
           this.cdr.detectChanges();
 
-
           // 🔥 LOG DA LISTA ATUALIZADA
           console.log('📋 Lista atualizada:', this.personagem.habilidadesPersonagem);
 
@@ -797,6 +798,52 @@ export class CriarFichaPersonagemComponent implements OnInit {
       }
   });
   }
+
+  salvarProficiencia(): void{
+    if(!this.novaProficiencia.tipoProficiencia?.trim()){
+      this.mostrarMensagem('⚠️ O tipo de proficiência é obrigatório!', 'error');
+      return;
+    }
+    if(!this.novaProficiencia.listaProficiencias?.trim()){
+      this.mostrarMensagem('⚠️ A descrição da proficiência é obrigatória!', 'error');
+      return;
+    }
+
+    const dadosProficiencia = {
+        tipoProficiencia: this.novaProficiencia.tipoProficiencia,
+        listaProficiencias: this.novaProficiencia.listaProficiencias
+    };
+      console.log('🔹 enviando proficiência:', dadosProficiencia);
+
+      this.proficienciaService.criarProficiencia(dadosProficiencia).subscribe({
+      next: (response) => {
+
+      // 🔥 ADICIONA NA LISTA COM FALLBACK
+      if (!this.personagem.proficienciasPersonagem) {
+          this.personagem.proficienciasPersonagem = [];
+      }
+
+    const novaProficiencia = {
+        tipoProficiencia: response.tipoProficiencia || dadosProficiencia.tipoProficiencia,
+        listaProficiencias: response.descricaoProficiencia || dadosProficiencia.listaProficiencias,
+    };
+
+    console.log('📌 Adicionando na lista:', novaProficiencia);
+    this.personagem.proficienciasPersonagem?.push(novaProficiencia);
+    this.cdr.detectChanges();
+    console.log('📋 Lista atualizada:', this.personagem.proficienciasPersonagem);
+    
+
+    this.mostrarMensagem(`✅ Proficiencia "${response.tipoProfPersonagem || dadosProficiencia.tipoProficiencia}" salva!`, 'success');
+
+      },
+      error: (error) => {
+          console.error('❌ Erro ao salvar:', error);
+          this.mostrarMensagem('❌ Erro ao salvar proficiencia.', 'error');
+      }
+  });
+  }
+
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza
   }
