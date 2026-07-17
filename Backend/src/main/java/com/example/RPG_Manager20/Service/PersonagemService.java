@@ -71,7 +71,7 @@ public class PersonagemService {
         // 1. Buscar personagem existente
         Personagem personagemExistente = findById(id);
 
-        // 2. Atualizar campos básicos
+        //AJEITAR ISSO AQUI TÁ MAL OTIMIZADO PRA CARALHO(Deixar otimizações pro final)
         personagemExistente.setNomePersonagem(requestDTO.nomePersonagem());
         personagemExistente.setNivelPersonagem(requestDTO.nivelPersonagem());
         personagemExistente.setValorForca(requestDTO.valorForca());

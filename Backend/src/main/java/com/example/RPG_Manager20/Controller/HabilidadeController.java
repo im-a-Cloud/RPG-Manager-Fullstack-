@@ -25,7 +25,7 @@ public class HabilidadeController {
     public HabilidadeController(HabilidadeService habilidadeService) {
 
     }
-    @PostMapping("/criar")
+    @PostMapping
     public ResponseEntity<HabilidadeDTO> crate(@RequestBody HabilidadeDTO habilidadeDTO){
         Habilidade habilidade = habilidadeMapper.toEntity(habilidadeDTO);
         habilidadeService.save(habilidade);// ← Veja o que chega

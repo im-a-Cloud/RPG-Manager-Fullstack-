@@ -609,45 +609,92 @@
             <button (click)="toggleSecao('habilidade')">Nova Habilidade</button>
             <div class="addHabildiade" [hidden]="!visivel['habilidade']">
 
-            <div class="habilidades">
-                <label for="nomeHabilidade">Nome Habilidade</label><br>
-                <input type="text" 
+        <div class="habilidades">
+            <h3>⚡ Adicionar Habilidade</h3>
+            
+            <label for="nomeHabilidade">Nome Habilidade</label><br>
+            <input type="text" 
                 id="nomeHabilidade" 
                 name="nomeHabilidade" 
                 [(ngModel)]="novaHabilidade.nomeHabilidade"
                 required><br>
-                <label for="origemHabilidade">Origem Habilidade</label><br>
-                <select id="origemHabilidade" 
-                        name="origemHabilidade" 
-                        [(ngModel)]="novaHabilidade.origemHabilidade"
-                        required>
-                    <option value="RACIAL">Racial</option>
-                    <option value="CLASSE">Classe</option>
-                    <option value="TALENTO">Talento</option>
-                    <option value="ITEM">Item</option>
-                    <option value="OUTROS">Outros</option>
-                </select><br>
-                <label for="descricaoHabilidade">Descrição Habilidade</label><br>
-                <textarea 
+            
+            <label for="origemHabilidade">Origem Habilidade</label><br>
+            <select id="origemHabilidade" 
+                    name="origemHabilidade" 
+                    [(ngModel)]="novaHabilidade.origemHabilidade"
+                    required>
+                <option value="RACIAL">Racial</option>
+                <option value="CLASSE">Classe</option>
+                <option value="TALENTO">Talento</option>
+                <option value="ITEM">Item</option>
+                <option value="OUTROS">Outros</option>
+            </select><br>
+            
+            <label for="descricaoHabilidade">Descrição Habilidade</label><br>
+            <textarea 
                 id="descricaoHabilidade" 
-                name="descricaoHabilidade" rows="4" cols="50"
+                name="descricaoHabilidade" 
+                rows="4" 
+                cols="50"
                 [(ngModel)]="novaHabilidade.descricaoHabilidade"
-                required
-                ></textarea><br>
-                                <textarea 
+                required>
+            </textarea><br>
+            
+            <label for="usosHabilidade">Usos</label><br>
+            <input 
+                type="number" 
                 id="usosHabilidade" 
-                name="usosHabilidade" rows="4" cols="50"
+                name="usosHabilidade"
                 [(ngModel)]="novaHabilidade.usosHabilidade"
-                required
-                ></textarea><br>
-                <label for="recargaHabilidade">Recarga Habilidade(Descanso longo/curto, ou deixe como passiva ou N/A para habildiades que podem ser sempre usadas)</label><br>
-                <input type="text" 
+                required><br>
+            
+            <label for="recargaHabilidade">Recarga Habilidade</label><br>
+            <input type="text" 
                 id="recargaHabilidade" 
                 name="recargaHabilidade" 
                 [(ngModel)]="novaHabilidade.recargaHabilidade"
+                placeholder="Ex: Descanso longo, curto, passiva, N/A"
                 required><br>
-                <button (click)="adicionarHabilidade()">Adicionar Habilidade</button>
+            
+            <button (click)="salvarHabilidade()">Adicionar Habilidade</button>
+        </div>
+
+<!-- 🔥 🔥 🔥 ADICIONE ISSO NO SEU HTML! 🔥 🔥 🔥 -->
+<!-- ========================================== -->
+<!-- LISTA DE HABILIDADES -->
+<!-- ========================================== -->
+        <div class="lista-habilidades" style="margin-top: 20px; border-top: 2px solid #ddd; padding-top: 15px;">
+            <h4>📋 Habilidades do Personagem ({{ personagem.habilidadesPersonagem?.length || 0 }})</h4>
+            
+            <div *ngIf="personagem.habilidadesPersonagem?.length === 0" 
+                style="color: #999; font-style: italic; padding: 15px; text-align: center;">
+                Nenhuma habilidade adicionada.
             </div>
+            
+            <div *ngFor="let hab of personagem.habilidadesPersonagem; let i = index"
+                style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 8px; background: #fafafa;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <strong>{{ hab.nomeHabilidade }}</strong>
+                        <span style="background: #2196F3; color: white; padding: 2px 12px; border-radius: 12px; font-size: 12px; margin-left: 8px;">
+                            {{ hab.origemHabilidade }}
+                        </span>
+                        <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                            {{ hab.descricaoHabilidade }}
+                        </div>
+                        <div style="font-size: 12px; color: #888; margin-top: 3px;">
+                            🎯 Usos: {{ hab.usosHabilidade }} | 🔄 Recarga: {{ hab.recargaHabilidade }}
+                        </div>
+                    </div>
+                    <button (click)="removerHabilidade(i)"
+                            style="padding: 3px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        </div>
         </div>
         <!-- GRIMÓRIO -->
         <h1>Grimório</h1>

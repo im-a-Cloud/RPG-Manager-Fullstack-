@@ -49,10 +49,6 @@ public class ClasseController {
         }
         return ResponseEntity.ok(classes);
     }
-
-    // ============================================
-    // GET - Buscar classe por ID
-    // ============================================
     @GetMapping("/{idClasse}")
     public ResponseEntity<ClasseDTO> buscarClasse(@PathVariable("idClasse") Long idClasse) {
         System.out.println("🔍 GET /classes/" + idClasse);
@@ -64,15 +60,6 @@ public class ClasseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-
-    // ============================================
-    // PUT - Atualizar classe
-    // ============================================
-
-    // ============================================
-    // DELETE - Deletar classe
-    // ============================================
     @DeleteMapping("/{idClasse}")
     public ResponseEntity<Void> deletarClasse(@PathVariable("idClasse") Long idClasse) {
         classeService.deletarClasse(idClasse);

@@ -16,5 +16,4 @@ public record HabilidadeRequestDTO(
         if (usosHabilidade == null) usosHabilidade = "";
         if (recargaHabilidade == null) recargaHabilidade = "";
     }
-
 }

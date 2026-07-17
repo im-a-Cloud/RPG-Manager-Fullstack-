@@ -46,6 +46,8 @@ public class PersonagemHabilidadeService {
     }
 
     @Transactional
+    //adicionar uma habiliade que já existe no banco
+    //provavelmente será removido por não haver um JSON com todos os features
     public PersonagemResponseDTO adicionarHabilidade(Long idPersonagem, Long idHabilidade) {
         Personagem personagem = personagemService.findById(idPersonagem);
         Habilidade habilidade = habilidadeService.findById(idHabilidade);
@@ -85,7 +87,8 @@ public class PersonagemHabilidadeService {
                 .map(habilidadeMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
-
+    //deixar isso aqui como exclusivo de ADM
+    //Atualiza a habildiade de forma geral
     public HabilidadeResponseDTO atualizarHabilidade(Long id, HabilidadeDTO dto) {
         Habilidade habilidade = habilidadeRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,

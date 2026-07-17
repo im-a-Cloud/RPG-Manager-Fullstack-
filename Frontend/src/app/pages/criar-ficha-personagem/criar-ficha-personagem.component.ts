@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
+
 import { PersonagemService } from '../../core/services/personagem.service';
 import { RpgService } from '../../core/services/rpg.service';
 import { Personagem } from '../../models/personagem';
@@ -13,8 +15,11 @@ import { Item } from '../../models/item';
 import { TipoItem } from '../../models/enums/tipoItem.enum';
 import { EscolaMagia } from '../../models/enums/escolaMagia.enum';
 import { TipoProficiencia } from '../../models/enums/tipoProficiencia.enum';
+
 import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
+
 import { ClasseService } from '../../core/services/classe.service';
+import { HabilidadeService} from '../../core/services/habilidade.service';
 import { Classe } from '../../models/classe';
 
 @Component({
@@ -29,7 +34,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
   private rpgService = inject(RpgService);
   private personagemService = inject(PersonagemService);
   private classeService = inject(ClasseService);  // ← Inject
+  private habilidadeService = inject(HabilidadeService);  // ← Inject
   classesDisponiveis: Classe[] = [];
+
+  
   // ============================================
   // PERSONAGEM - Usando o modelo correto
   // ============================================
@@ -159,7 +167,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // ============================================
   // CONSTRUCTOR
   // ============================================
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     const todasPericias = Object.values(this.periciasPorAtributo).flat();
     this.pericias = Object.fromEntries(todasPericias.map(p => [p, false]));
     this.valoresPericias = Object.fromEntries(todasPericias.map(p => [p, 0]));
@@ -192,22 +200,22 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.personagem.pontosVidaPersonagem = (this.personagem.nivelPersonagem || 1) * 6 + constBonus;
   }
 
-carregarClasses(): void {
-  this.classeService.listarClasses().subscribe({
-    next: (classes: any[]) => {
-      console.log('🔍 CLASSES RECEBIDAS:', classes);
-      
-      // 🔥 MOSTRA O ID DE CADA CLASSE
-      classes.forEach(classe => {
-        console.log(`   Classe: ${classe.nomeClasse}, ID: ${classe.id}, idClasse: ${classe.idClasse}`);
-      });
-      
-      this.classesDisponiveis = classes;    },
-    error: (erro) => {
-      console.error('❌ Erro ao carregar classes:', erro);
-    }
-  });
-}
+  carregarClasses(): void {
+    this.classeService.listarClasses().subscribe({
+      next: (classes: any[]) => {
+        console.log('🔍 CLASSES RECEBIDAS:', classes);
+        
+        // 🔥 MOSTRA O ID DE CADA CLASSE
+        classes.forEach(classe => {
+          console.log(`   Classe: ${classe.nomeClasse}, ID: ${classe.id}, idClasse: ${classe.idClasse}`);
+        });
+        
+        this.classesDisponiveis = classes;    },
+      error: (erro) => {
+        console.error('❌ Erro ao carregar classes:', erro);
+      }
+    });
+  }
 
     // ============================================
     // COMPARAR CLASSES (SÓ ISSO!)
@@ -720,6 +728,74 @@ carregarClasses(): void {
         console.log('📌 Requisição de criação de personagem concluída.');
       }
     });
+  }
+  salvarHabilidade(): void {
+      // Validações
+      if (!this.novaHabilidade.nomeHabilidade?.trim()) {
+          this.mostrarMensagem('⚠️ O nome da habilidade é obrigatório!', 'error');
+          return;
+      }
+      if (!this.novaHabilidade.origemHabilidade) {
+          this.mostrarMensagem('⚠️ A origem da habilidade é obrigatória!', 'error');
+          return;
+      }
+      if (!this.novaHabilidade.descricaoHabilidade?.trim()) {
+          this.mostrarMensagem('⚠️ A descrição da habilidade é obrigatória!', 'error');
+          return;
+      }
+      if (this.novaHabilidade.usosHabilidade === undefined || this.novaHabilidade.usosHabilidade < 0) {
+          this.mostrarMensagem('⚠️ O número de usos da habilidade deve ser 0 ou mais!', 'error');
+          return;
+      }
+      if (!this.novaHabilidade.recargaHabilidade?.trim()) {
+          this.mostrarMensagem('⚠️ A recarga da habilidade é obrigatória!', 'error');
+          return;
+      }
+
+      const dadosHabilidade = {
+          nomeHabilidade: this.novaHabilidade.nomeHabilidade,
+          origemHabilidade: this.novaHabilidade.origemHabilidade,
+          descricaoHabilidade: this.novaHabilidade.descricaoHabilidade,
+          usosHabilidade: this.novaHabilidade.usosHabilidade,
+          recargaHabilidade: this.novaHabilidade.recargaHabilidade
+      };
+
+      console.log('🔹 enviando habilidade:', dadosHabilidade);
+
+      this.habilidadeService.criarHabilidade(dadosHabilidade).subscribe({
+      next: (response) => {
+
+          // 🔥 ADICIONA NA LISTA COM FALLBACK
+          if (!this.personagem.habilidadesPersonagem) {
+              this.personagem.habilidadesPersonagem = [];
+          }
+
+          const novaHabilidade = {
+              nomeHabilidade: response.nomeHabilidade || dadosHabilidade.nomeHabilidade,
+              origemHabilidade: response.origemHabilidade || dadosHabilidade.origemHabilidade,
+              descricaoHabilidade: response.descricaoHabilidade || dadosHabilidade.descricaoHabilidade,
+              usosHabilidade: response.usosHabilidade || dadosHabilidade.usosHabilidade,
+              recargaHabilidade: response.recargaHabilidade || dadosHabilidade.recargaHabilidade
+          };
+
+          console.log('📌 Adicionando na lista:', novaHabilidade);
+
+          this.personagem.habilidadesPersonagem.push(novaHabilidade);
+
+          this.cdr.detectChanges();
+
+
+          // 🔥 LOG DA LISTA ATUALIZADA
+          console.log('📋 Lista atualizada:', this.personagem.habilidadesPersonagem);
+
+          this.mostrarMensagem(`✅ Habilidade "${response.nomeHabilidade || dadosHabilidade.nomeHabilidade}" salva!`, 'success');
+
+      },
+      error: (error) => {
+          console.error('❌ Erro ao salvar:', error);
+          this.mostrarMensagem('❌ Erro ao salvar habilidade.', 'error');
+      }
+  });
   }
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza
