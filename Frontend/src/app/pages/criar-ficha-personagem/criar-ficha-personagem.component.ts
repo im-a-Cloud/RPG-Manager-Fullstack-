@@ -82,7 +82,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
   novaHabilidade: Partial<Habilidade> = {
     nomeHabilidade: '',
     origemHabilidade: OrigemHabilidade.OUTROS,
-    descricaoHabilidade: ''
+    descricaoHabilidade: '',
+    usosHabilidade: 0,
+    recargaHabilidade: ''
   };
 
   novaProficiencia: Partial<Proficiencia> = {
@@ -407,7 +409,9 @@ carregarClasses(): void {
       const habilidade: Habilidade = {
         nomeHabilidade: this.novaHabilidade.nomeHabilidade || '',
         origemHabilidade: this.novaHabilidade.origemHabilidade || '',
-        descricaoHabilidade: this.novaHabilidade.descricaoHabilidade || 'Sem descrição'
+        descricaoHabilidade: this.novaHabilidade.descricaoHabilidade || 'Sem descrição',
+        usosHabilidade: this.novaHabilidade.usosHabilidade || 0,
+        recargaHabilidade: this.novaHabilidade.recargaHabilidade || ''
       };
       
       if (!this.personagem.habilidadesPersonagem) {

@@ -601,6 +601,8 @@
                 <h3>Nome:{{ habilidade.nomeHabilidade }}</h3>
                 <p><strong>Origem:</strong> {{ habilidade.origemHabilidade }}</p>
                 <p><strong>Descrição:</strong> {{ habilidade.descricaoHabilidade }}</p>
+                <p><strong>Usos:</strong> {{ habilidade.usosHabilidade }}</p>
+                <p><strong>Recarga:</strong> {{ habilidade.recargaHabilidade }}</p>
             <hr>
             </div>
             </div>
@@ -632,6 +634,18 @@
                 [(ngModel)]="novaHabilidade.descricaoHabilidade"
                 required
                 ></textarea><br>
+                                <textarea 
+                id="usosHabilidade" 
+                name="usosHabilidade" rows="4" cols="50"
+                [(ngModel)]="novaHabilidade.usosHabilidade"
+                required
+                ></textarea><br>
+                <label for="recargaHabilidade">Recarga Habilidade(Descanso longo/curto, ou deixe como passiva ou N/A para habildiades que podem ser sempre usadas)</label><br>
+                <input type="text" 
+                id="recargaHabilidade" 
+                name="recargaHabilidade" 
+                [(ngModel)]="novaHabilidade.recargaHabilidade"
+                required><br>
                 <button (click)="adicionarHabilidade()">Adicionar Habilidade</button>
             </div>
         </div>

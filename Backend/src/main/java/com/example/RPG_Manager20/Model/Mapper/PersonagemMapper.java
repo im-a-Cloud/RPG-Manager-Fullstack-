@@ -13,10 +13,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface PersonagemMapper {
-
-    // ============================================
-    // REQUEST DTO → ENTITY
-    // ============================================
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "classePersonagem", ignore = true)
     @Mapping(target = "caPersonagem", source = "ca")
@@ -32,9 +28,6 @@ public interface PersonagemMapper {
     @Mapping(target = "proficienciasPersonagem", ignore = true)
     Personagem toEntity(PersonagemRequestDTO dto);
 
-    // ============================================
-    // ENTITY → RESPONSE DTO
-    // ============================================
     default PersonagemResponseDTO toResponseDto(Personagem personagem) {
         if (personagem == null) {
             return null;

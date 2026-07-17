@@ -9,4 +9,12 @@ public record HabilidadeRequestDTO(
         String usosHabilidade,
         String recargaHabilidade
 ) {
+    public HabilidadeRequestDTO{
+        if (nomeHabilidade == null) nomeHabilidade = "";
+        if (descricaoHabilidade == null) descricaoHabilidade = "";
+        if (origemHabilidade == null) origemHabilidade = OrigemHabilidade.OUTROS;
+        if (usosHabilidade == null) usosHabilidade = "";
+        if (recargaHabilidade == null) recargaHabilidade = "";
+    }
+
 }

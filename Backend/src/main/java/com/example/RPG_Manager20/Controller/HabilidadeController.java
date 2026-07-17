@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/habilidade")
+@RequestMapping("/habilidades")
 @CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class HabilidadeController {
     @Autowired
@@ -38,5 +38,12 @@ public class HabilidadeController {
     @GetMapping("/listar/{idHabilidade}")
     public ResponseEntity<HabilidadeDTO> getHabilidade(@PathVariable("idHabilidade") Long idHabilidade){
         return new ResponseEntity<>(habilidadeMapper.toDto(habilidadeService.findById(idHabilidade)), HttpStatus.CREATED);
+    }
+    @PutMapping("/{idHabilidade}")
+    public ResponseEntity<HabilidadeDTO> update(@RequestBody HabilidadeDTO habilidadeDTO,  @PathVariable("idHabilidade") Long idHabilidade){
+        Habilidade habilidade = habilidadeMapper.toEntity(habilidadeDTO);
+        Habilidade updated = habilidadeService.update(habilidadeDTO, idHabilidade);
+        HabilidadeDTO updatedDTO = habilidadeMapper.toDto(updated);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.OK);
     }
 }
