@@ -63,13 +63,6 @@ public class Personagem extends AbstractModel {
     private int movimentoPersonagem = 9;
     @Column(nullable = false)
     private int pontosVidaPersonagem = 1;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     //Ligacção com classe, permitindo que um personagem tenha classe
 
     @ManyToOne
@@ -388,14 +381,11 @@ public class Personagem extends AbstractModel {
     public void setProficienciasPersonagem(List<Proficiencia> proficienciasPersonagem) {
         this.proficienciasPersonagem = proficienciasPersonagem;
     }
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    public Long getId() {
+        return super.getId();  // ← CHAMA O GETTER DO AbstractModel
     }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+    // Se quiser manter o nome "id" no JSON
+    public Long getIdClasse() {
+        return super.getId();
     }
 }

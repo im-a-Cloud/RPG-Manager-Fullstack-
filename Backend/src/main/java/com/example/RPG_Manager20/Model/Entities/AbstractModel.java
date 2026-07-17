@@ -1,5 +1,6 @@
 package com.example.RPG_Manager20.Model.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -11,8 +12,9 @@ public abstract class AbstractModel {
     protected Long id;
 
     @Column(updatable = false)
+    @JsonIgnore  // 🔥 ADICIONE ISSO!
     protected LocalDate createdAt = LocalDate.now();
-
+    @JsonIgnore  // 🔥 ADICIONE ISSO!
     protected boolean deleted = false;
 
     public Long getId() {

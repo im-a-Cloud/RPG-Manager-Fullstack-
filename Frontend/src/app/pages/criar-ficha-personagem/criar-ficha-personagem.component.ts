@@ -14,6 +14,8 @@ import { TipoItem } from '../../models/enums/tipoItem.enum';
 import { EscolaMagia } from '../../models/enums/escolaMagia.enum';
 import { TipoProficiencia } from '../../models/enums/tipoProficiencia.enum';
 import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
+import { ClasseService } from '../../core/services/classe.service';
+import { Classe } from '../../models/classe';
 
 @Component({
   selector: 'app-criar-ficha-personagem',
@@ -26,7 +28,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   private rpgService = inject(RpgService);
   private personagemService = inject(PersonagemService);
-
+  private classeService = inject(ClasseService);  // ← Inject
+  classesDisponiveis: Classe[] = [];
   // ============================================
   // PERSONAGEM - Usando o modelo correto
   // ============================================
@@ -46,6 +49,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
     historiaPersonagem: '',
     aparenciaPersonagem: '',
     racaPersonagem: '',
+    escalaPersonagem: '',
+    antecedentePersonagem: '',
     habilidadesPersonagem: [],
     proficienciasPersonagem: [],
     inventarioPersonagem: [],
@@ -68,8 +73,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     addItem: false,
     addHabilidade: false
   };
-
-  isLoading = false;
   mensagem = '';
   tipoMensagem: 'success' | 'error' | 'info' = 'info';
 
@@ -151,7 +154,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     sabedoria: false,
     carisma: false
   };
-
   // ============================================
   // CONSTRUCTOR
   // ============================================
@@ -164,7 +166,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.calcularValoresAutomaticos();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+     this.carregarClasses();
+  }
 
   // ============================================
   // CÁLCULOS AUTOMÁTICOS
@@ -185,6 +189,43 @@ export class CriarFichaPersonagemComponent implements OnInit {
     const constBonus = this.rpgService.calcularBonusAtributo(this.personagem.valorConstituicao);
     this.personagem.pontosVidaPersonagem = (this.personagem.nivelPersonagem || 1) * 6 + constBonus;
   }
+
+carregarClasses(): void {
+  this.classeService.listarClasses().subscribe({
+    next: (classes: any[]) => {
+      console.log('🔍 CLASSES RECEBIDAS:', classes);
+      
+      // 🔥 MOSTRA O ID DE CADA CLASSE
+      classes.forEach(classe => {
+        console.log(`   Classe: ${classe.nomeClasse}, ID: ${classe.id}, idClasse: ${classe.idClasse}`);
+      });
+      
+      this.classesDisponiveis = classes;    },
+    error: (erro) => {
+      console.error('❌ Erro ao carregar classes:', erro);
+    }
+  });
+}
+
+    // ============================================
+    // COMPARAR CLASSES (SÓ ISSO!)
+    // ============================================
+    compararClasses(classe1: Classe | null, classe2: Classe | null): boolean {
+      if (!classe1 || !classe2) return false;
+      return classe1.id === classe2.id;
+    }
+
+    // ============================================
+    // QUANDO UMA CLASSE É SELECIONADA
+    // ============================================
+    onClasseSelecionada(classe: Classe | null): void {
+      console.log('📌 Classe selecionada:', classe);
+      if (classe) {
+        this.personagem.classePersonagem = classe;
+        console.log('✅ Classe atribuída com ID:', classe.id);
+        this.calcularValoresAutomaticos();
+      }
+    }
 
   // ============================================
   // GETTERS - BÔNUS DE ATRIBUTOS
@@ -467,7 +508,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     };
     this.mostrarMensagem('✅ Item adicionado ao inventário!', 'success');
   }
-  
+
   selecionarItem(item: any): void {
     if (this.itemSelecionado === item) {
       this.itemSelecionado = null;
@@ -573,17 +614,36 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // SALVAR PERSONAGEM NO BACKEND
   // ============================================
   salvarPersonagem(): void {
+
+    console.log('========================================');
+    console.log('📤 DADOS DO PERSONAGEM ANTES DE SALVAR:');
+    console.log('   Nome:', this.personagem.nomePersonagem);
+    console.log('   Raça:', this.personagem.racaPersonagem);
+    console.log('   Nível:', this.personagem.nivelPersonagem);
+    console.log('   Classe (objeto completo):', this.personagem.classePersonagem);
+    console.log('   Classe ID:', this.personagem.classePersonagem?.id);
+    console.log('   Classe Nome:', this.personagem.classePersonagem?.nomeClasse);
+    console.log('   Força:', this.personagem.valorForca);
+    console.log('   Destreza:', this.personagem.valorDestreza);
+    console.log('   Constituição:', this.personagem.valorConstituicao);
+    console.log('   Inteligência:', this.personagem.valorInteligencia);
+    console.log('   Sabedoria:', this.personagem.valorSabedoria);
+    console.log('   Carisma:', this.personagem.valorCarisma);
+    console.log('   CA:', this.personagem.caPersonagem);
+    console.log('   Iniciativa:', this.personagem.iniciativaPersonagem);
+    console.log('   Movimento:', this.personagem.movimentoPersonagem);
+    console.log('   PV:', this.personagem.pontosVidaPersonagem);
+    console.log('   Habilidades:', this.personagem.habilidadesPersonagem?.length || 0);
+    console.log('   Proficiências:', this.personagem.proficienciasPersonagem?.length || 0);
+    console.log('   Itens:', this.personagem.inventarioPersonagem?.length || 0);
+    console.log('   Magias:', this.personagem.magias?.length || 0);
+    console.log('========================================');
+
     // Validações básicas
     if (!this.personagem.nomePersonagem?.trim()) {
       this.mostrarMensagem('⚠️ O nome do personagem é obrigatório!', 'error');
       return;
     }
-
-    if (!this.personagem.racaPersonagem?.trim()) {
-      this.mostrarMensagem('⚠️ A raça do personagem é obrigatória!', 'error');
-      return;
-    }
-
     if (!this.personagem.classePersonagem?.nomeClasse?.trim()) {
       this.mostrarMensagem('⚠️ A classe do personagem é obrigatória!', 'error');
       return;
@@ -593,11 +653,13 @@ export class CriarFichaPersonagemComponent implements OnInit {
       this.mostrarMensagem('⚠️ O nível deve ser entre 1 e 20!', 'error');
       return;
     }
-
+    if (!this.personagem.classePersonagem?.id) {
+      this.mostrarMensagem('⚠️ Selecione uma classe para o personagem!', 'error');
+      return;
+    }
     // Recalcula valores antes de salvar
     this.calcularValoresAutomaticos();
 
-    this.isLoading = true;
     this.mostrarMensagem('⏳ Salvando personagem...', 'info');
 
     // Adiciona imagem se houver
@@ -605,22 +667,41 @@ export class CriarFichaPersonagemComponent implements OnInit {
       this.personagem.aparenciaPersonagem = this.imagemBase64;
     }
 
+ const dadosParaEnviar = {
+        nomePersonagem: this.personagem.nomePersonagem,
+        nivelPersonagem: this.personagem.nivelPersonagem || 1,
+        classeId: this.personagem.classePersonagem.id,
+        valorForca: this.personagem.valorForca || 10,
+        valorDestreza: this.personagem.valorDestreza || 10,
+        valorConstituicao: this.personagem.valorConstituicao || 10,
+        valorInteligencia: this.personagem.valorInteligencia || 10,
+        valorSabedoria: this.personagem.valorSabedoria || 10,
+        valorCarisma: this.personagem.valorCarisma || 10,
+        racaPersonagem: this.personagem.racaPersonagem,
+        ca: this.personagem.caPersonagem || 10,
+        iniciativa: this.personagem.iniciativaPersonagem || 0,
+        movimento: this.personagem.movimentoPersonagem || 9,
+        pontosVida: this.personagem.pontosVidaPersonagem || 10,
+        historiaPersonagem: this.personagem.historiaPersonagem || '',
+        aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
+        proficiencias: this.personagem.proficienciasPersonagem || [],
+        pericias: [],
+        habilidades: this.personagem.habilidadesPersonagem || []
+    };
+
+
     console.log('📤 Enviando personagem:', this.personagem);
 
     this.personagemService.criarPersonagem(this.personagem).subscribe({
       next: (response) => {
-        this.isLoading = false;
         this.mostrarMensagem(
           `✅ Personagem "${response.nomePersonagem}" salvo com sucesso! ID: ${response.idPersonagem}`,
           'success'
         );
         console.log('✅ Personagem criado:', response);
         
-        // Opcional: redirecionar ou limpar formulário
-        // this.limparFormulario();
       },
       error: (error) => {
-        this.isLoading = false;
         console.error('❌ Erro ao salvar:', error);
         
         let mensagemErro = '❌ Erro ao salvar personagem. Tente novamente.';
@@ -629,59 +710,12 @@ export class CriarFichaPersonagemComponent implements OnInit {
         } else if (error.message) {
           mensagemErro = `❌ ${error.message}`;
         }
-        
         this.mostrarMensagem(mensagemErro, 'error');
+      },
+      complete: () => {
+        console.log('📌 Requisição de criação de personagem concluída.');
       }
     });
-  }
-
-  // ============================================
-  // LIMPAR FORMULÁRIO
-  // ============================================
-  limparFormulario(): void {
-    if (confirm('Tem certeza que deseja limpar o formulário? Todos os dados não salvos serão perdidos.')) {
-      this.personagem = {
-        nomePersonagem: '',
-        nivelPersonagem: 1,
-        valorForca: 10,
-        valorDestreza: 10,
-        valorConstituicao: 10,
-        valorInteligencia: 10,
-        valorSabedoria: 10,
-        valorCarisma: 10,
-        caPersonagem: 10,
-        iniciativaPersonagem: 0,
-        movimentoPersonagem: 9,
-        pontosVidaPersonagem: 10,
-        historiaPersonagem: '',
-        aparenciaPersonagem: '',
-        racaPersonagem: '',
-        habilidadesPersonagem: [],
-        proficienciasPersonagem: [],
-        inventarioPersonagem: [],
-        magias: []
-      };
-      
-      this.imagemPreview = null;
-      this.imagemBase64 = null;
-      this.nomeArquivo = '';
-      
-      const todasPericias = Object.values(this.periciasPorAtributo).flat();
-      this.pericias = Object.fromEntries(todasPericias.map(p => [p, false]));
-      this.valoresPericias = Object.fromEntries(todasPericias.map(p => [p, 0]));
-      
-      this.resistencias = {
-        forca: false,
-        destreza: false,
-        constituicao: false,
-        inteligencia: false,
-        sabedoria: false,
-        carisma: false
-      };
-      
-      this.calcularValoresAutomaticos();
-      this.mostrarMensagem('🧹 Formulário limpo!', 'info');
-    }
   }
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza

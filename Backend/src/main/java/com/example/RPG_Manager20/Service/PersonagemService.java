@@ -59,10 +59,10 @@ public class PersonagemService {
     }
 
     // Listar todos (resumido para performance)
-    public List<PersonagemSummaryDTO> listarPersonagens() {
+    public List<PersonagemResponseDTO> listarTodos() {
         return personagemRepository.findAll()
                 .stream()
-                .map(personagemMapper::toSummaryDTO)
+                .map(personagemMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 

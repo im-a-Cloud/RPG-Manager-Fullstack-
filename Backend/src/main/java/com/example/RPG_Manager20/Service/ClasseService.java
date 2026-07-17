@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClasseService {
-    @Autowired
-    private ClasseRepository classeRepository;
 
     @Autowired
-    private ProficienciaMapper proficienciaMapper;
+    private ClasseRepository classeRepository;
 
     @Autowired
     private ClasseMapper classeMapper;
@@ -29,46 +27,101 @@ public class ClasseService {
     @Autowired
     private ProficienciaService proficienciaService;
 
-    public ClasseService(ClasseRepository classeRepository){
-        this.classeRepository = classeRepository;
-    }
-    @Transactional
-    public Classe save(Classe classe){
-        return classeRepository.save(classe);
-    }
+    // ============================================
+    // CRIAÇÃO
+    // ============================================
     @Transactional
     public ClasseDTO criarClasse(ClasseDTO classeDTO) {
+        // Converte DTO para Entity
         Classe classe = classeMapper.toEntity(classeDTO);
-        if (classe.getListaProficienciasClasse() != null) {
+
+        // Salva as proficiências se existirem
+        if (classe.getListaProficienciasClasse() != null && !classe.getListaProficienciasClasse().isEmpty()) {
             List<Proficiencia> proficienciasSalvas = classe.getListaProficienciasClasse()
                     .stream()
-                    .map(proficienciaService::save)
+                    .map(proficiencia -> {
+                        // Verifica se a proficiência já existe
+                        if (proficiencia.getId() != null) {
+                            return proficiencia;
+                        }
+                        return proficienciaService.save(proficiencia);
+                    })
                     .collect(Collectors.toList());
             classe.setListaProficienciasClasse(proficienciasSalvas);
         }
+
+        // Salva a classe
         Classe savedClasse = classeRepository.save(classe);
 
-        // Converte de volta para DTO
+        // Retorna DTO
         return classeMapper.toDto(savedClasse);
     }
 
-    public List<Classe> list(){
+    // ============================================
+    // LISTAR TODAS - RETORNA DTO
+    // ============================================
+    public List<ClasseDTO> listarTodas() {
+        List<Classe> classes = classeRepository.findAll();
+
+        System.out.println("📋 Encontradas " + classes.size() + " classes");
+
+        return classes.stream()
+                .map(classe -> {
+                    ClasseDTO dto = classeMapper.toDto(classe);
+
+                    // 🔥 LOG DO ID
+                    System.out.println("   Classe: " + classe.getNomeClasse() +
+                            ", ID: " + classe.getId() +
+                            ", DTO ID: " + dto.getId());
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // ============================================
+    // BUSCAR POR ID - RETORNA DTO
+    // ============================================
+    public ClasseDTO buscarPorId(Long idClasse) {
+        Classe classe = findById(idClasse);
+        return classeMapper.toDto(classe);
+    }
+
+    // ============================================
+    // BUSCAR POR ID - RETORNA ENTITY (INTERNO)
+    // ============================================
+    public Classe findById(Long idClasse) {
+        return classeRepository.findById(idClasse)
+                .orElseThrow(() -> new BusinessException(
+                        HttpStatus.NOT_FOUND,
+                        ErrorMessageUtils.ERROR_NOT_FOUND.getMessage("Classe")
+                ));
+    }
+
+    @Transactional
+    public void deletarClasse(Long idClasse) {
+        if (!classeRepository.existsById(idClasse)) {
+            throw new BusinessException(
+                    HttpStatus.NOT_FOUND,
+                    ErrorMessageUtils.ERROR_NOT_FOUND.getMessage("Classe")
+            );
+        }
+        classeRepository.deleteById(idClasse);
+    }
+
+    // ============================================
+    // MÉTODOS LEGADO (MANTIDOS PARA COMPATIBILIDADE)
+    // ============================================
+    @Transactional
+    public Classe save(Classe classe) {
+        return classeRepository.save(classe);
+    }
+
+    public List<Classe> list() {
         return classeRepository.findAll();
     }
-    public void delete(Long id){
+
+    public void delete(Long id) {
         classeRepository.deleteById(id);
-    }
-
-    public Classe update(ClasseDTO classeDTO, Long idClasse){
-        Classe classeAntigo = findById(idClasse);
-        return classeRepository.save(classeAntigo);
-    }
-
-    public Classe findById(Long idClasse) {
-        Classe classe = classeRepository.getById(idClasse);
-        if (classe == null) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageUtils.ERROR_NOT_FOUND.getMessage("Classe"));
-        }
-        return classe;
     }
 }

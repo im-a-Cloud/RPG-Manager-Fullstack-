@@ -2,6 +2,7 @@ package com.example.RPG_Manager20.Model.Entities;
 
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
+import com.example.RPG_Manager20.Model.Enums.DadosDeVida;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
 import jakarta.persistence.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Table(name= "tb_classes")
 public class Classe extends AbstractModel{
     private Classes nomeClasse;
-    private int dadoDeVida;
+    private DadosDeVida dadoDeVida;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "classe_id")  // ← ADICIONE ESTA ANOTAÇÃO
     private List<Proficiencia> listaProficienciasClasse;
@@ -29,7 +30,7 @@ public class Classe extends AbstractModel{
 
     private TipoConjuracao tipoConjuracao;
 
-    public Classe(Classes nomeClasse, int dadoDeVida, List<Proficiencia> listaProficienciasClasse,
+    public Classe(Classes nomeClasse, DadosDeVida dadoDeVida, List<Proficiencia> listaProficienciasClasse,
                   List<Atributos> proficienciaSalvaguarda, boolean isConjurador,
                   Atributos atributoConjuracao, TipoConjuracao tipoConjuracao) {
         this.nomeClasse = nomeClasse;
@@ -53,11 +54,11 @@ public class Classe extends AbstractModel{
         this.nomeClasse = nomeClasse;
     }
 
-    public int getDadoDeVida() {
+    public DadosDeVida getDadoDeVida() {
         return dadoDeVida;
     }
 
-    public void setDadoDeVida(int dadoDeVida) {
+    public void setDadoDeVida(DadosDeVida dadoDeVida) {
         this.dadoDeVida = dadoDeVida;
     }
 

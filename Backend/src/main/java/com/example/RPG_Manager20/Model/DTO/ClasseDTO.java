@@ -3,6 +3,7 @@ package com.example.RPG_Manager20.Model.DTO;
 import com.example.RPG_Manager20.Model.Entities.Proficiencia;
 import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
+import com.example.RPG_Manager20.Model.Enums.DadosDeVida;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
@@ -11,11 +12,13 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record ClasseDTO(
+        Long id,  // ← ESSENCIAL!
+
         @NotNull(message = "Nome da classe é obrigatório")
         Classes nomeClasse,
 
         @Min(value = 6, message = "Dado de vida deve ser no mínimo 6")
-        int dadoDeVida,
+        DadosDeVida dadoDeVida,
 
         List<Proficiencia> listaProficienciasClasse,
         List<Atributos> proficienciaSalvaguarda,
@@ -43,6 +46,14 @@ public record ClasseDTO(
 
     public boolean isTerciarioConjurador() {
         return tipoConjuracao == TipoConjuracao.TERCIARIO;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getIdClasse() {
+        return id;
     }
 
     public static record AdicionarProficienciaRequestDTO() {

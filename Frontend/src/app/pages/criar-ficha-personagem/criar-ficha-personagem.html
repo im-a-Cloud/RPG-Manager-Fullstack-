@@ -20,34 +20,32 @@
 
             <div class="nomeClasse">
                 <label for="nomePersonagem">Nome</label><br>
-                <input type="text" id="nomePersonagem" name="nomePersonagem" required><br>
+                <input type="text" id="nomePersonagem" name="nomePersonagem" required [(ngModel)]="personagem.nomePersonagem"><br>
                 <label>Classe</label><br>
-                <select name="classePersonagem">
-                    <option value="BARBARO">Bárbaro</option>
-                    <option value="BARDO">Bardo</option>
-                    <option value="BRUXO">Bruxo</option>
-                    <option value="CLERIGO">Clérigo</option>
-                    <option value="DRUIDA">Druida</option>
-                    <option value="FEITICEIRO">Feiticeiro</option>
-                    <option value="GUERREIRO">Guerreiro</option>
-                    <option value="LADINO">Ladino</option>
-                    <option value="MAGO">Mago</option>
-                    <option value="MONGE">Monge</option>
-                    <option value="PALADINO">Paladino</option>
-                    <option value="PATRULHEIRO">Patrulheiro</option>
-                </select><br>
+                <select name="classePersonagem" 
+                        [(ngModel)]="personagem.classePersonagem"
+                        [compareWith]="compararClasses"
+                        (ngModelChange)="onClasseSelecionada($event)"
+                        style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; max-width: 300px;">
+                
+                <option [ngValue]="null" disabled selected>Selecione uma classe...</option>
+                
+                <option *ngFor="let classe of classesDisponiveis" [ngValue]="classe">
+                    {{ classe.nomeClasse }}
+                </option>
+                </select>
             </div>
 
             <div class="raçaAntecedente">
                 <label for="raçaPersonagem">Raça</label><br>
-                <input type="text" id="raçaPersonagem" name="raçaPersonagem" required><br>
+                <input type="text" id="raçaPersonagem" name="raçaPersonagem" required [(ngModel)]="personagem.racaPersonagem"><br>
                 <label for="antecedentePersonagem">Antecedente</label><br>
-                <input type="text" id="antecedentePersonagem" name="antecedentePersonagem" required><br>
+                <input type="text" id="antecedentePersonagem" name="antecedentePersonagem" [(ngModel)]="personagem.antecedentePersonagem"><br>
             </div>
 
             <div class="escalaNivel">
                 <label for="escalaPersonagem">Escala</label><br>
-                <input type="text" id="escalaPersonagem" name="escalaPersonagem" required><br>
+                <input type="text" id="escalaPersonagem" name="escalaPersonagem" required [(ngModel)]="personagem.escalaPersonagem"><br>
                 <label for="nivelPersonagem">Nível</label><br>
                 <input type="number" 
                 id="nivelPersonagem" 
@@ -60,6 +58,16 @@
                 <label for="xpPersonagem">XP</label><br>
                 <input type="text" id="xpPersonagem" name="xpPersonagem" required><br>
             </div>
+        </div>
+        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid #ddd;">
+
+        <button (click)="voltar()"
+                style="padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            ⬅ Voltar
+        </button>
+        <button (click)="salvarPersonagem()"
+                style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1; min-width: 150px;">💾 Salvar Personagem
+        </button>
         </div>
     <div class="cabeçalhoSuperior">
             <div class="atributos">

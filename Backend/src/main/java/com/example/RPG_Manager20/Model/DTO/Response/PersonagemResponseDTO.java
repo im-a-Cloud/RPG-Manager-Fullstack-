@@ -4,12 +4,9 @@ import com.example.RPG_Manager20.Model.DTO.HabilidadeDTO;
 import com.example.RPG_Manager20.Model.DTO.ItemDTO;
 import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
 import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
-import com.example.RPG_Manager20.Model.Enums.Atributos;
-import com.example.RPG_Manager20.Model.Enums.Classes;
-import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
+import com.example.RPG_Manager20.Model.Enums.*;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
 import com.example.RPG_Manager20.Model.Entities.Classe;
-import com.example.RPG_Manager20.Model.Enums.TipoProficiencia;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -47,7 +44,7 @@ public record PersonagemResponseDTO(
 
     public record ClasseInfo(
             Classes nome,
-            int dadoDeVida,
+            DadosDeVida dadoDeVida,
             boolean isConjurador,
             Atributos atributoConjuracao,
             TipoConjuracao tipo,
