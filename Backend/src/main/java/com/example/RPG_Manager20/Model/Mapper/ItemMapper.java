@@ -10,10 +10,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
+    @Mapping(source = "isMagico", target = "magico")  // ← Mapeia isMagico → magico
     Item toEntity(ItemRequestDTO requestDTO);
 
     ItemResponseDTO toDto(Item entity);
-
+    @Mapping(source = "magico", target = "isMagico")  // ← Mapeia magico → isMagico
     ItemResponseDTO toResponseDto(Item entity);
 
     @Mapping(target = "id", ignore = true)

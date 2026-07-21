@@ -416,6 +416,7 @@
             </div>
         </div>
         <br>
+        
         <!-- PROFICIÊNCIAS -->
       <div class="proficiencias">
     <!-- Tabela de Proficiências -->
@@ -427,7 +428,6 @@
                 </tr>
             </thead>
     <tbody>
-      <!-- 🔥 CORRIGIDO: usando personagem.proficienciasPersonagem -->
       <tr *ngFor="let proficiencia of personagem.proficienciasPersonagem; let i = index">
         <td>{{ proficiencia.tipoProficiencia }}</td>
         <td>{{ proficiencia.listaProficiencias }}</td>
@@ -541,23 +541,48 @@
                 min="1"
                 placeholder="1"
                 required><br>
-            
             <label for="pesoItem">Peso item</label><br>
             <input type="number" 
                 id="pesoItem" 
                 name="pesoItem" 
                 [(ngModel)]="novoItem.pesoItem"
-                min="0"
-                placeholder="0"
-                step="0.1"
+                placeholder="1"
+                min="1"
                 required><br>
-            
+            <label for="precoItem">Preço item</label><br>
+            <input type="number" 
+                id="precoItem" 
+                name="precoItem" 
+                [(ngModel)]="novoItem.precoItem"
+                min="1"
+                placeholder="1"
+                required><br>
             <label for="tipoItem">Tipo item</label><br>
-            <input type="text" 
+            <select 
                 id="tipoItem" 
                 name="tipoItem" 
                 [(ngModel)]="novoItem.tipoItem"
                 placeholder="Ex: Arma, Armadura, Poção"><br>
+                <option value="" disabled selected>Selecione o tipo do item...</option>
+                    <option value="ARMA">Arma</option>
+                    <option value="ARMADURA">Armadura</option>
+                    <option value="POCAO">Poção</option>
+                    <option value="FERRAMENTA">Ferramenta</option>
+                    <option value="ITEM_MAGICO">Item Mágico</option>
+                    <option value="TESOURO">Tesouro</option>
+                    <option value="VARIADOS">Variados</option>
+            </select>
+            <label for="isMagicoItem">É Mágico?</label><br>
+            <input type="checkbox"  
+            id="isMagicoItem"
+            name="isMagicoItem"
+            [(ngModel)]="novoItem.isMagicoItem!"><br>
+
+            <label for="precisaSintonizacao">Precisa sintonicação?</label><br>
+            <input type="checkbox"  
+            id="precisaSintonizacao"
+            name="precisaSintonizacao"
+            [(ngModel)]="novoItem.precisaSintonizacao"><br>
             
             <label for="descricaoItem">Descrição item</label><br>
             <textarea 
@@ -566,8 +591,7 @@
                 rows="3"
                 [(ngModel)]="novoItem.descricaoItem"
                 placeholder="Descreva o item..."></textarea><br>
-            
-            <button (click)="adicionarItem()" class="btn-adicionar">Adicionar Item</button>
+        <button (click)="salvarItem()" class="btn-adicionar">Adicionar Item</button>
         </div>
             <div class="resumo-inventario" *ngIf="personagem.inventarioPersonagem && personagem.inventarioPersonagem.length > 0">
                 <p><strong>Total de Itens:</strong> {{ quantidadeTotal }}</p>
@@ -594,7 +618,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+        </div>
 
         <!-- HABILIDADES -->
         <h1>Habilidades personagem</h1>

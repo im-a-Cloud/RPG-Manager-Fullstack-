@@ -26,9 +26,20 @@ public record ItemRequestDTO (
         @Min(value = 0, message = "Peso não pode ser negativo")
         Double pesoItem,
 
-        boolean isMagico,
-        boolean precisaSintonizacao,
+        Boolean isMagico,
+        Boolean precisaSintonizacao,
 
         @Min(value = 1, message = "Quantidade mínima 1")
         int quantidade
-) {}
+) {
+    public ItemRequestDTO{
+        if(nomeItem == null)nomeItem = "";
+        if(tipoItem == null) tipoItem = TipoItem.ARMA;
+        if(descricaoItem == null) descricaoItem = "";
+        if(precoItem == null) precoItem = 0.0;
+        if(pesoItem == null) pesoItem = 0.0;
+        if(quantidade <= 0) quantidade = 1;
+        if (isMagico == null) isMagico = false;
+        if (precisaSintonizacao == null) precisaSintonizacao = false;
+    }
+}

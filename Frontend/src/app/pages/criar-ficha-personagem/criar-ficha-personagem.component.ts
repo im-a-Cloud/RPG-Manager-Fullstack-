@@ -10,16 +10,16 @@ import { ClasseService } from '../../core/services/classe.service';
 import { HabilidadeService} from '../../core/services/habilidade.service';
 import { ProficienciaService} from '../../core/services/proficiencia.service'; 
 import { MagiaService } from '../../core/services/magia.service'; 
+import { ItemService } from '../../core/services/item.service'; 
 
 import { Personagem } from '../../models/personagem';
 import { Habilidade } from '../../models/habilidade';
 import { Proficiencia } from '../../models/proficiencia';
 import { Magia } from '../../models/magia';
-import { ComponentesMagia } from '../../models/componentesMagia';
 import { Item } from '../../models/item';
 
 import { TipoItem } from '../../models/enums/tipoItem.enum';
-import { EscolaMagia } from '../../models/enums/escolaMagia.enum';
+import { RaridadeItem } from '../../models/enums/raridadeItem.enum';
 import { TipoProficiencia } from '../../models/enums/tipoProficiencia.enum';
 import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
 
@@ -40,6 +40,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   private habilidadeService = inject(HabilidadeService);  
   private proficienciaService = inject(ProficienciaService);
   private magiaService = inject(MagiaService);
+  private itemService = inject(ItemService);
   classesDisponiveis: Classe[] = [];
 
   personagem: Personagem = {
@@ -104,12 +105,15 @@ export class CriarFichaPersonagemComponent implements OnInit {
   itemSelecionado: Item | null = null;
 
   novoItem: Partial<Item> = {
-    nomeItem: '',
-    raridadeItem: '',
-    quantidadeItem: 0,
-    pesoItem: 0,
-    tipoItem: TipoItem.ARMA,
-    descricaoItem: ''
+      nomeItem: '',
+      tipoItem: TipoItem.ARMA,
+      descricaoItem: '',
+      precoItem: 0,
+      raridadeItem: RaridadeItem.COMUM,
+      pesoItem: 0,
+      isMagicoItem: false,
+      precisaSintonizacao: false,
+      quantidadeItem: 1
   };
 
   magiaSelecionada: any = null;
@@ -487,6 +491,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // ============================================
   // ITENS
   // ============================================
+  /*
   adicionarItem(): void {
     if (!this.novoItem.nomeItem?.trim()) {
       this.mostrarMensagem('⚠️ Informe o nome do item.', 'error');
@@ -494,11 +499,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }
     
     const item: Item = {
-      nomeItem: this.novoItem.nomeItem || '',
-      raridadeItem: this.novoItem.raridadeItem || '',
-      quantidadeItem: this.novoItem.quantidadeItem || 0,
-      pesoItem: this.novoItem.pesoItem || 0,
-      tipoItem: this.novoItem.tipoItem || TipoItem.ARMA,
+      nomeItem: this.novoItem.nomeItem,
+      raridadeItem: this.novoItem.raridadeItem,
+      quantidadeItem: this.novoItem.quantidadeItem,
+      pesoItem: this.novoItem.pesoItem,
+      tipoItem: this.novoItem.tipoItem,
       precisaSintonizacao: false,
       descricaoItem: this.novoItem.descricaoItem || ''
     };
@@ -510,7 +515,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.personagem.inventarioPersonagem.push(item);
     this.novoItem = {
       nomeItem: '',
-      raridadeItem: '',
+      raridadeItem: RaridadeItem.COMUM,
       quantidadeItem: 0,
       pesoItem: 0,
       tipoItem: TipoItem.ARMA,
@@ -518,7 +523,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     };
     this.mostrarMensagem('✅ Item adicionado ao inventário!', 'success');
   }
-
+  */
   selecionarItem(item: any): void {
     if (this.itemSelecionado === item) {
       this.itemSelecionado = null;
@@ -914,6 +919,114 @@ export class CriarFichaPersonagemComponent implements OnInit {
   });
   }
 
+  salvarItem(): void {
+      console.log('🔥 salvarItem() CHAMADO!');
+
+      // ============================================
+      // 1️⃣ VALIDAÇÕES
+      // ============================================
+      if (!this.novoItem.nomeItem?.trim()) {
+          this.mostrarMensagem('⚠️ O nome do item é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novoItem.tipoItem) {
+          this.mostrarMensagem('⚠️ O tipo do item é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novoItem.quantidadeItem || this.novoItem.quantidadeItem < 1) {
+          this.mostrarMensagem('⚠️ A quantidade deve ser pelo menos 1!', 'error');
+          return;
+      }
+
+      // 🔥 CORRIGIDO: PREÇO
+      if (this.novoItem.precoItem === undefined || this.novoItem.precoItem === null || this.novoItem.precoItem < 0) {
+          this.mostrarMensagem('⚠️ O preço não pode ser negativo!', 'error');
+          return;
+      }
+
+      // 🔥 CORRIGIDO: PESO (permite 0)
+      if (this.novoItem.pesoItem === undefined || this.novoItem.pesoItem === null || this.novoItem.pesoItem < 0) {
+          this.mostrarMensagem('⚠️ O peso não pode ser negativo!', 'error');
+          return;
+      }
+
+      // ============================================
+      // 2️⃣ MONTA O DTO
+      // ============================================
+      const dadosItem = {
+          nomeItem: this.novoItem.nomeItem,
+          descricaoItem: this.novoItem.descricaoItem || "",
+          precoItem: this.novoItem.precoItem ?? 1,
+          raridadeItem: this.novoItem?.raridadeItem || undefined,
+          pesoItem: this.novoItem.pesoItem ?? 0.1,
+          isMagicoItem: this.novoItem.isMagicoItem === true,
+          precisaSintonizacao: this.novoItem?.precisaSintonizacao === true,
+          quantidadeItem: this.novoItem.quantidadeItem ?? 1,
+          tipoItem: this.novoItem.tipoItem
+      };
+
+      console.log('🔹 Enviando item:', dadosItem);
+      console.log('📤 Dados enviados:', JSON.stringify(dadosItem, null, 2));
+
+      // ============================================
+      // 3️⃣ CHAMA O SERVICE
+      // ============================================
+      this.itemService.criarItem(dadosItem).subscribe({
+          next: (response) => {
+              console.log('✅ Item criado:', response);
+
+              if (!this.personagem.inventarioPersonagem) {
+                  this.personagem.inventarioPersonagem = [];
+              }
+
+              const novoItem = {
+                  idItem: response.idItem || response.id,
+                  nomeItem: response.nomeItem || dadosItem.nomeItem,
+                  descricaoItem: response.descricaoItem || dadosItem.descricaoItem,
+                  precoItem: response.precoItem || dadosItem.precoItem,
+                  raridadeItem: response.raridadeItem || dadosItem.raridadeItem,
+                  pesoItem: response.pesoItem || dadosItem.pesoItem,
+                  isMagicoItem: response.isMagicoItem || dadosItem.isMagicoItem,
+                  precisaSintonizacao: response.precisaSintonizacao || dadosItem.precisaSintonizacao,
+                  quantidadeItem: response.quantidadeItem || dadosItem.quantidadeItem,
+                  tipoItem: response.tipoItem || dadosItem.tipoItem
+              };
+
+              console.log('📌 Adicionando na lista:', novoItem);
+              this.personagem.inventarioPersonagem.push(novoItem);
+              this.cdr.detectChanges();
+
+              this.mostrarMensagem(`✅ Item "${novoItem.nomeItem}" adicionado ao inventário!`, 'success');
+
+              // ============================================
+              // 4️⃣ LIMPA O FORMULÁRIO
+              // ============================================
+              setTimeout(() => {
+                  this.novoItem = {
+                      nomeItem: '',
+                      tipoItem: TipoItem.ARMA,
+                      descricaoItem: '',
+                      precoItem: 0,
+                      raridadeItem: RaridadeItem.COMUM,
+                      pesoItem: 0,
+                      isMagicoItem: false,
+                      precisaSintonizacao: false,
+                      quantidadeItem: 1
+                  };
+                  this.visivel['item'] = false;
+              }, 0);
+          },
+          error: (error) => {
+              console.error('❌ Erro ao salvar item:', error);
+              if (error.error) {
+                  console.error('❌ Detalhes:', error.error);
+              }
+              this.mostrarMensagem('❌ Erro ao salvar item. Tente novamente.', 'error');
+          }
+      });
+  }
   salvarProficiencia(): void{
     if(!this.novaProficiencia.tipoProficiencia?.trim()){
       this.mostrarMensagem('⚠️ O tipo de proficiência é obrigatório!', 'error');
@@ -961,5 +1074,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza
+  }
+  testarBotao(): void {
+      alert('🟢 BOTÃO DE TESTE FUNCIONOU!');
+      console.log('🟢 BOTÃO DE TESTE FUNCIONOU!');
   }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/item")
+@RequestMapping("/itens")
 @CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class ItemController {
 
@@ -28,11 +28,7 @@ public class ItemController {
     @Autowired
     private InventarioService inventarioService;
 
-    public ItemController(ItemService itemService) {
-
-    }
-
-    @PostMapping("/criar")
+    @PostMapping
     public ResponseEntity<ItemResponseDTO> crate(@Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         ItemResponseDTO responseDTO = inventarioService.criarItem(itemRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
