@@ -23,8 +23,7 @@ public class PersonagemController {
     private final PersonagemService personagemService;
 
     @PostMapping
-    @Operation(summary = "Criar novo personagem")
-    public ResponseEntity<PersonagemResponseDTO> criar(@Valid @RequestBody PersonagemRequestDTO requestDTO) {
+    public ResponseEntity<PersonagemResponseDTO> criarPersonagem(@Valid @RequestBody PersonagemRequestDTO requestDTO) {
         PersonagemResponseDTO response = personagemService.criarPersonagem(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

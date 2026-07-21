@@ -10,24 +10,36 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {HabilidadeMapper.class, ProficienciaMapper.class, ItemMapper.class, MagiaMapper.class, PericiaMapper.class}
 )
 public interface PersonagemMapper {
+
+    // ============================================
+    // REQUEST DTO → ENTITY
+    // ============================================
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "classePersonagem", ignore = true)
+
+    // Mapeia os campos de combate
     @Mapping(target = "caPersonagem", source = "ca")
     @Mapping(target = "iniciativaPersonagem", source = "iniciativa")
     @Mapping(target = "movimentoPersonagem", source = "movimento")
     @Mapping(target = "pontosVidaPersonagem", source = "pontosVida")
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "magias", ignore = true)
-    @Mapping(target = "inventarioPersonagem", ignore = true)
-    @Mapping(target = "periciasPersonagem", ignore = true)
-    @Mapping(target = "habilidadesPersonagem", ignore = true)
-    @Mapping(target = "proficienciasPersonagem", ignore = true)
+
+    // 🔥 LISTAS - MAPEAMENTO
+    @Mapping(source = "habilidades", target = "habilidadesPersonagem")
+    @Mapping(source = "proficiencias", target = "proficienciasPersonagem")
+    @Mapping(source = "inventario", target = "inventarioPersonagem")
+    @Mapping(source = "magias", target = "magias")
+    // 🔥 PERÍCIAS - USA O PericiaMapper
+    @Mapping(source = "pericias", target = "periciasPersonagem", qualifiedByName = "mapPericias")
+
     Personagem toEntity(PersonagemRequestDTO dto);
 
+    // ============================================
+    // ENTITY → RESPONSE DTO
+    // ============================================
     default PersonagemResponseDTO toResponseDto(Personagem personagem) {
         if (personagem == null) {
             return null;

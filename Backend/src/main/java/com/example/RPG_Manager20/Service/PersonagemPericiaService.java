@@ -1,7 +1,6 @@
 package com.example.RPG_Manager20.Service;
 
 import com.example.RPG_Manager20.Model.DTO.AdicionarPericiaRequestDTO;
-import com.example.RPG_Manager20.Model.DTO.PersonagemDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PericiaResponseDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
 import com.example.RPG_Manager20.Model.Entities.Classe;
@@ -26,52 +25,62 @@ public class PersonagemPericiaService {
     private PersonagemPericiaRepository personagemPericiaRepository;
 
     @Autowired
-    private PersonagemService personagemService;
+    private PersonagemRepository personagemRepository;  // ← DIRETO, SEM PERSONAGEMSERVICE!
 
     @Autowired
-    PersonagemRepository personagemRepository;
+    private PericiaRepository periciaRepository;
 
-    @Autowired
-    PericiaRepository periciaRepository;
+    // ============================================
+    // FIND BY ID (DIRETO)
+    // ============================================
+    private Personagem findPersonagemById(Long id) {
+        return personagemRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+                        "Personagem não encontrado com ID: " + id));
+    }
 
     @Transactional
-    public List<PericiaResponseDTO> listarPericiaPersonagem(Long idPersonagem){
-        Personagem personagem = personagemService.findById(idPersonagem);
+    public List<PericiaResponseDTO> listarPericiaPersonagem(Long idPersonagem) {
+        Personagem personagem = findPersonagemById(idPersonagem);
         Classe classe = personagem.getClassePersonagem();
 
         PersonagemResponseDTO personagemDTO = PersonagemResponseDTO.from(personagem, classe);
 
         List<PersonagemPericia> periciasPersonagem = personagemPericiaRepository.findByPersonagemId(idPersonagem);
 
-        return periciasPersonagem.stream().map(pericias -> PericiaResponseDTO.from(pericias, personagemDTO)).collect(Collectors.toList());
-
+        return periciasPersonagem.stream()
+                .map(pericias -> PericiaResponseDTO.from(pericias, personagemDTO))
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public PersonagemResponseDTO addPersonagemPericia(Long idPersonagem, AdicionarPericiaRequestDTO request) {
-        Personagem personagem = personagemService.findById(idPersonagem);
-        Pericia pericia = periciaRepository.findById(request.periciaId())
+    public PersonagemResponseDTO addPersonagemPericia(Long idPersonagem, Long periciaId, Boolean isProficiente) {
+        Personagem personagem = findPersonagemById(idPersonagem);
+        Pericia pericia = periciaRepository.findById(periciaId)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
-                        "Perícia não encontrada com ID: " + request.periciaId()));
+                        "Perícia não encontrada com ID: " + periciaId));
 
-        boolean jaTemPericia = personagemPericiaRepository.existsByPersonagemIdAndPericiaId(idPersonagem, pericia.getId());
+        boolean jaTemPericia = personagemPericiaRepository.existsByPersonagemIdAndPericiaId(idPersonagem, periciaId);
 
         if (jaTemPericia) {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "Personagem já possui esta perícia");
         }
 
-        PersonagemPericia personagemPericia = new PersonagemPericia(personagem,pericia, request.isProficiente());
+        PersonagemPericia personagemPericia = new PersonagemPericia();
+        personagemPericia.setPersonagem(personagem);
+        personagemPericia.setPericia(pericia);
+        personagemPericia.setProficiente(isProficiente != null && isProficiente);
+
         personagemPericiaRepository.save(personagemPericia);
 
         Classe classe = personagem.getClassePersonagem();
         return PersonagemResponseDTO.from(personagem, classe);
-
     }
 
     @Transactional
     public PersonagemResponseDTO atualizarProficiencia(Long personagemId, Long periciaId, boolean isProficiente) {
-        Personagem personagem = personagemService.findById(personagemId);
+        Personagem personagem = findPersonagemById(personagemId);
 
         PersonagemPericia personagemPericia = personagemPericiaRepository
                 .findByPersonagemIdAndPericiaId(personagemId, periciaId)

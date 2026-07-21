@@ -1,6 +1,9 @@
 package com.example.RPG_Manager20.Model.DTO.Request;
 
+import com.example.RPG_Manager20.Model.DTO.*;
+import com.example.RPG_Manager20.Model.Entities.Pericia;
 import com.example.RPG_Manager20.Model.Entities.Proficiencia;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -65,9 +68,16 @@ public record PersonagemRequestDTO(
         Double alturaPersonagem,  // ← Mude para Double
 
         // Listas
-        List<Proficiencia> proficiencias,
-        List<String> pericias,
-        List<String> habilidades
+        @Valid
+        List<HabilidadeDTO> habilidades,
+        @Valid
+        List<ProficienciaDTO> proficiencias,
+        @Valid
+        List<ItemDTO> inventario,
+        @Valid
+        List<MagiaDTO> magias,
+        @Valid
+        List<PericiaPersonagemDTO> pericias
 ) {
     // Construtor com valores padrão
     public PersonagemRequestDTO {

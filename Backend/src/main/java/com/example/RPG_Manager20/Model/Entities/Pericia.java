@@ -46,4 +46,8 @@ public class Pericia extends AbstractModel{
     public void setValorTotal(int valorTotal) {
         this.valorTotal = valorTotal;
     }
+
+    public void setId(Long idPericia) {
+
+    }
 }

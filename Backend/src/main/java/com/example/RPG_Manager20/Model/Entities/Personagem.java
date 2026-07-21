@@ -20,19 +20,19 @@ public class Personagem extends AbstractModel {
 
     // Atributos
     @Column(nullable = false)
-    private int valorForca = 10;
+    private Integer valorForca = 10;
     @Column(nullable = false)
-    private int valorDestreza = 10;
+    private Integer valorDestreza = 10;
     @Column(nullable = false)
-    private int valorConstituicao = 10;
+    private Integer valorConstituicao = 10;
     @Column(nullable = false)
-    private int valorInteligencia = 10;
+    private Integer valorInteligencia = 10;
     @Column(nullable = false)
-    private int valorSabedoria = 10;
+    private Integer valorSabedoria = 10;
     @Column(nullable = false)
-    private int valorCarisma = 10;
+    private Integer valorCarisma = 10;
 
-    //Descritivos(não obrigatorios para criar o personagem, inicialmente)
+    //Descritivos(não obrigatorios para criar o personagem)
     @Column(columnDefinition = "TEXT")
     private String historiaPersonagem ="";
     @Column(columnDefinition = "TEXT")
@@ -46,6 +46,8 @@ public class Personagem extends AbstractModel {
     @Column(columnDefinition = "TEXT")
     private String personalidadePersonagem ="";
     @Column(columnDefinition = "TEXT")
+
+    //Semi-importantes(Não tem um BD de raças então é só string normal)
     private String racaPersonagem ="";
     private double pesoPersonagem = 0;
     private double alturaPersonagem = 0;
@@ -56,55 +58,42 @@ public class Personagem extends AbstractModel {
 
     //CA, iniciativa, movimento, dado de vida, pontos de vida
     @Column(nullable = false)
-    private int caPersonagem = 10;
+    private Integer caPersonagem = 10;
     @Column(nullable = false)
-    private int iniciativaPersonagem = 0;
+    private Integer iniciativaPersonagem = 0;
     @Column(nullable = false)
-    private int movimentoPersonagem = 9;
+    private Integer movimentoPersonagem = 9;
     @Column(nullable = false)
-    private int pontosVidaPersonagem = 1;
+    private Integer pontosVidaPersonagem = 1;
     //Ligacção com classe, permitindo que um personagem tenha classe
 
     @ManyToOne
     @JoinColumn(name = "classe_id")
     private Classe classePersonagem;
 
-    @ManyToMany
-    @JoinTable(
-            name = "personagem_magia",
-            joinColumns = @JoinColumn(name = "personagem_id"),
-            inverseJoinColumns = @JoinColumn(name = "magia_id")
-    )
-    private List<Magia> magias = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "personagem_item",
-            joinColumns = @JoinColumn(name = "personagem_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id")
-    )
-    private List<Item> inventarioPersonagem = new ArrayList<>();
-
-    @OneToMany(mappedBy = "personagem")
-    private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "personagem_habilidade",
-            joinColumns = @JoinColumn(name = "personagem_id"),
-            inverseJoinColumns = @JoinColumn(name = "habilidade_id")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personagem_id")  // ← FK na tabela habilidade
     private List<Habilidade> habilidadesPersonagem = new ArrayList<>();
 
-    //ligacão com proficiencias
-    @ManyToMany
-    @JoinTable(
-            name = "personagem_proficiencia",
-            joinColumns = @JoinColumn(name = "personagem_id"),
-            inverseJoinColumns = @JoinColumn(name ="proficiencia_id")
-    )
+    // 3️⃣ 🔥 PROFICIÊNCIAS (OneToMany com CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personagem_id")  // ← FK na tabela proficiencia
     private List<Proficiencia> proficienciasPersonagem = new ArrayList<>();
 
+    // 4️⃣ 🔥 ITENS (OneToMany com CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personagem_id")  // ← FK na tabela item
+    private List<Item> inventarioPersonagem = new ArrayList<>();
+
+    // 5️⃣ 🔥 MAGIAS (OneToMany com CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
+    private List<Magia> magias = new ArrayList<>();
+
+    //Pericias
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
+    private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
     public Personagem() {
     }
@@ -123,6 +112,45 @@ public class Personagem extends AbstractModel {
         this.inventarioPersonagem = inventarioPersonagem;
         this.periciasPersonagem = periciasPersonagem;
         this.habilidadesPersonagem = habilidadesPersonagem;
+    }
+
+    public void adicionarHabilidade(Habilidade habilidade) {
+        this.habilidadesPersonagem.add(habilidade);
+    }
+
+    public void removerHabilidade(Long habilidadeId) {
+        this.habilidadesPersonagem.removeIf(h -> h.getId().equals(habilidadeId));
+    }
+
+    public void adicionarItem(Item item) {
+        // Verifica se já existe item igual
+        for (Item i : inventarioPersonagem) {
+            if (i.getNomeItem().equals(item.getNomeItem())) {
+                i.setQuantidade(i.getQuantidade() + item.getQuantidade());
+                return;
+            }
+        }
+        this.inventarioPersonagem.add(item);
+    }
+
+    public void removerItem(Long itemId) {
+        this.inventarioPersonagem.removeIf(i -> i.getId().equals(itemId));
+    }
+
+    public void adicionarMagia(Magia magia) {
+        this.magias.add(magia);
+    }
+
+    public void removerMagia(Long magiaId) {
+        this.magias.removeIf(m -> m.getId().equals(magiaId));
+    }
+
+    public void adicionarProficiencia(Proficiencia proficiencia) {
+        this.proficienciasPersonagem.add(proficiencia);
+    }
+
+    public void removerProficiencia(Long proficienciaId) {
+        this.proficienciasPersonagem.removeIf(p -> p.getId().equals(proficienciaId));
     }
 
     public List<Habilidade> getHabilidadesPersonagem() {
@@ -147,24 +175,6 @@ public class Personagem extends AbstractModel {
 
     public void setMagias(List<Magia> magias) {
         this.magias = magias;
-    }
-
-    public void adicionarMagia(Magia magia) {
-        this.magias.add(magia);
-    }
-
-    public void removerMagia(Magia magia) {
-        this.magias.remove(magia);
-    }
-
-    public void adicionarItem(Item item) {
-        for (Item i: inventarioPersonagem){
-            if (i.getId().equals(item.getId())){
-                i.setQuantidade(i.getQuantidade() + item.getQuantidade());
-                return;
-            }
-        }
-        inventarioPersonagem.add(item);
     }
 
     public void removerItem(Item item) {

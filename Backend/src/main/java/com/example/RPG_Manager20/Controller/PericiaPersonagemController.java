@@ -27,12 +27,6 @@ public class PericiaPersonagemController {
         return ResponseEntity.ok(pericias);
     }
 
-    @PostMapping("/adicionar")
-    public ResponseEntity<PersonagemResponseDTO> adicionarPericia(@PathVariable Long personagemId, @Valid @RequestBody AdicionarPericiaRequestDTO adicionarPericiaRequestDTO) {
-        PersonagemResponseDTO response = personagemPericiaService.addPersonagemPericia(personagemId, adicionarPericiaRequestDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
     @PutMapping("/{periciaId}/proficiencia")
     public ResponseEntity<PersonagemResponseDTO> atualizarProficiencia(
             @PathVariable Long personagemId,
