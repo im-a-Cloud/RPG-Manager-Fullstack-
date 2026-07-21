@@ -65,7 +65,7 @@
                 style="padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
             ⬅ Voltar
         </button>
-        <button (click)="salvarPersonagem()"
+        <button (click)="salvarTudo()"
                 style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1; min-width: 150px;">💾 Salvar Personagem
         </button>
         </div>
@@ -571,7 +571,7 @@
                     <option value="ITEM_MAGICO">Item Mágico</option>
                     <option value="TESOURO">Tesouro</option>
                     <option value="VARIADOS">Variados</option>
-            </select>
+            </select><br>
             <label for="isMagicoItem">É Mágico?</label><br>
             <input type="checkbox"  
             id="isMagicoItem"

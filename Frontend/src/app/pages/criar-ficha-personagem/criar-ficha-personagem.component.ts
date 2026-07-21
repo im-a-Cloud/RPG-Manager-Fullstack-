@@ -411,35 +411,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }, 5000);
   }
 
-  // ============================================
-  // HABILIDADES
-  // ============================================
-  adicionarHabilidade(): void {
-    if (this.novaHabilidade.nomeHabilidade?.trim() && this.novaHabilidade.origemHabilidade?.trim()) {
-      const habilidade: Habilidade = {
-        nomeHabilidade: this.novaHabilidade.nomeHabilidade || '',
-        origemHabilidade: this.novaHabilidade.origemHabilidade || '',
-        descricaoHabilidade: this.novaHabilidade.descricaoHabilidade || 'Sem descrição',
-        usosHabilidade: this.novaHabilidade.usosHabilidade || 0,
-        recargaHabilidade: this.novaHabilidade.recargaHabilidade || ''
-      };
-      
-      if (!this.personagem.habilidadesPersonagem) {
-        this.personagem.habilidadesPersonagem = [];
-      }
-      
-      this.personagem.habilidadesPersonagem.push(habilidade);
-      this.novaHabilidade = {
-        nomeHabilidade: '',
-        origemHabilidade: undefined,
-        descricaoHabilidade: ''
-      };
-      this.mostrarMensagem('✅ Habilidade adicionada!', 'success');
-    } else {
-      this.mostrarMensagem('⚠️ Preencha Nome e Origem da habilidade.', 'error');
-    }
-  }
-
   removerHabilidade(index: number): void {
     if (this.personagem.habilidadesPersonagem) {
       this.personagem.habilidadesPersonagem.splice(index, 1);
@@ -447,38 +418,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }
   }
 
-  // ============================================
-  // PROFICIÊNCIAS
-  // ============================================
-  adicionarProficiencia(): void {
-  if (!this.novaProficiencia.tipoProficiencia) {
-    this.mostrarMensagem('⚠️ Selecione o tipo de proficiência.', 'error');
-    return;
-  }
-
-  // Verifica se já existe esse tipo
-  const jaExiste = this.personagem.proficienciasPersonagem?.some(
-    p => p.tipoProficiencia === this.novaProficiencia.tipoProficiencia
-  );
-
-  if (jaExiste) {
-    this.mostrarMensagem('⚠️ Este tipo de proficiência já foi adicionado.', 'error');
-    return;
-  }
-
-  const proficiencia: Proficiencia = {
-    tipoProficiencia: this.novaProficiencia.tipoProficiencia as TipoProficiencia,
-    listaProficiencias: this.novaProficiencia.listaProficiencias || ''
-  };
-
-  if (!this.personagem.proficienciasPersonagem) {
-    this.personagem.proficienciasPersonagem = [];
-  }
-
-  this.personagem.proficienciasPersonagem.push(proficiencia);
-
-  this.mostrarMensagem('✅ Tipo de proficiência adicionado!', 'success');
-  }
 
   removerProficiencia(index: number): void {
     if (this.personagem.proficienciasPersonagem) {
@@ -491,39 +430,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // ============================================
   // ITENS
   // ============================================
-  /*
-  adicionarItem(): void {
-    if (!this.novoItem.nomeItem?.trim()) {
-      this.mostrarMensagem('⚠️ Informe o nome do item.', 'error');
-      return;
-    }
-    
-    const item: Item = {
-      nomeItem: this.novoItem.nomeItem,
-      raridadeItem: this.novoItem.raridadeItem,
-      quantidadeItem: this.novoItem.quantidadeItem,
-      pesoItem: this.novoItem.pesoItem,
-      tipoItem: this.novoItem.tipoItem,
-      precisaSintonizacao: false,
-      descricaoItem: this.novoItem.descricaoItem || ''
-    };
-    
-    if (!this.personagem.inventarioPersonagem) {
-      this.personagem.inventarioPersonagem = [];
-    }
-    
-    this.personagem.inventarioPersonagem.push(item);
-    this.novoItem = {
-      nomeItem: '',
-      raridadeItem: RaridadeItem.COMUM,
-      quantidadeItem: 0,
-      pesoItem: 0,
-      tipoItem: TipoItem.ARMA,
-      descricaoItem: ''
-    };
-    this.mostrarMensagem('✅ Item adicionado ao inventário!', 'success');
-  }
-  */
+
   selecionarItem(item: any): void {
     if (this.itemSelecionado === item) {
       this.itemSelecionado = null;
@@ -546,58 +453,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // ============================================
   // MAGIAS
   // ============================================
-  /*
-  adicionarMagia(): void {
-    if (!this.novaMagia.nomeMagia?.trim()) {
-      this.mostrarMensagem('⚠️ Informe o nome da magia.', 'error');
-      return;
-    }
 
-    const componentesMagia: ComponentesMagia = {
-      verbal: this.novaMagia.componentes?.verbal || false,
-      somatico: this.novaMagia.componentes?.somatico || false,
-      material: this.novaMagia.componentes?.material || false,
-      descricaoMaterial: this.novaMagia.componentes?.descricaoMaterial || ''
-    };
-
-    const magia: Magia = {
-      nomeMagia: this.novaMagia.nomeMagia || '',
-      nivelMagia: this.novaMagia.nivelMagia || '0',
-      tempoConjuracao: this.novaMagia.tempoConjuracao || '',
-      alcance: this.novaMagia.alcance || '',
-      componentes: componentesMagia,
-      ritual: this.novaMagia.ritual || false,
-      concentracao: this.novaMagia.concentracao || false,
-      duracao: this.novaMagia.duracao || '',
-      escola: this.novaMagia.escola || EscolaMagia.ABJURACAO,
-      descricao: this.novaMagia.descricao || ''
-    };
-    
-    if (!this.personagem.magias) {
-      this.personagem.magias = [];
-    }
-    
-    this.personagem.magias.push(magia);
-    this.novaMagia = {
-      nomeMagia: '',
-      nivelMagia: '0',
-      tempoConjuracao: '',
-      alcance: '',
-      componentes: {
-        verbal: false,
-        somatico: false,
-        material: false,
-        descricaoMaterial: ''
-      },
-      ritual: false,
-      concentracao: false,
-      duracao: '',
-      escola: EscolaMagia.ABJURACAO,
-      descricao: ''
-    };
-    this.mostrarMensagem('✅ Magia adicionada!', 'success');
-  }
-  */
   selecionarMagia(magia: any): void {
 
     console.log("Antes:", this.magiaSelecionada);
@@ -744,9 +600,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
           }
       });
   }
-  // ============================================
-  // SALVAR PERSONAGEM NO BACKEND
-  // ============================================
   salvarPersonagem(): void {
 
     console.log('========================================');
@@ -1075,8 +928,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza
   }
-  testarBotao(): void {
-      alert('🟢 BOTÃO DE TESTE FUNCIONOU!');
-      console.log('🟢 BOTÃO DE TESTE FUNCIONOU!');
+  salvarTudo(): void{
+    this.salvarHabilidade();
+    this.salvarPersonagem();
+    this.salvarItem();
+    this.salvarProficiencia();
+    this.salvarMagia();
   }
 }
