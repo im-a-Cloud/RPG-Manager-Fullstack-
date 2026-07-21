@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/magia")
+@RequestMapping("/magias")
 @CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
 public class MagiaController {
 
@@ -25,12 +25,11 @@ public class MagiaController {
 
     public MagiaController(MagiaService magiaService) {
     }
-    @PostMapping("/criar")
+    @PostMapping
     public ResponseEntity<MagiaDTO> create(@Valid @RequestBody MagiaDTO magiaDTO){
         Magia magia = magiaMapper.toEntity(magiaDTO);
         magiaService.save(magia);
         return new ResponseEntity<>(magiaMapper.toDto(magia), HttpStatus.CREATED);
-
     }
     @GetMapping("/listar/{idMagia}")
     public ResponseEntity<MagiaDTO> getMagia(@PathVariable("idMagia") Long idMagia) {

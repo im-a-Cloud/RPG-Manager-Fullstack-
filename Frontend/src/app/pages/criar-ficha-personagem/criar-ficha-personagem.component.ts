@@ -6,21 +6,23 @@ import { ChangeDetectorRef } from '@angular/core';
 
 import { PersonagemService } from '../../core/services/personagem.service';
 import { RpgService } from '../../core/services/rpg.service';
+import { ClasseService } from '../../core/services/classe.service';
+import { HabilidadeService} from '../../core/services/habilidade.service';
+import { ProficienciaService} from '../../core/services/proficiencia.service'; 
+import { MagiaService } from '../../core/services/magia.service'; 
+
 import { Personagem } from '../../models/personagem';
 import { Habilidade } from '../../models/habilidade';
 import { Proficiencia } from '../../models/proficiencia';
 import { Magia } from '../../models/magia';
 import { ComponentesMagia } from '../../models/componentesMagia';
 import { Item } from '../../models/item';
+
 import { TipoItem } from '../../models/enums/tipoItem.enum';
 import { EscolaMagia } from '../../models/enums/escolaMagia.enum';
 import { TipoProficiencia } from '../../models/enums/tipoProficiencia.enum';
-
 import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
 
-import { ClasseService } from '../../core/services/classe.service';
-import { HabilidadeService} from '../../core/services/habilidade.service';
-import { ProficienciaService} from '../../core/services/proficiencia.service'; 
 import { Classe } from '../../models/classe';
 
 @Component({
@@ -37,12 +39,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
   private classeService = inject(ClasseService);
   private habilidadeService = inject(HabilidadeService);  
   private proficienciaService = inject(ProficienciaService);
+  private magiaService = inject(MagiaService);
   classesDisponiveis: Classe[] = [];
 
-  
-  // ============================================
-  // PERSONAGEM - Usando o modelo correto
-  // ============================================
   personagem: Personagem = {
     nomePersonagem: '',
     nivelPersonagem: 1,
@@ -68,14 +67,14 @@ export class CriarFichaPersonagemComponent implements OnInit {
   };
 
   // ============================================
-  // IMAGEM
+  // Foto do personagem
   // ============================================
   imagemPreview: string | null = null;
   nomeArquivo = '';
   imagemBase64: string | null = null;
 
   // ============================================
-  // UI STATE
+  // deixar partes da UI visiveis/ocultas
   // ============================================
   visivel: { [key: string]: boolean } = {
     addProficiencia: false,
@@ -116,26 +115,26 @@ export class CriarFichaPersonagemComponent implements OnInit {
   magiaSelecionada: any = null;
 
   novaMagia: Partial<Magia> = {
-    nomeMagia: '',
-    nivelMagia: '0',
-    tempoConjuracao: '',
-    alcance: '',
-    componentes: 
-    { verbal: false, 
-      somatico: false, 
-      material: false, 
-      descricaoMaterial: '' 
+    name: '',                       // ← name (antigo nomeMagia)
+    level: '0',                     // ← level (antigo nivelMagia)
+    casting_time: '',               // ← casting_time (antigo tempoConjuracao)
+    range: '',                      // ← range (antigo alcance)
+    components: {
+        verbal: false,
+        somatic: false,
+        material: false,
+        raw: ''    // ← material_description
     },
+    duration: '',                   // ← duration (antigo duracao)
+    school: '',                     // ← school (antigo escola)
     ritual: false,
-    concentracao: false,
-    duracao: '',
-    escola: undefined,
-    descricao: ''
+    concentration: false,           // ← concentration (antigo concentracao)
+    description: '',                // ← description (antigo descricao)
+    classes: [],
+    tags: [],
+    type: ''
   };
 
-  // ============================================
-  // PERÍCIAS (mantido do seu código)
-  // ============================================
   listaPericias = [
     'acrobacia', 'adestrarAnimais', 'arcanismo', 'atletismo',
     'enganacao', 'historia', 'intuicao', 'intimidacao',
@@ -239,9 +238,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
       }
     }
 
-  // ============================================
-  // GETTERS - BÔNUS DE ATRIBUTOS
-  // ============================================
   get bonusForca() {
     return this.rpgService.calcularBonusAtributo(this.personagem.valorForca);
   }
@@ -340,7 +336,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   get magiasPorNivel() {
     const grupos: { [nivel: string]: Magia[] } = {};
     for (const magia of this.personagem.magias || []) {
-      const nivel = magia.nivelMagia || '0';
+      const nivel = magia.level || '0';
       if (!grupos[nivel]) {
         grupos[nivel] = [];
       }
@@ -358,7 +354,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   // ============================================
-  // IMAGEM
+  // IMAGEM DO PERSONAGEM
   // ============================================
   onSelectedFile(event: any): void {
     const file = event.target.files[0];
@@ -545,6 +541,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // ============================================
   // MAGIAS
   // ============================================
+  /*
   adicionarMagia(): void {
     if (!this.novaMagia.nomeMagia?.trim()) {
       this.mostrarMensagem('⚠️ Informe o nome da magia.', 'error');
@@ -595,7 +592,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     };
     this.mostrarMensagem('✅ Magia adicionada!', 'success');
   }
-
+  */
   selecionarMagia(magia: any): void {
 
     console.log("Antes:", this.magiaSelecionada);
@@ -624,6 +621,124 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }
   }
 
+  salvarMagia(): void {
+      // ============================================
+      // 1️⃣ VALIDAÇÕES (com os novos nomes)
+      // ============================================
+      if (!this.novaMagia.name?.trim()) {
+          this.mostrarMensagem('⚠️ O nome da magia é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.level?.trim()) {
+          this.mostrarMensagem('⚠️ O nível da magia é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.casting_time?.trim()) {
+          this.mostrarMensagem('⚠️ O tempo de conjuração é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.range?.trim()) {
+          this.mostrarMensagem('⚠️ O alcance é obrigatório!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.duration?.trim()) {
+          this.mostrarMensagem('⚠️ A duração é obrigatória!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.school?.trim()) {
+          this.mostrarMensagem('⚠️ A escola da magia é obrigatória!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.description?.trim()) {
+          this.mostrarMensagem('⚠️ A descrição da magia é obrigatória!', 'error');
+          return;
+      }
+
+      if (!this.novaMagia.components?.verbal && 
+          !this.novaMagia.components?.somatic && 
+          !this.novaMagia.components?.material) {
+          this.mostrarMensagem('⚠️ Selecione pelo menos um componente (V, S ou M)!', 'error');
+          return;
+      }
+
+      // ============================================
+      // 2️⃣ MONTA O DTO (com os nomes corretos)
+      // ============================================
+      const dadosMagia = {
+          name: this.novaMagia.name,
+          level: this.novaMagia.level,
+          casting_time: this.novaMagia.casting_time,
+          range: this.novaMagia.range,
+          components: {
+              verbal: this.novaMagia.components?.verbal || false,
+              somatic: this.novaMagia.components?.somatic || false,
+              material: this.novaMagia.components?.material || false,
+              raw: this.novaMagia.components?.raw || ''
+          },
+          duration: this.novaMagia.duration,
+          school: this.novaMagia.school,
+          ritual: this.novaMagia.ritual || false,
+          concentration: this.novaMagia.concentration || false,
+          description: this.novaMagia.description,
+          classes: this.novaMagia.classes || [],
+          tags: this.novaMagia.tags || [],
+          type: this.novaMagia.type || ''
+      };
+
+      console.log('🔹 enviando magia:', dadosMagia);
+
+      // ============================================
+      // 3️⃣ CHAMA O SERVICE
+      // ============================================
+      this.magiaService.criarMagia(dadosMagia).subscribe({
+          next: (response) => {
+              console.log('✅ Magia criada:', response);
+
+              if (!this.personagem.magias) {
+                  this.personagem.magias = [];
+              }
+
+              const novaMagia = {
+                  idMagia: response.idMagia || response.id,
+                  name: response.name || dadosMagia.name,
+                  level: response.level || dadosMagia.level,
+                  casting_time: response.casting_time || dadosMagia.casting_time,
+                  range: response.range || dadosMagia.range,
+                  components: response.components || dadosMagia.components,
+                  duration: response.duration || dadosMagia.duration,
+                  school: response.school || dadosMagia.school,
+                  ritual: response.ritual || dadosMagia.ritual,
+                  concentration: response.concentration || dadosMagia.concentration,
+                  description: response.description || dadosMagia.description,
+                  classes: response.classes || [],
+                  tags: response.tags || [],
+                  type: response.type || ''
+              };
+
+              console.log('📌 Adicionando na lista:', novaMagia);
+              this.personagem.magias.push(novaMagia);
+
+              this.cdr.detectChanges();
+              console.log('📋 Lista de magias atualizada:', this.personagem.magias);
+
+              this.mostrarMensagem(`✅ Magia "${response.name || dadosMagia.name}" salva!`, 'success');
+
+              // ============================================
+              // 4️⃣ LIMPA O FORMULÁRIO
+              // ============================================
+          },
+          error: (error) => {
+              console.error('❌ Erro ao salvar magia:', error);
+              this.mostrarMensagem('❌ Erro ao salvar magia. Tente novamente.', 'error');
+          }
+      });
+  }
   // ============================================
   // SALVAR PERSONAGEM NO BACKEND
   // ============================================

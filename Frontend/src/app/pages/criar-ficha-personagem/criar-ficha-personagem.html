@@ -708,35 +708,35 @@
         <div class="nomeMagiaMenu">
             <div *ngFor="let magia of getMagiasPorNivel('0')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                <div class="name" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.material ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -748,34 +748,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('1')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.material ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -786,34 +786,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('2')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.material ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -825,34 +825,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('3')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.material ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -867,34 +867,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('4')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -906,34 +906,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('5')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -945,34 +945,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('6')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes!.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes!.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes!.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes!.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -987,34 +987,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('7')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes!.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes!.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes!.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes!.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -1026,34 +1026,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('8')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -1065,34 +1065,34 @@
             <div *ngFor="let magia of getMagiasPorNivel('9')" class="magia-container">
                 <!-- Nome da magia (clicável) -->
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.nomeMagia }}</h4>
+                    <h4>{{ magia.name }}</h4>
                 </div>
         <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.nivelMagia }}</h4>
+            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.tempoConjuracao }}</h4>
+            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
 
-            <h4><strong>Área/Alcance:</strong> {{ magia.alcance }}</h4>
+            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
 
             <h4><strong>Componentes:</strong></h4>
 
             <p>
-                V: {{ magia.componentes.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.componentes.somatico ? 'Sim' : 'Não' }} |
-                M: {{ magia.componentes.material ? 'Sim' : 'Não' }}
+                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
+                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
+                M: {{ magia.components.material ? 'Sim' : 'Não' }}
             </p>
 
-            <h4><strong>Material:</strong> {{ magia.componentes.descricaoMaterial }}</h4>
+            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Duração:</strong> {{ magia.duracao }}</h4>
+            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
 
             <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Concentração:</strong> {{ magia.concentracao ? 'Sim' : 'Não' }}</h4>
+            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
 
-            <h4><strong>Escola:</strong> {{ magia.escola }}</h4>
+            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
 
-            <h4><strong>Descrição:</strong> {{ magia.descricao }}</h4>
+            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
         </div>
         </div>
             <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
@@ -1105,14 +1105,14 @@
                 <input type="text" 
                     id="nomeMagia" 
                     name="nomeMagia" 
-                    [(ngModel)]="novaMagia.nomeMagia"
+                    [(ngModel)]="novaMagia.name"
                     required><br>
                 
                 <label for="nivelMagia">Nível magia</label><br>
                 <input type="text" 
                     id="nivelMagia" 
                     name="nivelMagia" 
-                    [(ngModel)]="novaMagia.nivelMagia"
+                    [(ngModel)]="novaMagia.level"
                     min = "0"
                     max = "9"
                     placeholder="0 = Truque, 1-9 = Nível"
@@ -1122,7 +1122,7 @@
                 <input type="text" 
                     id="tempoConjuracaoMagia" 
                     name="tempoConjuracaoMagia" 
-                    [(ngModel)]="novaMagia.tempoConjuracao"
+                    [(ngModel)]="novaMagia.casting_time"
                     placeholder="Ex: 1 ação, 1 minuto, 1 hora"
                     required><br>
                 
@@ -1130,7 +1130,7 @@
                 <input type="text" 
                     id="areaMagia" 
                     name="areaMagia" 
-                    [(ngModel)]="novaMagia.alcance"
+                    [(ngModel)]="novaMagia.range"
                     placeholder="Ex: Próprio, Toque, 30 pés"
                     required><br>
                 
@@ -1138,19 +1138,19 @@
                 <input type="checkbox" 
                     name="componentesMagia" 
                     value="V"
-                    [(ngModel)]="novaMagia.componentes!.verbal"> V
+                    [(ngModel)]="novaMagia.components!.verbal"> V
                 <input type="checkbox" 
                     name="componentesMagia" 
                     value="S"
-                    [(ngModel)]="novaMagia.componentes!.somatico"> S
+                    [(ngModel)]="novaMagia.components!.somatic"> S
                 <input type="checkbox" 
                     name="componentesMagia" 
                     value="M"
-                    [(ngModel)]="novaMagia.componentes!.material"> M
+                    [(ngModel)]="novaMagia.components!.material"> M
                 <input type="text" 
                     id="componentesMaterial" 
                     name="componentesMaterial" 
-                    [(ngModel)]="novaMagia.componentes!.descricaoMaterial"
+                    [(ngModel)]="novaMagia.components!.raw"
                     placeholder="Material (se houver)"><br>
                 <input type="checkbox" 
                     id="ritualMagia" 
@@ -1160,13 +1160,13 @@
                 <input type="checkbox" 
                     id="concentracaoMagia" 
                     name="concentracaoMagia"
-                    [(ngModel)]="novaMagia.concentracao"> Concentração<br>
+                    [(ngModel)]="novaMagia.concentration"> Concentração<br>
                 
                 <label for="duracaoMagia">Duração</label><br>
                 <input type="text" 
                     id="duracaoMagia" 
                     name="duracaoMagia" 
-                    [(ngModel)]="novaMagia.duracao"
+                    [(ngModel)]="novaMagia.duration"
                     placeholder="Ex: Instantânea, 1 minuto, 1 hora"
                     required><br>
 
@@ -1174,7 +1174,7 @@
                 <select 
                     name="escolaMagia" 
                     id="escolaMagia"
-                    [(ngModel)]="novaMagia.escola"
+                    [(ngModel)]="novaMagia.school"
                     required>
                     <option value="" disabled selected>Selecione a escola de magia...</option>
                     <option value="ABJURACAO">Abjuração</option>
@@ -1192,9 +1192,9 @@
                         name="descricaoMagia" 
                         rows="4" 
                         cols="50"
-                        [(ngModel)]="novaMagia.descricao"></textarea><br>
+                        [(ngModel)]="novaMagia.description"></textarea><br>
                 
-                <button (click)="adicionarMagia()" class="btn-adicionar">Adicionar Magia</button>
+                <button (click)="salvarMagia()" class="btn-adicionar">Adicionar Magia</button>
             </div>
             </div>
         </div>
