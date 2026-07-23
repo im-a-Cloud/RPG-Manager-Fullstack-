@@ -98,8 +98,12 @@ public class Personagem extends AbstractModel {
     private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
     public Personagem() {
+        this.habilidadesPersonagem = new ArrayList<>();
+        this.proficienciasPersonagem = new ArrayList<>();
+        this.inventarioPersonagem = new ArrayList<>();
+        this.magias = new ArrayList<>();
+        this.periciasPersonagem = new ArrayList<>();
     }
-
     public Personagem(String nomePersonagem, int nivelPersonagem, int valorForca, int valorDestreza, int valorConstituicao, int valorInteligencia, int valorSabedoria, int valorCarisma, Classe classePersonagem, List<Magia> magias, List<Item> inventarioPersonagem, List<PersonagemPericia> periciasPersonagem, List<Habilidade> habilidadesPersonagem) {
         this.nomePersonagem = nomePersonagem;
         this.nivelPersonagem = nivelPersonagem;
@@ -110,10 +114,10 @@ public class Personagem extends AbstractModel {
         this.valorSabedoria = valorSabedoria;
         this.valorCarisma = valorCarisma;
         this.classePersonagem = classePersonagem;
-        this.magias = magias;
-        this.inventarioPersonagem = inventarioPersonagem;
-        this.periciasPersonagem = periciasPersonagem;
-        this.habilidadesPersonagem = habilidadesPersonagem;
+        this.magias = magias != null ? magias : new ArrayList<>();
+        this.inventarioPersonagem = inventarioPersonagem != null ? inventarioPersonagem : new ArrayList<>();
+        this.periciasPersonagem = periciasPersonagem != null ? periciasPersonagem : new ArrayList<>();
+        this.habilidadesPersonagem = habilidadesPersonagem != null ? habilidadesPersonagem : new ArrayList<>();
     }
 
     public void adicionarHabilidade(Habilidade habilidade) {
@@ -156,27 +160,35 @@ public class Personagem extends AbstractModel {
     }
 
     public List<Habilidade> getHabilidadesPersonagem() {
+        if (habilidadesPersonagem == null) {
+            habilidadesPersonagem = new ArrayList<>();
+        }
         return habilidadesPersonagem;
     }
 
     public void setHabilidadesPersonagem(List<Habilidade> habilidadesPersonagem) {
-        this.habilidadesPersonagem = habilidadesPersonagem;
-    }
+        this.habilidadesPersonagem = habilidadesPersonagem != null ? habilidadesPersonagem : new ArrayList<>();    }
 
     public List<PersonagemPericia> getPericiasPersonagem() {
+        if (periciasPersonagem == null) {
+            periciasPersonagem = new ArrayList<>();
+        }
         return periciasPersonagem;
     }
 
     public void setPericiasPersonagem(List<PersonagemPericia> periciasPersonagem) {
-        this.periciasPersonagem = periciasPersonagem;
+        this.proficienciasPersonagem = proficienciasPersonagem != null ? proficienciasPersonagem : new ArrayList<>();
     }
 
     public List<Magia> getMagias() {
+        if (magias == null) {
+            magias = new ArrayList<>();
+        }
         return magias;
     }
 
     public void setMagias(List<Magia> magias) {
-        this.magias = magias;
+        this.magias = magias != null ? magias : new ArrayList<>();
     }
 
     public void removerItem(Item item) {
@@ -184,11 +196,14 @@ public class Personagem extends AbstractModel {
     }
 
     public List<Item> getInventarioPersonagem() {
+        if (inventarioPersonagem == null) {
+            inventarioPersonagem = new ArrayList<>();
+        }
         return inventarioPersonagem;
     }
 
     public void setInventarioPersonagem(List<Item> inventarioPersonagem) {
-        this.inventarioPersonagem = inventarioPersonagem;
+        this.inventarioPersonagem = inventarioPersonagem != null ? inventarioPersonagem  : new ArrayList<>();
     }
 
     public Classe getClassePersonagem() {
@@ -378,6 +393,7 @@ public class Personagem extends AbstractModel {
     public int getQuantidadeDadosVida() {
         return this.nivelPersonagem;
     }
+
     public int getPontosVidaPersonagem() {
         return pontosVidaPersonagem;
     }
@@ -387,11 +403,14 @@ public class Personagem extends AbstractModel {
     }
 
     public List<Proficiencia> getProficienciasPersonagem() {
+        if (proficienciasPersonagem == null) {
+            proficienciasPersonagem = new ArrayList<>();
+        }
         return proficienciasPersonagem;
     }
 
     public void setProficienciasPersonagem(List<Proficiencia> proficienciasPersonagem) {
-        this.proficienciasPersonagem = proficienciasPersonagem;
+        this.proficienciasPersonagem = proficienciasPersonagem != null ? proficienciasPersonagem : new ArrayList<>();
     }
     public Long getId() {
         return super.getId();  // ← CHAMA O GETTER DO AbstractModel
