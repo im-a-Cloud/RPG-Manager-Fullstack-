@@ -10,5 +10,6 @@ public record MagiaListDTO(
         String casting_time,
         String duration,
         String range,
-        boolean ritual
+        boolean ritual,
+        boolean concentration
 ) {}

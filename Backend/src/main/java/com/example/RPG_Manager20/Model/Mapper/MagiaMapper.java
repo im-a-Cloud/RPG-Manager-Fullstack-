@@ -22,7 +22,6 @@ public interface MagiaMapper {
     @Mapping(target = "components", source = "components")
     MagiaDTO toDto(Magia magia);
 
-
     MagiaListDTO toListDTO(Magia magia);
 
     //Mapear componentes

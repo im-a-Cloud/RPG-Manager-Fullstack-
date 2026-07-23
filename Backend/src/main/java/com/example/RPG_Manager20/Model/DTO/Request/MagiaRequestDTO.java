@@ -15,6 +15,7 @@ public record MagiaRequestDTO(
     String duration,
     String range,
     boolean ritual,
+    boolean concentration,
     String school,
     List<String> tags,
     String type
@@ -30,6 +31,7 @@ public record MagiaRequestDTO(
         if(duration == null) duration = "";
         if(range == null) range = "";
         if(ritual) ritual = false;
+        if(concentration) concentration = false;
         if(school == null) school = "";
         if(tags == null) tags = new ArrayList<>();
         if(type == null) type = "";

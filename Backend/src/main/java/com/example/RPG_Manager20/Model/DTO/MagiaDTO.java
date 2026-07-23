@@ -14,7 +14,8 @@ public record MagiaDTO(
         String level,
         String name,
         String range,
-        boolean ritual,
+        Boolean ritual,
+        Boolean concentration,
         String school,
         List<String> tags,
         String type

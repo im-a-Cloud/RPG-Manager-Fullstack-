@@ -75,7 +75,7 @@ public class Personagem extends AbstractModel {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "personagem_id")  // ← FK na tabela habilidade
-    private List<Habilidade> habilidadesPersonagem = new ArrayList<>();
+    private List<Habilidade> habilidades = new ArrayList<>();
 
     // 3️⃣ 🔥 PROFICIÊNCIAS (OneToMany com CASCADE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -98,13 +98,13 @@ public class Personagem extends AbstractModel {
     private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
     public Personagem() {
-        this.habilidadesPersonagem = new ArrayList<>();
+        this.habilidades = new ArrayList<>();
         this.proficienciasPersonagem = new ArrayList<>();
         this.inventarioPersonagem = new ArrayList<>();
         this.magias = new ArrayList<>();
         this.periciasPersonagem = new ArrayList<>();
     }
-    public Personagem(String nomePersonagem, int nivelPersonagem, int valorForca, int valorDestreza, int valorConstituicao, int valorInteligencia, int valorSabedoria, int valorCarisma, Classe classePersonagem, List<Magia> magias, List<Item> inventarioPersonagem, List<PersonagemPericia> periciasPersonagem, List<Habilidade> habilidadesPersonagem) {
+    public Personagem(String nomePersonagem, int nivelPersonagem, int valorForca, int valorDestreza, int valorConstituicao, int valorInteligencia, int valorSabedoria, int valorCarisma, Classe classePersonagem, List<Magia> magias, List<Item> inventarioPersonagem, List<PersonagemPericia> periciasPersonagem, List<Habilidade> habilidades) {
         this.nomePersonagem = nomePersonagem;
         this.nivelPersonagem = nivelPersonagem;
         this.valorForca = valorForca;
@@ -117,15 +117,15 @@ public class Personagem extends AbstractModel {
         this.magias = magias != null ? magias : new ArrayList<>();
         this.inventarioPersonagem = inventarioPersonagem != null ? inventarioPersonagem : new ArrayList<>();
         this.periciasPersonagem = periciasPersonagem != null ? periciasPersonagem : new ArrayList<>();
-        this.habilidadesPersonagem = habilidadesPersonagem != null ? habilidadesPersonagem : new ArrayList<>();
+        this.habilidades = habilidades != null ? habilidades : new ArrayList<>();
     }
 
     public void adicionarHabilidade(Habilidade habilidade) {
-        this.habilidadesPersonagem.add(habilidade);
+        this.habilidades.add(habilidade);
     }
 
     public void removerHabilidade(Long habilidadeId) {
-        this.habilidadesPersonagem.removeIf(h -> h.getId().equals(habilidadeId));
+        this.habilidades.removeIf(h -> h.getId().equals(habilidadeId));
     }
 
     public void adicionarItem(Item item) {
@@ -159,15 +159,13 @@ public class Personagem extends AbstractModel {
         this.proficienciasPersonagem.removeIf(p -> p.getId().equals(proficienciaId));
     }
 
-    public List<Habilidade> getHabilidadesPersonagem() {
-        if (habilidadesPersonagem == null) {
-            habilidadesPersonagem = new ArrayList<>();
-        }
-        return habilidadesPersonagem;
+    public List<Habilidade> getHabilidades() {
+        return habilidades;
     }
 
-    public void setHabilidadesPersonagem(List<Habilidade> habilidadesPersonagem) {
-        this.habilidadesPersonagem = habilidadesPersonagem != null ? habilidadesPersonagem : new ArrayList<>();    }
+    public void setHabilidades(List<Habilidade> habilidades) {
+        this.habilidades = habilidades;
+    }
 
     public List<PersonagemPericia> getPericiasPersonagem() {
         if (periciasPersonagem == null) {

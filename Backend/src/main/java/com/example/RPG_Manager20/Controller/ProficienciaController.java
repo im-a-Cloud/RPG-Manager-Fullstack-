@@ -31,12 +31,19 @@ public class ProficienciaController {
     // POST - Criar proficiência
     @PostMapping
     public ResponseEntity<ProficienciaDTO> criarProficiencia(@Valid @RequestBody ProficienciaDTO proficienciaDTO) {
-        System.out.println("Recebido: " + proficienciaDTO);
-
+        System.out.println("📤 POST /proficiencias - Criando proficiência");
+        System.out.println("   Tipo: " + proficienciaDTO.tipoProficiencia());
+        System.out.println("   Lista: " + proficienciaDTO.listaProficiencias());
         Proficiencia proficiencia = proficienciaMapper.toEntity(proficienciaDTO);
-        Proficiencia savedProficiencia = proficienciaService.save(proficiencia);
 
-        return new ResponseEntity<>(proficienciaMapper.toDto(savedProficiencia), HttpStatus.CREATED);
+        try {
+            ProficienciaDTO saved = proficienciaMapper.toDto(proficienciaService.save(proficiencia));
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            System.err.println("❌ ERRO: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // GET - Listar todas

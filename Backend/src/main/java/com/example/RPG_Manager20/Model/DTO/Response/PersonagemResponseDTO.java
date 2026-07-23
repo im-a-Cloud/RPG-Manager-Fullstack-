@@ -1,14 +1,13 @@
 package com.example.RPG_Manager20.Model.DTO.Response;
 
-import com.example.RPG_Manager20.Model.DTO.HabilidadeDTO;
-import com.example.RPG_Manager20.Model.DTO.ItemDTO;
-import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
-import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
+import com.example.RPG_Manager20.Model.DTO.*;
+import com.example.RPG_Manager20.Model.Entities.Components;
 import com.example.RPG_Manager20.Model.Enums.*;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
 import com.example.RPG_Manager20.Model.Entities.Classe;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ public record PersonagemResponseDTO(
         List<PericiaPersonagemDTO> pericias,
         List<HabilidadeDTO> habilidades,
         List<ProficienciaDTO> proficiencia,
+        List<MagiaDTO> magias,  // ← ADICIONADO!
 
         String historiaPersonagem,
         String aparenciaPersonagem,
@@ -38,7 +38,6 @@ public record PersonagemResponseDTO(
         @JsonProperty("ca") int ca,
         @JsonProperty("iniciativa") int iniciativa,
         @JsonProperty("movimento") int movimento,
-        // Combate
         int pontosVidaPersonagem
 ) {
 
@@ -83,13 +82,25 @@ public record PersonagemResponseDTO(
             int cd,
             int ataque
     ) {}
-
-    public record ProficienciaInfo(
-            TipoProficiencia tipoProficiencia,
-            String listaProficiencias
-    ){}
-
+    private static ComponentsDTO toComponentsDTO(Components components) {
+        if (components == null) {
+            return null;
+        }
+        return new ComponentsDTO(
+                components.isVerbal(),
+                components.getRaw(),
+                components.isSomatic(),
+                components.isMaterial()
+        );
+    }
+    // ============================================
+    // MÉTODO FACTORY
+    // ============================================
     public static PersonagemResponseDTO from(Personagem personagem, Classe classe) {
+        if (personagem == null || classe == null) {
+            throw new IllegalArgumentException("Personagem e Classe não podem ser nulos");
+        }
+
         int nivel = personagem.getNivelPersonagem();
         int bonusProficiencia = ((nivel + 3) / 4) + 1;
         int bonusDestreza = (personagem.getValorDestreza() - 10) / 2;
@@ -99,6 +110,9 @@ public record PersonagemResponseDTO(
         int cd = 0;
         int ataque = 0;
 
+        // ============================================
+        // CÁLCULO DE CONJURAÇÃO
+        // ============================================
         if (classe.isConjurador() && classe.getAtributoConjuracao() != null) {
             int valorAtributo = switch (classe.getAtributoConjuracao()) {
                 case FORCA -> personagem.getValorForca();
@@ -114,8 +128,11 @@ public record PersonagemResponseDTO(
             ataque = bonusProficiencia + modificadorConjuracao;
         }
 
-        // Converter inventário
-        List<ItemDTO> inventarioDTO = personagem.getInventarioPersonagem().stream()
+        // ============================================
+        // 🔥 CONVERTER INVENTÁRIO (COM VERIFICAÇÃO DE NULL)
+        // ============================================
+        List<ItemDTO> inventarioDTO = personagem.getInventarioPersonagem() != null
+                ? personagem.getInventarioPersonagem().stream()
                 .map(item -> new ItemDTO(
                         item.getNomeItem(),
                         item.getDescricaoItem(),
@@ -124,15 +141,26 @@ public record PersonagemResponseDTO(
                         item.getPesoItem(),
                         item.isMagico(),
                         item.isPrecisaSintonizacao(),
-                        item.getQuantidade()
+                        item.getQuantidade(),
+                        item.getTipoItem()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
-        List<PericiaPersonagemDTO> periciasDTO = personagem.getPericiasPersonagem().stream()
+        // ============================================
+        // 🔥 CONVERTER PERÍCIAS (COM VERIFICAÇÃO DE NULL)
+        // ============================================
+        List<PericiaPersonagemDTO> periciasDTO = personagem.getPericiasPersonagem() != null
+                ? personagem.getPericiasPersonagem().stream()
                 .map(pp -> PericiaPersonagemDTO.from(pp, personagem, bonusProficiencia))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
-        List<HabilidadeDTO> habilidadesDTO = personagem.getHabilidadesPersonagem().stream()
+        // ============================================
+        // 🔥 CONVERTER HABILIDADES (COM VERIFICAÇÃO DE NULL)
+        // ============================================
+        List<HabilidadeDTO> habilidadesDTO = personagem.getHabilidades() != null
+                ? personagem.getHabilidades().stream()
                 .map(habilidade -> new HabilidadeDTO(
                         habilidade.getNomeHabilidade(),
                         habilidade.getDescricaoHabilidade(),
@@ -140,15 +168,55 @@ public record PersonagemResponseDTO(
                         habilidade.getUsosHabilidade(),
                         habilidade.getRecargaHabilidade()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
-        List<ProficienciaDTO> proficienciaDTO = personagem.getProficienciasPersonagem().stream()
+        // ============================================
+        // 🔥 CONVERTER PROFICIÊNCIAS (COM VERIFICAÇÃO DE NULL)
+        // ============================================
+        List<ProficienciaDTO> proficienciaDTO = personagem.getProficienciasPersonagem() != null
+                ? personagem.getProficienciasPersonagem().stream()
                 .map(proficiencia -> new ProficienciaDTO(
                         proficiencia.getTipoProficiencia(),
                         proficiencia.getListaProficiencias()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
+        // ============================================
+        // 🔥 CONVERTER MAGIAS (COM VERIFICAÇÃO DE NULL)
+        // ============================================
+        List<MagiaDTO> magiasDTO = personagem.getMagias() != null
+                ? personagem.getMagias().stream()
+                .map(magia -> new MagiaDTO(
+                        magia.getCasting_time(),     // 1 - casting_time
+                        magia.getClasses(),         // 2 - classes
+                        toComponentsDTO(magia.getComponents()),  // ← MÉTODO AUXILIAR!
+                        magia.getDescription(),     // 4 - description
+                        magia.getDuration(),        // 5 - duration
+                        magia.getLevel(),           // 6 - level
+                        magia.getName(),            // 7 - name
+                        magia.getRange(),           // 8 - range
+                        magia.isRitual(),           // 9 - ritual
+                        magia.isConcentration(),    // 10 - concentration
+                        magia.getSchool(),          // 11 - school
+                        magia.getTags(),            // 12 - tags
+                        magia.getType()             // 13 - type
+                ))
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        // ============================================
+        // LOG PARA DEBUG
+        // ============================================
+        System.out.println("📊 RESPOSTA - Habilidades: " + habilidadesDTO.size());
+        System.out.println("📊 RESPOSTA - Magias: " + magiasDTO.size());
+        System.out.println("📊 RESPOSTA - Itens: " + inventarioDTO.size());
+        System.out.println("📊 RESPOSTA - Proficiências: " + proficienciaDTO.size());
+
+        // ============================================
+        // RETORNAR DTO
+        // ============================================
         return new PersonagemResponseDTO(
                 personagem.getId(),
                 personagem.getNomePersonagem(),
@@ -174,6 +242,7 @@ public record PersonagemResponseDTO(
                 periciasDTO,
                 habilidadesDTO,
                 proficienciaDTO,
+                magiasDTO,  // ← ADICIONADO!
                 personagem.getHistoriaPersonagem(),
                 personagem.getAparenciaPersonagem(),
                 personagem.getIdeaisPersonagem(),

@@ -1,6 +1,7 @@
 package com.example.RPG_Manager20.Model.DTO;
 
 import com.example.RPG_Manager20.Model.Enums.RaridadeItem;
+import com.example.RPG_Manager20.Model.Enums.TipoItem;
 
 public record ItemDTO (
         String nomeItem,
@@ -10,7 +11,8 @@ public record ItemDTO (
         Double  pesoItem,
         Boolean  isMagico,
         Boolean  precisaSintonizacao,
-        Integer quantidade
+        Integer quantidade,
+        TipoItem tipoItem
 ) {
     public ItemDTO {
         if (nomeItem == null) nomeItem = "";
@@ -21,5 +23,6 @@ public record ItemDTO (
         if (isMagico == null) isMagico = false;
         if (precisaSintonizacao == null) precisaSintonizacao = false;
         if (quantidade == null) quantidade = 1;
+        if (tipoItem == null) tipoItem = tipoItem.ARMA;
     }
 }

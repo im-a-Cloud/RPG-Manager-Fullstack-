@@ -28,13 +28,11 @@ public interface PersonagemMapper {
     @Mapping(target = "pontosVidaPersonagem", source = "pontosVida")
 
     // 🔥 LISTAS - MAPEAMENTO
-    @Mapping(source = "habilidades", target = "habilidadesPersonagem")
+    @Mapping(source = "habilidades", target = "habilidades")
     @Mapping(source = "proficiencias", target = "proficienciasPersonagem")
     @Mapping(source = "inventario", target = "inventarioPersonagem")
     @Mapping(source = "magias", target = "magias")
-    // 🔥 PERÍCIAS - USA O PericiaMapper
     @Mapping(source = "pericias", target = "periciasPersonagem", qualifiedByName = "mapPericias")
-
     Personagem toEntity(PersonagemRequestDTO dto);
 
     // ============================================

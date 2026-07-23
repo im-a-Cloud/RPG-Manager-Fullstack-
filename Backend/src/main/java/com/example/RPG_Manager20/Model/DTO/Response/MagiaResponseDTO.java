@@ -13,6 +13,7 @@ public record MagiaResponseDTO (
         String duration,
         String range,
         boolean ritual,
+        boolean concentration,
         String school,
         List<String> tags,
         String type

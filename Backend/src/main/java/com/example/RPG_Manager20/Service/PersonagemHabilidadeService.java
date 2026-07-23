@@ -52,12 +52,12 @@ public class PersonagemHabilidadeService {
         Personagem personagem = personagemService.findById(idPersonagem);
         Habilidade habilidade = habilidadeService.findById(idHabilidade);
 
-        if (personagem.getHabilidadesPersonagem().contains(habilidade)) {
+        if (personagem.getHabilidades().contains(habilidade)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "Personagem já possui esta habilidade");
         }
 
-        personagem.getHabilidadesPersonagem().add(habilidade);
+        personagem.getHabilidades().add(habilidade);
         personagem = personagemRepository.save(personagem);
 
         return PersonagemResponseDTO.from(personagem, personagem.getClassePersonagem());
@@ -68,12 +68,12 @@ public class PersonagemHabilidadeService {
         Personagem personagem = personagemService.findById(personagemId);
         Habilidade habilidade = buscarHabilidade(idHabilidade);
 
-        if (!personagem.getHabilidadesPersonagem().contains(habilidade)) {
+        if (!personagem.getHabilidades().contains(habilidade)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "Personagem não possui esta habilidade");
         }
 
-        personagem.getHabilidadesPersonagem().remove(habilidade);
+        personagem.getHabilidades().remove(habilidade);
         personagem = personagemRepository.save(personagem);
 
         // Retorna o personagem atualizado (consistente com adicionarHabilidade)
@@ -83,7 +83,7 @@ public class PersonagemHabilidadeService {
     public List<HabilidadeResponseDTO> listarHabilidadesDoPersonagem(Long personagemId) {
         Personagem personagem = personagemService.findById(personagemId);
 
-        return personagem.getHabilidadesPersonagem().stream()
+        return personagem.getHabilidades().stream()
                 .map(habilidadeMapper::toResponseDto)
                 .collect(Collectors.toList());
     }

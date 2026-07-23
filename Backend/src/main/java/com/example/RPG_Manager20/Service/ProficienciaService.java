@@ -23,17 +23,21 @@ public class ProficienciaService {
         this.proficienciaRepository = proficienciaRepository;
     }
     public Proficiencia save(Proficiencia proficiencia){
+        if (proficiencia.getTipoProficiencia() == null){
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "Tipo de proficiência é obrigatório");
+        }
+        if (proficiencia.getListaProficiencias() == null || proficiencia.getListaProficiencias().isEmpty()){}
         return proficienciaRepository.save(proficiencia);
     }
     public List<Proficiencia> list(){
         return proficienciaRepository.findAll();
     }
     public Proficiencia findById(Long idProficiencia) {
-        Proficiencia pericia = proficienciaRepository.getById(idProficiencia);
-        if (pericia == null) {
+        Proficiencia proficiencia = proficienciaRepository.getById(idProficiencia);
+        if (proficiencia == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageUtils.ERROR_NOT_FOUND.getMessage("Proficiencia", idProficiencia));
         }
-        return pericia;
+        return proficiencia;
     }
     public Proficiencia update(ProficienciaDTO proficienciaDTO, Long idProficiencia) {
         Proficiencia proficienciaAntigo = findById(idProficiencia);

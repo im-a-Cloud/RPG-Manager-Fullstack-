@@ -94,8 +94,11 @@ public record PersonagemRequestDTO(
         if (movimento == null) movimento = 9;
         if (pesoPersonagem == null) pesoPersonagem = 0.0;
         if (alturaPersonagem == null) alturaPersonagem = 0.0;
+
         if (proficiencias == null) proficiencias = List.of();
         if (pericias == null) pericias = List.of();
         if (habilidades == null) habilidades = List.of();
+        if (inventario == null) inventario = List.of();
+        if (magias == null) magias = List.of();
     }
 }

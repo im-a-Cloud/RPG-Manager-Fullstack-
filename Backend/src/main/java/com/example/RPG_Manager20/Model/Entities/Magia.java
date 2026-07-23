@@ -20,7 +20,8 @@ public class Magia extends AbstractModel{
     private String level;
     private String name;
     private String range;
-    private boolean ritual;
+    private Boolean ritual;
+    private Boolean concentration;
     private String school;
 
     @ElementCollection
@@ -39,9 +40,8 @@ public class Magia extends AbstractModel{
 
     }
 
-    public Magia(String casting_time, List<String> classes, Components components, String description, String duration, String level, String name, String range, boolean ritual, String school, List<String> tags, String type) {
+    public Magia(String casting_time, Components components, String description, String duration, String level, String name, String range, boolean ritual, boolean concentration, String school, List<String> classes, List<String> tags, String type) {
         this.casting_time = casting_time;
-        this.classes = classes;
         this.components = components;
         this.description = description;
         this.duration = duration;
@@ -49,7 +49,9 @@ public class Magia extends AbstractModel{
         this.name = name;
         this.range = range;
         this.ritual = ritual;
+        this.concentration = concentration;
         this.school = school;
+        this.classes = classes;
         this.tags = tags;
         this.type = type;
     }
@@ -134,7 +136,7 @@ public class Magia extends AbstractModel{
         this.range = range;
     }
 
-    public boolean isRitual() {
+    public Boolean isRitual() {
         return ritual;
     }
 
@@ -164,5 +166,13 @@ public class Magia extends AbstractModel{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean isConcentration() {
+        return concentration;
+    }
+
+    public void setConcentration(boolean concentration) {
+        this.concentration = concentration;
     }
 }

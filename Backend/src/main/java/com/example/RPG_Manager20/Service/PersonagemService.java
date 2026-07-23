@@ -49,7 +49,11 @@ public class PersonagemService {
         System.out.println("   Magias: " + (requestDTO.magias() != null ? requestDTO.magias().size() : 0));
         System.out.println("   Perícias: " + (requestDTO.pericias() != null ? requestDTO.pericias().size() : 0));
         System.out.println("========================================");
-
+        if (requestDTO.habilidades() != null) {
+            for (var hab : requestDTO.habilidades()) {
+                System.out.println("   Habilidade: " + hab.nomeHabilidade());
+            }
+        }
         // 1. Buscar a classe
         Classe classe = classeRepository.findById(requestDTO.classeId())
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,

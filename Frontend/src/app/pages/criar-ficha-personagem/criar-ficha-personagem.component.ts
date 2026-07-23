@@ -61,7 +61,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     racaPersonagem: '',
     escalaPersonagem: '',
     antecedentePersonagem: '',
-    habilidadesPersonagem: [],
+    habilidades: [],
     proficienciasPersonagem: [],
     inventarioPersonagem: [],
     magias: []
@@ -98,7 +98,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   };
 
   novaProficiencia: Partial<Proficiencia> = {
-    tipoProficiencia: TipoProficiencia.OUTRO,
+    tipoProficiencia: TipoProficiencia.OUTROS,
     listaProficiencias: ''
   };
 
@@ -236,8 +236,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
     onClasseSelecionada(classe: Classe | null): void {
       console.log('📌 Classe selecionada:', classe);
       if (classe) {
-        this.personagem.classePersonagem = classe;
-        console.log('✅ Classe atribuída com ID:', classe.id);
+        this.personagem.classePersonagem = {
+            ...classe,
+            id: classe.id || classe.id || 0        
+          };
+        console.log('✅ Classe atribuída com ID:', this.personagem.classePersonagem.id);
         this.calcularValoresAutomaticos();
       }
     }
@@ -412,8 +415,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   removerHabilidade(index: number): void {
-    if (this.personagem.habilidadesPersonagem) {
-      this.personagem.habilidadesPersonagem.splice(index, 1);
+    if (this.personagem.habilidades) {
+      this.personagem.habilidades.splice(index, 1);
       this.mostrarMensagem('🗑️ Habilidade removida.', 'info');
     }
   }
@@ -482,10 +485,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }
   }
 
-  salvarMagia(): void {
-      // ============================================
-      // 1️⃣ VALIDAÇÕES (com os novos nomes)
-      // ============================================
+  adicionarMagia(): void {
       if (!this.novaMagia.name?.trim()) {
           this.mostrarMensagem('⚠️ O nome da magia é obrigatório!', 'error');
           return;
@@ -551,161 +551,110 @@ export class CriarFichaPersonagemComponent implements OnInit {
           tags: this.novaMagia.tags || [],
           type: this.novaMagia.type || ''
       };
+      if (!this.personagem.magias) {
+          this.personagem.magias = [];
+      }
+    console.log('📋 Lista de magias atualizada:', this.personagem.magias);
+    console.log('📌 Total de magias:', this.personagem.magias.length);
 
+    this.mostrarMensagem(`✅ Magia "${dadosMagia.name}" adicionada à lista!`, 'success');
+      this.personagem.magias.push(dadosMagia);
       console.log('🔹 enviando magia:', dadosMagia);
 
+  }
+  salvarPersonagem(): void {
+      console.log('========================================');
+      console.log('📤 DADOS DO PERSONAGEM ANTES DE SALVAR:');
+      console.log('   Nome:', this.personagem.nomePersonagem);
+      console.log('   Classe ID:', this.personagem.classePersonagem?.id);
+      console.log('   Magias:', this.personagem.magias?.length || 0);
+      console.log('========================================');
+
+      // ============================================
+      // 1️⃣ VALIDAÇÕES
+      // ============================================
+      if (!this.personagem.nomePersonagem?.trim()) {
+          this.mostrarMensagem('⚠️ O nome do personagem é obrigatório!', 'error');
+          return;
+      }
+
+      // 🔥 VALIDA A CLASSE
+    const classeId = this.personagem.classePersonagem?.id;
+    
+    if (!classeId) {
+        this.mostrarMensagem('⚠️ Selecione uma classe para o personagem!', 'error');
+        console.error('❌ Classe ID é undefined:', this.personagem.classePersonagem);
+        return;
+    }
+
+      if (this.personagem.nivelPersonagem < 1 || this.personagem.nivelPersonagem > 20) {
+          this.mostrarMensagem('⚠️ O nível deve ser entre 1 e 20!', 'error');
+          return;
+      }
+
+      // Recalcula valores
+      this.calcularValoresAutomaticos();
+
+      // ============================================
+      // 2️⃣ MONTA O DTO (USANDO O classeId VALIDADO!)
+      // ============================================
+      const dadosParaEnviar = {
+          nomePersonagem: this.personagem.nomePersonagem,
+          nivelPersonagem: this.personagem.nivelPersonagem || 1,
+          classeId: classeId,  // ← USA O ID QUE VOCÊ VALIDOU!
+          valorForca: this.personagem.valorForca || 10,
+          valorDestreza: this.personagem.valorDestreza || 10,
+          valorConstituicao: this.personagem.valorConstituicao || 10,
+          valorInteligencia: this.personagem.valorInteligencia || 10,
+          valorSabedoria: this.personagem.valorSabedoria || 10,
+          valorCarisma: this.personagem.valorCarisma || 10,
+          racaPersonagem: this.personagem.racaPersonagem || '',
+          ca: this.personagem.caPersonagem || 10,
+          iniciativa: this.personagem.iniciativaPersonagem || 0,
+          movimento: this.personagem.movimentoPersonagem || 9,
+          pontosVida: this.personagem.pontosVidaPersonagem || 10,
+          historiaPersonagem: this.personagem.historiaPersonagem || '',
+          aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
+          escalaPersonagem: this.personagem.escalaPersonagem || '',
+
+          // 🔥 LISTAS (TUDO JUNTO!)
+          habilidades: this.personagem.habilidades || [],
+          proficiencias: this.personagem.proficienciasPersonagem || [],
+          inventario: this.personagem.inventarioPersonagem || [],
+          magias: this.personagem.magias || [],
+          pericias: this.personagem.periciasPersonagem || []
+      };
+
+      console.log('📤 Enviando DTO com listas:', dadosParaEnviar);
+      console.log('📤 Classe ID:', dadosParaEnviar.classeId);  // ← DEVE SER 2!
+      console.log('📤 Habilidades:', dadosParaEnviar.habilidades);
+      console.log('📤 Itens:', dadosParaEnviar.inventario);
+      console.log('📤 Magias:', dadosParaEnviar.magias);
+      console.log('📤 Proficiências:', dadosParaEnviar.proficiencias);
       // ============================================
       // 3️⃣ CHAMA O SERVICE
       // ============================================
-      this.magiaService.criarMagia(dadosMagia).subscribe({
+      this.personagemService.criarPersonagem(dadosParaEnviar).subscribe({
           next: (response) => {
-              console.log('✅ Magia criada:', response);
-
-              if (!this.personagem.magias) {
-                  this.personagem.magias = [];
-              }
-
-              const novaMagia = {
-                  idMagia: response.idMagia || response.id,
-                  name: response.name || dadosMagia.name,
-                  level: response.level || dadosMagia.level,
-                  casting_time: response.casting_time || dadosMagia.casting_time,
-                  range: response.range || dadosMagia.range,
-                  components: response.components || dadosMagia.components,
-                  duration: response.duration || dadosMagia.duration,
-                  school: response.school || dadosMagia.school,
-                  ritual: response.ritual || dadosMagia.ritual,
-                  concentration: response.concentration || dadosMagia.concentration,
-                  description: response.description || dadosMagia.description,
-                  classes: response.classes || [],
-                  tags: response.tags || [],
-                  type: response.type || ''
-              };
-
-              console.log('📌 Adicionando na lista:', novaMagia);
-              this.personagem.magias.push(novaMagia);
-
-              this.cdr.detectChanges();
-              console.log('📋 Lista de magias atualizada:', this.personagem.magias);
-
-              this.mostrarMensagem(`✅ Magia "${response.name || dadosMagia.name}" salva!`, 'success');
-
-              // ============================================
-              // 4️⃣ LIMPA O FORMULÁRIO
-              // ============================================
+              this.mostrarMensagem(
+                  `✅ Personagem "${response.nomePersonagem}" salvo com sucesso! ID: ${response.id}`,
+                  'success'
+              );
+              console.log('✅ Personagem criado:', response);
           },
           error: (error) => {
-              console.error('❌ Erro ao salvar magia:', error);
-              this.mostrarMensagem('❌ Erro ao salvar magia. Tente novamente.', 'error');
+              console.error('❌ Erro ao salvar:', error);
+              if (error.error) {
+                  console.error('❌ Detalhes:', error.error);
+              }
+              this.mostrarMensagem('❌ Erro ao salvar personagem.', 'error');
           }
       });
   }
-  salvarPersonagem(): void {
-
-    console.log('========================================');
-    console.log('📤 DADOS DO PERSONAGEM ANTES DE SALVAR:');
-    console.log('   Nome:', this.personagem.nomePersonagem);
-    console.log('   Raça:', this.personagem.racaPersonagem);
-    console.log('   Nível:', this.personagem.nivelPersonagem);
-    console.log('   Classe (objeto completo):', this.personagem.classePersonagem);
-    console.log('   Classe ID:', this.personagem.classePersonagem?.id);
-    console.log('   Classe Nome:', this.personagem.classePersonagem?.nomeClasse);
-    console.log('   Força:', this.personagem.valorForca);
-    console.log('   Destreza:', this.personagem.valorDestreza);
-    console.log('   Constituição:', this.personagem.valorConstituicao);
-    console.log('   Inteligência:', this.personagem.valorInteligencia);
-    console.log('   Sabedoria:', this.personagem.valorSabedoria);
-    console.log('   Carisma:', this.personagem.valorCarisma);
-    console.log('   CA:', this.personagem.caPersonagem);
-    console.log('   Iniciativa:', this.personagem.iniciativaPersonagem);
-    console.log('   Movimento:', this.personagem.movimentoPersonagem);
-    console.log('   PV:', this.personagem.pontosVidaPersonagem);
-    console.log('   Habilidades:', this.personagem.habilidadesPersonagem?.length || 0);
-    console.log('   Proficiências:', this.personagem.proficienciasPersonagem?.length || 0);
-    console.log('   Itens:', this.personagem.inventarioPersonagem?.length || 0);
-    console.log('   Magias:', this.personagem.magias?.length || 0);
-    console.log('========================================');
-
-    // Validações básicas
-    if (!this.personagem.nomePersonagem?.trim()) {
-      this.mostrarMensagem('⚠️ O nome do personagem é obrigatório!', 'error');
-      return;
-    }
-    if (!this.personagem.classePersonagem?.nomeClasse?.trim()) {
-      this.mostrarMensagem('⚠️ A classe do personagem é obrigatória!', 'error');
-      return;
-    }
-
-    if (this.personagem.nivelPersonagem < 1 || this.personagem.nivelPersonagem > 20) {
-      this.mostrarMensagem('⚠️ O nível deve ser entre 1 e 20!', 'error');
-      return;
-    }
-    if (!this.personagem.classePersonagem?.id) {
-      this.mostrarMensagem('⚠️ Selecione uma classe para o personagem!', 'error');
-      return;
-    }
-    // Recalcula valores antes de salvar
-    this.calcularValoresAutomaticos();
-
-    this.mostrarMensagem('⏳ Salvando personagem...', 'info');
-
-    // Adiciona imagem se houver
-    if (this.imagemBase64) {
-      this.personagem.aparenciaPersonagem = this.imagemBase64;
-    }
-
- const dadosParaEnviar = {
-        nomePersonagem: this.personagem.nomePersonagem,
-        nivelPersonagem: this.personagem.nivelPersonagem || 1,
-        classeId: this.personagem.classePersonagem.id,
-        valorForca: this.personagem.valorForca || 10,
-        valorDestreza: this.personagem.valorDestreza || 10,
-        valorConstituicao: this.personagem.valorConstituicao || 10,
-        valorInteligencia: this.personagem.valorInteligencia || 10,
-        valorSabedoria: this.personagem.valorSabedoria || 10,
-        valorCarisma: this.personagem.valorCarisma || 10,
-        racaPersonagem: this.personagem.racaPersonagem,
-        ca: this.personagem.caPersonagem || 10,
-        iniciativa: this.personagem.iniciativaPersonagem || 0,
-        movimento: this.personagem.movimentoPersonagem || 9,
-        pontosVida: this.personagem.pontosVidaPersonagem || 10,
-        historiaPersonagem: this.personagem.historiaPersonagem || '',
-        aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
-        proficiencias: this.personagem.proficienciasPersonagem || [],
-        pericias: [],
-        habilidades: this.personagem.habilidadesPersonagem || []
-    };
-
-
-    console.log('📤 Enviando personagem:', this.personagem);
-
-    this.personagemService.criarPersonagem(this.personagem).subscribe({
-      next: (response) => {
-        this.mostrarMensagem(
-          `✅ Personagem "${response.nomePersonagem}" salvo com sucesso! ID: ${response.idPersonagem}`,
-          'success'
-        );
-        console.log('✅ Personagem criado:', response);
-        
-      },
-      error: (error) => {
-        console.error('❌ Erro ao salvar:', error);
-        
-        let mensagemErro = '❌ Erro ao salvar personagem. Tente novamente.';
-        if (error.error?.message) {
-          mensagemErro = `❌ ${error.error.message}`;
-        } else if (error.message) {
-          mensagemErro = `❌ ${error.message}`;
-        }
-        this.mostrarMensagem(mensagemErro, 'error');
-      },
-      complete: () => {
-        console.log('📌 Requisição de criação de personagem concluída.');
-      }
-    });
-  }
-  salvarHabilidade(): void {
-      // Validações
+  adicionarHabilidade(): void {
+      // ============================================
+      // 1️⃣ VALIDAÇÕES
+      // ============================================
       if (!this.novaHabilidade.nomeHabilidade?.trim()) {
           this.mostrarMensagem('⚠️ O nome da habilidade é obrigatório!', 'error');
           return;
@@ -727,6 +676,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
           return;
       }
 
+      // ============================================
+      // 2️⃣ MONTA O DTO
+      // ============================================
       const dadosHabilidade = {
           nomeHabilidade: this.novaHabilidade.nomeHabilidade,
           origemHabilidade: this.novaHabilidade.origemHabilidade,
@@ -735,43 +687,33 @@ export class CriarFichaPersonagemComponent implements OnInit {
           recargaHabilidade: this.novaHabilidade.recargaHabilidade
       };
 
-      console.log('🔹 enviando habilidade:', dadosHabilidade);
-
-      this.habilidadeService.criarHabilidade(dadosHabilidade).subscribe({
-      next: (response) => {
-
-          // 🔥 ADICIONA NA LISTA COM FALLBACK
-          if (!this.personagem.habilidadesPersonagem) {
-              this.personagem.habilidadesPersonagem = [];
-          }
-
-          const novaHabilidade = {
-              nomeHabilidade: response.nomeHabilidade || dadosHabilidade.nomeHabilidade,
-              origemHabilidade: response.origemHabilidade || dadosHabilidade.origemHabilidade,
-              descricaoHabilidade: response.descricaoHabilidade || dadosHabilidade.descricaoHabilidade,
-              usosHabilidade: response.usosHabilidade || dadosHabilidade.usosHabilidade,
-              recargaHabilidade: response.recargaHabilidade || dadosHabilidade.recargaHabilidade
-          };
-
-          console.log('📌 Adicionando na lista:', novaHabilidade);
-
-          this.personagem.habilidadesPersonagem.push(novaHabilidade);
-
-          this.cdr.detectChanges();
-
-          // 🔥 LOG DA LISTA ATUALIZADA
-          console.log('📋 Lista atualizada:', this.personagem.habilidadesPersonagem);
-
-          this.mostrarMensagem(`✅ Habilidade "${response.nomeHabilidade || dadosHabilidade.nomeHabilidade}" salva!`, 'success');
-
-      },
-      error: (error) => {
-          console.error('❌ Erro ao salvar:', error);
-          this.mostrarMensagem('❌ Erro ao salvar habilidade.', 'error');
+      // ============================================
+      // 3️⃣ ADICIONA NA LISTA (NÃO SALVA NO BACKEND!)
+      // ============================================
+      if (!this.personagem.habilidades) {
+          this.personagem.habilidades = [];
       }
-  });
-  }
 
+      // 🔥 ADICIONA A HABILIDADE NA LISTA!
+      this.personagem.habilidades.push(dadosHabilidade);
+
+      console.log('📋 Lista de habilidades atualizada:', this.personagem.habilidades);
+      console.log('📌 Total de habilidades:', this.personagem.habilidades.length);
+
+      this.mostrarMensagem(`✅ Habilidade "${dadosHabilidade.nomeHabilidade}" adicionada!`, 'success');
+
+      // ============================================
+      // 4️⃣ LIMPA O FORMULÁRIO
+      // ============================================
+      this.novaHabilidade = {
+          nomeHabilidade: '',
+          origemHabilidade: OrigemHabilidade.OUTROS,
+          descricaoHabilidade: '',
+          usosHabilidade: 0,
+          recargaHabilidade: ''
+      };
+      this.visivel['addHabilidade'] = false;
+  }
   salvarItem(): void {
       console.log('🔥 salvarItem() CHAMADO!');
 
@@ -927,12 +869,5 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza
-  }
-  salvarTudo(): void{
-    this.salvarHabilidade();
-    this.salvarPersonagem();
-    this.salvarItem();
-    this.salvarProficiencia();
-    this.salvarMagia();
   }
 }
