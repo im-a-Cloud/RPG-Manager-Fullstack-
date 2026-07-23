@@ -1,6 +1,7 @@
 package com.example.RPG_Manager20.Model.Entities;
 
 import com.example.RPG_Manager20.Model.Enums.TipoProficiencia;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class Proficiencia extends AbstractModel{
 
     @ManyToOne
     @JoinColumn(name = "personagem_id")
+    @JsonIgnore
     private Personagem personagem;
 
     public Proficiencia(TipoProficiencia tipoProficiencia, String listaProficiencias, Personagem personagem) {

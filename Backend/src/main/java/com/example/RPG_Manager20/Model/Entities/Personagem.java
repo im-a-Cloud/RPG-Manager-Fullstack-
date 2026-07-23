@@ -1,4 +1,5 @@
 package com.example.RPG_Manager20.Model.Entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -69,6 +70,7 @@ public class Personagem extends AbstractModel {
 
     @ManyToOne
     @JoinColumn(name = "classe_id")
+    @JsonIgnore
     private Classe classePersonagem;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

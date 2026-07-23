@@ -4,6 +4,7 @@ import com.example.RPG_Manager20.Model.Enums.Atributos;
 import com.example.RPG_Manager20.Model.Enums.Classes;
 import com.example.RPG_Manager20.Model.Enums.DadosDeVida;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Classe extends AbstractModel{
     private DadosDeVida dadoDeVida;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "classe_id")  // ← ADICIONE ESTA ANOTAÇÃO
+    @JsonIgnore
     private List<Proficiencia> listaProficienciasClasse;
     @ElementCollection
     @CollectionTable(name = "classe_salvaguardas", joinColumns = @JoinColumn(name = "classe_id"))
