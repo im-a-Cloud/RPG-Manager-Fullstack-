@@ -7,11 +7,13 @@ import com.example.RPG_Manager20.Model.Enums.ErrorMessageUtils;
 import com.example.RPG_Manager20.Model.Mapper.ClasseMapper;
 import com.example.RPG_Manager20.Model.Mapper.ProficienciaMapper;
 import com.example.RPG_Manager20.Repository.ClasseRepository;
+import com.example.RPG_Manager20.Repository.ProficienciaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,33 +29,69 @@ public class ClasseService {
     @Autowired
     private ProficienciaService proficienciaService;
 
+    @Autowired
+    private ProficienciaRepository proficienciaRepository;
+
     // ============================================
     // CRIAÇÃO
     // ============================================
     @Transactional
     public ClasseDTO criarClasse(ClasseDTO classeDTO) {
-        // Converte DTO para Entity
+        // Converter DTO → Entity
+
+        System.out.println("========================================");
+        System.out.println("📤 DTO RECEBIDO:");
+        System.out.println("   isConjurador: " + classeDTO.isConjurador());
+        System.out.println("========================================");
+
         Classe classe = classeMapper.toEntity(classeDTO);
 
-        // Salva as proficiências se existirem
+        System.out.println("🔍 ENTITY APÓS MAPPER:");
+        System.out.println("   conjurador: " + classe.isConjurador());
+        System.out.println("========================================");
+
+        classe.setConjurador(classeDTO.isConjurador());
+
+        System.out.println("🔍 ENTITY APÓS FORÇAR:");
+        System.out.println("   conjurador: " + classe.isConjurador());
+        System.out.println("========================================");
+
+        // 🔥 PROCESSAR PROFICIÊNCIAS CORRETAMENTE
         if (classe.getListaProficienciasClasse() != null && !classe.getListaProficienciasClasse().isEmpty()) {
-            List<Proficiencia> proficienciasSalvas = classe.getListaProficienciasClasse()
-                    .stream()
-                    .map(proficiencia -> {
-                        // Verifica se a proficiência já existe
-                        if (proficiencia.getId() != null) {
-                            return proficiencia;
-                        }
-                        return proficienciaService.save(proficiencia);
-                    })
-                    .collect(Collectors.toList());
+            List<Proficiencia> proficienciasSalvas = new ArrayList<>();
+
+            for (Proficiencia proficiencia : classe.getListaProficienciasClasse()) {
+                if (proficiencia.getId() != null) {
+                    // 🔥 JÁ EXISTE - BUSCAR DO BANCO
+                    Proficiencia existente = proficienciaRepository.findById(proficiencia.getId())
+                            .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+                                    "Proficiência não encontrada com ID: " + proficiencia.getId()));
+                    proficienciasSalvas.add(existente);
+                } else {
+                    // 🔥 NOVA - SALVAR
+                    Proficiencia nova = proficienciaRepository.save(proficiencia);
+                    proficienciasSalvas.add(nova);
+                }
+            }
+
             classe.setListaProficienciasClasse(proficienciasSalvas);
         }
 
-        // Salva a classe
+        // Salvar a classe
         Classe savedClasse = classeRepository.save(classe);
 
-        // Retorna DTO
+        System.out.println("✅ CLASSE SALVA:");
+        System.out.println("   conjurador: " + savedClasse.isConjurador());
+        System.out.println("========================================");
+
+        ClasseDTO response = classeMapper.toDto(savedClasse);
+
+
+        System.out.println("📤 RESPONSE DTO:");
+        System.out.println("   isConjurador: " + response.isConjurador());
+        System.out.println("========================================");
+
+
         return classeMapper.toDto(savedClasse);
     }
 

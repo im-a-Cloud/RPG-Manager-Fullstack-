@@ -27,20 +27,4 @@ public record ClasseResponseDTO(
                 classe.name()
         );
     }
-
-    // 🔥 MÉTODO FACTORY COM DADOS ADICIONAIS (OPCIONAL)
-    public static ClasseResponseDTO fromClasse(Classes classe, Long id, String nomePersonalizado) {
-        return new ClasseResponseDTO(
-                id,
-                nomePersonalizado != null ? nomePersonalizado : classe.getNomePortugues(),
-                classe.getTagJson(),
-                classe.getDadoDeVida(),
-                classe.isConjurador(),
-                classe.getAtributoConjuracao() != null ?
-                        classe.getAtributoConjuracao().name() : null,
-                classe.getTipoConjuracao() != null ?
-                        classe.getTipoConjuracao().name() : null,
-                classe.name()
-        );
-    }
 }

@@ -12,10 +12,11 @@ public interface ClasseMapper {
 
     ClasseMapper INSTANCE = Mappers.getMapper(ClasseMapper.class);
 
-    // 🔥 MAPEIA O ID
-    @Mapping(source = "id", target = "id")
-    ClasseDTO toDto(Classe classe);
-
     @Mapping(target = "id", ignore = true)
-    Classe toEntity(ClasseDTO classeDTO);
+    @Mapping(source = "isConjurador", target = "conjurador")  // ← ADICIONAR!
+    @Mapping(target = "listaProficienciasClasse", ignore = true)
+    Classe toEntity(ClasseDTO dto);
+
+    @Mapping(source = "conjurador", target = "isConjurador")  // ← ADICIONAR!
+    ClasseDTO toDto(Classe entity);
 }

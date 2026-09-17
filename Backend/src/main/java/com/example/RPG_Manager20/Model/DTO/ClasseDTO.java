@@ -25,15 +25,21 @@ public record ClasseDTO(
 
         // Novos campos
         @JsonProperty("conjurador")  // ← Mapeia o campo JSON
-        boolean isConjurador,
+        Boolean isConjurador,
 
         Atributos atributoConjuracao,
 
         TipoConjuracao tipoConjuracao
 ) {
+    public ClasseDTO {
+        if (isConjurador == null) {
+            isConjurador = false;
+        }
+    }
 
-    public boolean isConjurador() {
-        return isConjurador;
+    public Boolean isConjurador() {
+        return isConjurador != null && isConjurador;
+
     }
 
     public boolean isConjuradorCompleto() {

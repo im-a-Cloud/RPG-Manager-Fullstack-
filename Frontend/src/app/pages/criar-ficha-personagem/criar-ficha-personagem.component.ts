@@ -866,6 +866,27 @@ export class CriarFichaPersonagemComponent implements OnInit {
       }
   });
   }
+  
+  getCdMagia(): number {
+    if (this.personagem.classePersonagem?.isConjurador) {
+      const atributoConjuracao = this.personagem.classePersonagem.atributoConjuracao;
+      if (atributoConjuracao) {
+        const bonus = this.getBonusAtributo(atributoConjuracao);
+        return 8 + bonus + this.bonusProficiencia;
+      }
+    }
+    return 0;
+  }
+  getAtaqueMagico(): number {
+    if (this.personagem.classePersonagem?.isConjurador) {
+      const atributoConjuracao = this.personagem.classePersonagem.atributoConjuracao;
+      if (atributoConjuracao) {
+        const bonus = this.getBonusAtributo(atributoConjuracao);
+        return bonus + this.bonusProficiencia;
+      }
+    }
+    return 0;
+  }
 
   getCaPersonagem(): number {
     return this.bonusDestreza + 10; // CA base + bônus de Destreza

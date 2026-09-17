@@ -5,6 +5,7 @@ import com.example.RPG_Manager20.Model.Enums.Classes;
 import com.example.RPG_Manager20.Model.Enums.DadosDeVida;
 import com.example.RPG_Manager20.Model.Enums.TipoConjuracao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class Classe extends AbstractModel{
     @Column(name = "atributo")
     private List<Atributos> proficienciaSalvaguarda;
 
-    private boolean isConjurador;
+    @Column(name = "is_conjurador")
+    private boolean conjurador;
 
     @Enumerated(EnumType.STRING)
     private Atributos atributoConjuracao;
@@ -39,7 +41,7 @@ public class Classe extends AbstractModel{
         this.dadoDeVida = dadoDeVida;
         this.listaProficienciasClasse = listaProficienciasClasse != null ? listaProficienciasClasse : new ArrayList<>();
         this.proficienciaSalvaguarda = proficienciaSalvaguarda != null ? proficienciaSalvaguarda : new ArrayList<>();
-        this.isConjurador = isConjurador;
+        this.conjurador = conjurador;
         this.atributoConjuracao = atributoConjuracao;
         this.tipoConjuracao = tipoConjuracao;
     }
@@ -81,11 +83,11 @@ public class Classe extends AbstractModel{
     }
 
     public boolean isConjurador() {
-        return isConjurador;
+        return conjurador;
     }
 
     public void setConjurador(boolean conjurador) {
-        isConjurador = conjurador;
+        this.conjurador = conjurador;
     }
 
     public Atributos getAtributoConjuracao() {

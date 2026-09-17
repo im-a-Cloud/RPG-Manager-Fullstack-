@@ -1,8 +1,10 @@
 package com.example.RPG_Manager20.Controller;
 
 import com.example.RPG_Manager20.Model.DTO.ClasseDTO;
+import com.example.RPG_Manager20.Model.DTO.Response.ClasseResponseDTO;
 import com.example.RPG_Manager20.Model.Entities.Classe;
 import com.example.RPG_Manager20.Model.Mapper.ClasseMapper;
+import com.example.RPG_Manager20.Repository.ClasseRepository;
 import com.example.RPG_Manager20.Service.ClasseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/classes")  // ← MUDAR PARA "/classes" (plural e consistente)
@@ -22,6 +25,9 @@ public class ClasseController {
 
     @Autowired
     private ClasseMapper classeMapper;
+
+    @Autowired
+    private ClasseRepository classeRepository;
 
     // ============================================
     // POST - Criar classe
@@ -54,6 +60,7 @@ public class ClasseController {
         System.out.println("🔍 GET /classes/" + idClasse);
         try {
             ClasseDTO classe = classeService.buscarPorId(idClasse);
+            System.out.println("A classe " + classe.nomeClasse() + ", é conjuradora:" + classe.isConjurador());
             return ResponseEntity.ok(classe);
         } catch (Exception e) {
             System.err.println("❌ Classe não encontrada: " + e.getMessage());
