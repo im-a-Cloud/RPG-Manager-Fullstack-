@@ -37,24 +37,11 @@ public class ClasseService {
     // ============================================
     @Transactional
     public ClasseDTO criarClasse(ClasseDTO classeDTO) {
-        // Converter DTO → Entity
 
-        System.out.println("========================================");
-        System.out.println("📤 DTO RECEBIDO:");
-        System.out.println("   isConjurador: " + classeDTO.isConjurador());
-        System.out.println("========================================");
 
         Classe classe = classeMapper.toEntity(classeDTO);
 
-        System.out.println("🔍 ENTITY APÓS MAPPER:");
-        System.out.println("   conjurador: " + classe.isConjurador());
-        System.out.println("========================================");
-
         classe.setConjurador(classeDTO.isConjurador());
-
-        System.out.println("🔍 ENTITY APÓS FORÇAR:");
-        System.out.println("   conjurador: " + classe.isConjurador());
-        System.out.println("========================================");
 
         // 🔥 PROCESSAR PROFICIÊNCIAS CORRETAMENTE
         if (classe.getListaProficienciasClasse() != null && !classe.getListaProficienciasClasse().isEmpty()) {
@@ -80,17 +67,7 @@ public class ClasseService {
         // Salvar a classe
         Classe savedClasse = classeRepository.save(classe);
 
-        System.out.println("✅ CLASSE SALVA:");
-        System.out.println("   conjurador: " + savedClasse.isConjurador());
-        System.out.println("========================================");
-
         ClasseDTO response = classeMapper.toDto(savedClasse);
-
-
-        System.out.println("📤 RESPONSE DTO:");
-        System.out.println("   isConjurador: " + response.isConjurador());
-        System.out.println("========================================");
-
 
         return classeMapper.toDto(savedClasse);
     }

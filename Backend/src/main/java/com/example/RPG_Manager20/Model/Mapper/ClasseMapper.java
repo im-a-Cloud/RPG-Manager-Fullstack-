@@ -14,7 +14,6 @@ public interface ClasseMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "isConjurador", target = "conjurador")  // ← ADICIONAR!
-    @Mapping(target = "listaProficienciasClasse", ignore = true)
     Classe toEntity(ClasseDTO dto);
 
     @Mapping(source = "conjurador", target = "isConjurador")  // ← ADICIONAR!

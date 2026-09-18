@@ -16,10 +16,12 @@ import java.util.List;
 public class Classe extends AbstractModel{
     private Classes nomeClasse;
     private DadosDeVida dadoDeVida;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "classe_id")  // ← ADICIONE ESTA ANOTAÇÃO
     @JsonIgnore
     private List<Proficiencia> listaProficienciasClasse;
+
     @ElementCollection
     @CollectionTable(name = "classe_salvaguardas", joinColumns = @JoinColumn(name = "classe_id"))
     @Enumerated(EnumType.STRING)
