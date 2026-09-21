@@ -185,6 +185,19 @@ export class CriarFichaPersonagemComponent implements OnInit {
      this.carregarClasses();
   }
 
+  //===============================================================
+  //UTILIDADES
+  //===============================================================
+
+  normalizarTexto(str: string): string {
+    return str
+        ?.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim() || '';
+}
+
+
   // ============================================
   // CÁLCULOS AUTOMÁTICOS
   // ============================================
@@ -274,6 +287,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   getBonusAtributo(atributo: string) {
+
+    const atributoNormalizado = this.normalizarTexto(atributo);
+
     const atributos = {
       forca: this.personagem.valorForca,
       destreza: this.personagem.valorDestreza,
@@ -282,7 +298,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
       sabedoria: this.personagem.valorSabedoria,
       carisma: this.personagem.valorCarisma
     };
-    return this.rpgService.getBonusAtributo(atributo, atributos);
+    return this.rpgService.getBonusAtributo(atributoNormalizado, atributos);
   }
 
   getValorPericia(nome: string) {
@@ -486,6 +502,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   adicionarMagia(): void {
+    if(!this.personagem.classePersonagem?.conjurador) {
+      console.error('❌ A classe selecionada não é conjuradora:', this.personagem.classePersonagem);
+      return this.mostrarMensagem('⚠️ A classe selecionada não é conjuradora! Não é possível adicionar magias.', 'error');
+    }
       if (!this.novaMagia.name?.trim()) {
           this.mostrarMensagem('⚠️ O nome da magia é obrigatório!', 'error');
           return;
@@ -868,21 +888,21 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
   
   getCdMagia(): number {
-    if (this.personagem.classePersonagem?.isConjurador) {
+    if (this.personagem.classePersonagem?.conjurador) {
       const atributoConjuracao = this.personagem.classePersonagem.atributoConjuracao;
       if (atributoConjuracao) {
-        const bonus = this.getBonusAtributo(atributoConjuracao);
-        return 8 + bonus + this.bonusProficiencia;
+        const bonus = this.getBonusAtributo(atributoConjuracao) + this.bonusProficiencia + 8;
+        return bonus;
       }
     }
     return 0;
   }
   getAtaqueMagico(): number {
-    if (this.personagem.classePersonagem?.isConjurador) {
-      const atributoConjuracao = this.personagem.classePersonagem.atributoConjuracao;
+    if(this.personagem.classePersonagem?.conjurador) {
+      const atributoConjuracao = this.personagem.classePersonagem?.atributoConjuracao;
       if (atributoConjuracao) {
-        const bonus = this.getBonusAtributo(atributoConjuracao);
-        return bonus + this.bonusProficiencia;
+        const bonus = this.getBonusAtributo(atributoConjuracao) + this.bonusProficiencia;
+        return bonus;
       }
     }
     return 0;
