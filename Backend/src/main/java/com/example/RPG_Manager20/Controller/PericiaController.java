@@ -1,8 +1,10 @@
 package com.example.RPG_Manager20.Controller;
 
 import com.example.RPG_Manager20.Model.DTO.PericiaDTO;
+import com.example.RPG_Manager20.Model.DTO.Response.PericiaResponseDTO;
 import com.example.RPG_Manager20.Model.Entities.Pericia;
 import com.example.RPG_Manager20.Model.Mapper.PericiaMapper;  // ← NOVO MAPPER
+import com.example.RPG_Manager20.Repository.PericiaRepository;
 import com.example.RPG_Manager20.Service.PericiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,12 @@ public class PericiaController {
 
     @Autowired
     private PericiaMapper periciaEntityMapper;  // ← MAPPER CORRETO
+
+    private final PericiaRepository periciaRepository;
+
+    public PericiaController(PericiaRepository periciaRepository) {
+        this.periciaRepository = periciaRepository;
+    }
 
     // ============================================
     // POST - CRIAR PERÍCIA
@@ -46,24 +54,11 @@ public class PericiaController {
     // GET - LISTAR TODOS
     // ============================================
     @GetMapping
-    public ResponseEntity<List<PericiaDTO>> listarTodos() {
-        List<PericiaDTO> pericias = periciaService.list().stream()
-                .map(periciaEntityMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(pericias);
-    }
-
-    // ============================================
-    // PUT - ATUALIZAR
-    // ============================================
-    @PutMapping("/{idPericia}")
-    public ResponseEntity<PericiaDTO> atualizar(
-            @PathVariable("idPericia") Long idPericia,
-            @RequestBody PericiaDTO periciaDTO) {
-        Pericia pericia = periciaEntityMapper.toEntity(periciaDTO);
-        pericia.setId(idPericia);
-        pericia = periciaService.save(pericia);
-        return ResponseEntity.ok(periciaEntityMapper.toDto(pericia));
+    public List<PericiaResponseDTO> listar() {
+        return periciaRepository.findAllByOrderByNomeExibicaoAsc()
+                .stream()
+                .map(PericiaResponseDTO::from)
+                .toList();
     }
 
     // ============================================

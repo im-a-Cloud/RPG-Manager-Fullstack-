@@ -1,13 +1,19 @@
 package com.example.RPG_Manager20.Service;
 
+import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
 import com.example.RPG_Manager20.Model.DTO.PersonagemDTO;
+import com.example.RPG_Manager20.Model.DTO.Request.PericiaPersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Request.PersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
 import com.example.RPG_Manager20.Model.Entities.Classe;
+import com.example.RPG_Manager20.Model.Entities.Pericia;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
+import com.example.RPG_Manager20.Model.Entities.PersonagemPericia;
 import com.example.RPG_Manager20.Model.Enums.ErrorMessageUtils;
 import com.example.RPG_Manager20.Model.Mapper.PersonagemMapper;
 import com.example.RPG_Manager20.Repository.ClasseRepository;
+import com.example.RPG_Manager20.Repository.PericiaRepository;
+import com.example.RPG_Manager20.Repository.PersonagemPericiaRepository;
 import com.example.RPG_Manager20.Repository.PersonagemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +39,19 @@ public class PersonagemService {
     @Autowired
     private PersonagemPericiaService personagemPericiaService;
 
+    @Autowired
+    PericiaRepository periciaRepository;
     // ============================================
     // 1️⃣ CRIAR PERSONAGEM (COMPLETO)
     // ============================================
     @Transactional
     public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO) {
+        if (requestDTO.pericias() != null) {
+            for (var p : requestDTO.pericias()) {
+                System.out.println("🔍 DTO perícia: " + p + " | classe=" + p.getClass().getName());
+            }
+        }
+        System.out.println("🔍 RAW requestDTO = " + requestDTO);
         System.out.println("========================================");
         System.out.println("📤 CRIANDO PERSONAGEM COMPLETO:");
         System.out.println("   Nome: " + requestDTO.nomePersonagem());
@@ -49,11 +63,7 @@ public class PersonagemService {
         System.out.println("   Magias: " + (requestDTO.magias() != null ? requestDTO.magias().size() : 0));
         System.out.println("   Perícias: " + (requestDTO.pericias() != null ? requestDTO.pericias().size() : 0));
         System.out.println("========================================");
-        if (requestDTO.habilidades() != null) {
-            for (var hab : requestDTO.habilidades()) {
-                System.out.println("   Habilidade: " + hab.nomeHabilidade());
-            }
-        }
+
         // 1. Buscar a classe
         Classe classe = classeRepository.findById(requestDTO.classeId())
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
@@ -75,32 +85,33 @@ public class PersonagemService {
         Personagem savedPersonagem = personagemRepository.save(personagem);
         System.out.println("✅ Personagem salvo com ID: " + savedPersonagem.getId());
 
-        // 🔥 6. ADICIONAR PERÍCIAS USANDO O SERVICE DEDICADO
+        // 🔥 6. ADICIONAR PERÍCIAS (agora buscando por SLUG)
         if (requestDTO.pericias() != null && !requestDTO.pericias().isEmpty()) {
-            for (var periciaDTO : requestDTO.pericias()) {
-                if (periciaDTO.pericia() != null && periciaDTO.pericia().id() != null) {
-                    try {
-                        personagemPericiaService.addPersonagemPericia(
-                                savedPersonagem.getId(),
-                                periciaDTO.pericia().id(),
-                                periciaDTO.isProficiente()
-                        );
-                        System.out.println("   ✅ Perícia adicionada: " + periciaDTO.pericia().nomePericia());
-                    } catch (Exception e) {
-                        System.err.println("   ❌ Erro ao adicionar perícia: " + e.getMessage());
-                    }
-                }
+            for (PericiaPersonagemRequestDTO pDTO : requestDTO.pericias()) {
+
+                System.out.println("🔍 Processando perícia: " + pDTO);   // ← DEBUG
+
+                Pericia pericia = periciaRepository.findBySlug(pDTO.slug())
+                        .orElseThrow(() -> new BusinessException(
+                                HttpStatus.NOT_FOUND,
+                                "Perícia não encontrada: " + pDTO.slug()));
+
+                PersonagemPericia personagemPericia = new PersonagemPericia();
+                personagemPericia.setPericia(pericia);
+                personagemPericia.setPersonagem(savedPersonagem);
+                personagemPericia.setProficiente(Boolean.TRUE.equals(pDTO.isProficiente()));
+                savedPersonagem.getPericiasPersonagem().add(personagemPericia);
+
+                System.out.println("Perícia adicionada: " + pericia.getNomeExibicao());
             }
         }
-
-        // 7. Buscar o personagem atualizado com as perícias
+        // 7. Buscar o personagem atualizado
         Personagem finalPersonagem = personagemRepository.findById(savedPersonagem.getId())
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Personagem não encontrado"));
 
         // 8. Retornar Response
         return PersonagemResponseDTO.from(finalPersonagem, classe);
     }
-
     // ============================================
     // 2️⃣ BUSCAR PERSONAGEM POR ID
     // ============================================

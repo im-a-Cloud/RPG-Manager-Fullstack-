@@ -19,10 +19,10 @@ public record PersonagemResponseDTO(
         AtributosInfo atributos,
         MagiaInfo magia,
         List<ItemDTO> inventario,
-        List<PericiaPersonagemDTO> pericias,
+        List<PericiaPersonagemResponseDTO> pericias,   // ← nome do campo faltava
         List<HabilidadeDTO> habilidades,
         List<ProficienciaDTO> proficiencia,
-        List<MagiaDTO> magias,  // ← ADICIONADO!
+        List<MagiaDTO> magias,
 
         String historiaPersonagem,
         String aparenciaPersonagem,
@@ -82,6 +82,7 @@ public record PersonagemResponseDTO(
             int cd,
             int ataque
     ) {}
+
     private static ComponentsDTO toComponentsDTO(Components components) {
         if (components == null) {
             return null;
@@ -93,6 +94,7 @@ public record PersonagemResponseDTO(
                 components.isMaterial()
         );
     }
+
     // ============================================
     // MÉTODO FACTORY
     // ============================================
@@ -129,7 +131,7 @@ public record PersonagemResponseDTO(
         }
 
         // ============================================
-        // 🔥 CONVERTER INVENTÁRIO (COM VERIFICAÇÃO DE NULL)
+        // CONVERTER INVENTÁRIO
         // ============================================
         List<ItemDTO> inventarioDTO = personagem.getInventarioPersonagem() != null
                 ? personagem.getInventarioPersonagem().stream()
@@ -148,16 +150,16 @@ public record PersonagemResponseDTO(
                 : new ArrayList<>();
 
         // ============================================
-        // 🔥 CONVERTER PERÍCIAS (COM VERIFICAÇÃO DE NULL)
+        // CONVERTER PERÍCIAS
         // ============================================
-        List<PericiaPersonagemDTO> periciasDTO = personagem.getPericiasPersonagem() != null
+        List<PericiaPersonagemResponseDTO> periciasDTO = personagem.getPericiasPersonagem() != null
                 ? personagem.getPericiasPersonagem().stream()
-                .map(pp -> PericiaPersonagemDTO.from(pp, personagem, bonusProficiencia))
+                .map(pp -> PericiaPersonagemResponseDTO.from(pp, personagem, bonusProficiencia))
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
         // ============================================
-        // 🔥 CONVERTER HABILIDADES (COM VERIFICAÇÃO DE NULL)
+        // CONVERTER HABILIDADES
         // ============================================
         List<HabilidadeDTO> habilidadesDTO = personagem.getHabilidades() != null
                 ? personagem.getHabilidades().stream()
@@ -172,7 +174,7 @@ public record PersonagemResponseDTO(
                 : new ArrayList<>();
 
         // ============================================
-        // 🔥 CONVERTER PROFICIÊNCIAS (COM VERIFICAÇÃO DE NULL)
+        // CONVERTER PROFICIÊNCIAS
         // ============================================
         List<ProficienciaDTO> proficienciaDTO = personagem.getProficienciasPersonagem() != null
                 ? personagem.getProficienciasPersonagem().stream()
@@ -184,39 +186,34 @@ public record PersonagemResponseDTO(
                 : new ArrayList<>();
 
         // ============================================
-        // 🔥 CONVERTER MAGIAS (COM VERIFICAÇÃO DE NULL)
+        // CONVERTER MAGIAS
         // ============================================
         List<MagiaDTO> magiasDTO = personagem.getMagias() != null
                 ? personagem.getMagias().stream()
                 .map(magia -> new MagiaDTO(
-                        magia.getCasting_time(),     // 1 - casting_time
-                        magia.getClasses(),         // 2 - classes
-                        toComponentsDTO(magia.getComponents()),  // ← MÉTODO AUXILIAR!
-                        magia.getDescription(),     // 4 - description
-                        magia.getDuration(),        // 5 - duration
-                        magia.getLevel(),           // 6 - level
-                        magia.getName(),            // 7 - name
-                        magia.getRange(),           // 8 - range
-                        magia.isRitual(),           // 9 - ritual
-                        magia.isConcentration(),    // 10 - concentration
-                        magia.getSchool(),          // 11 - school
-                        magia.getTags(),            // 12 - tags
-                        magia.getType()             // 13 - type
+                        magia.getCasting_time(),
+                        magia.getClasses(),
+                        toComponentsDTO(magia.getComponents()),
+                        magia.getDescription(),
+                        magia.getDuration(),
+                        magia.getLevel(),
+                        magia.getName(),
+                        magia.getRange(),
+                        magia.isRitual(),
+                        magia.isConcentration(),
+                        magia.getSchool(),
+                        magia.getTags(),
+                        magia.getType()
                 ))
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
-        // ============================================
-        // LOG PARA DEBUG
-        // ============================================
         System.out.println("📊 RESPOSTA - Habilidades: " + habilidadesDTO.size());
         System.out.println("📊 RESPOSTA - Magias: " + magiasDTO.size());
         System.out.println("📊 RESPOSTA - Itens: " + inventarioDTO.size());
         System.out.println("📊 RESPOSTA - Proficiências: " + proficienciaDTO.size());
+        System.out.println("📊 RESPOSTA - Perícias: " + periciasDTO.size());
 
-        // ============================================
-        // RETORNAR DTO
-        // ============================================
         return new PersonagemResponseDTO(
                 personagem.getId(),
                 personagem.getNomePersonagem(),
@@ -242,7 +239,7 @@ public record PersonagemResponseDTO(
                 periciasDTO,
                 habilidadesDTO,
                 proficienciaDTO,
-                magiasDTO,  // ← ADICIONADO!
+                magiasDTO,
                 personagem.getHistoriaPersonagem(),
                 personagem.getAparenciaPersonagem(),
                 personagem.getIdeaisPersonagem(),

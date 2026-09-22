@@ -227,189 +227,153 @@
                     <label for="dadoVidaPersonagem">valor pela classe</label>
                 </div>
             </div>
-        <div class="pericias">
+            <div class="pericias">
             <h1>Perícias</h1>
-            
+
             <!-- Acrobacia -->
-            <input type="checkbox" 
-                id="acrobacia" 
-                name="pericia" 
-                value="Acrobacia"
-                [(ngModel)]="pericias['acrobacia']">
+            <input type="checkbox" id="acrobacia" name="pericia" value="Acrobacia"
+                    (change)="togglePericia('acrobacia')"
+                    [checked]="isSelecionada('acrobacia')">
             <label>{{ getValorPericia('acrobacia') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="acrobacia">Acrobacia (DES)</label><br>
 
             <!-- Adestrar Animais -->
-            <input type="checkbox" 
-                id="adestrarAnimais" 
-                name="pericia" 
-                value="AdestrarAnimais"
-                [(ngModel)]="pericias['adestrarAnimais']">
+            <input type="checkbox" id="adestrarAnimais" name="pericia" value="AdestrarAnimais"
+                    (change)="togglePericia('adestrarAnimais')"
+                    [checked]="isSelecionada('adestrarAnimais')">
             <label>{{ getValorPericia('adestrarAnimais') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="adestrarAnimais">Adestrar animais (SAB)</label><br>
 
             <!-- Arcanismo -->
-            <input type="checkbox" 
-                id="arcanismo" 
-                name="pericia" 
-                value="Arcanismo"
-                [(ngModel)]="pericias['arcanismo']">
+            <input type="checkbox" id="arcanismo" name="pericia" value="Arcanismo"
+                    (change)="togglePericia('arcanismo')"
+                    [checked]="isSelecionada('arcanismo')">
             <label>{{ getValorPericia('arcanismo') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="arcanismo">Arcanismo (INT)</label><br>
 
             <!-- Atletismo -->
-            <input type="checkbox" 
-                id="atletismo" 
-                name="pericia" 
-                value="Atletismo"
-                [(ngModel)]="pericias['atletismo']">
+            <input type="checkbox" id="atletismo" name="pericia" value="Atletismo"
+                    (change)="togglePericia('atletismo')"
+                    [checked]="isSelecionada('atletismo')">
             <label>{{ getValorPericia('atletismo') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="atletismo">Atletismo (FOR)</label><br>
 
             <!-- Enganação -->
-            <input type="checkbox" 
-                id="enganacao" 
-                name="pericia" 
-                value="Enganacao"
-                [(ngModel)]="pericias['enganacao']">
+            <input type="checkbox" id="enganacao" name="pericia" value="Enganacao"
+                    (change)="togglePericia('enganacao')"
+                    [checked]="isSelecionada('enganacao')">
             <label>{{ getValorPericia('enganacao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="enganacao">Enganação (CAR)</label><br>
 
             <!-- História -->
-            <input type="checkbox" 
-                id="historia" 
-                name="pericia" 
-                value="Historia"
-                [(ngModel)]="pericias['historia']">
+            <input type="checkbox" id="historia" name="pericia" value="Historia"
+                    (change)="togglePericia('historia')"
+                    [checked]="isSelecionada('historia')">
             <label>{{ getValorPericia('historia') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="historia">História (INT)</label><br>
 
             <!-- Intuição -->
-            <input type="checkbox" 
-                id="intuicao" 
-                name="pericia" 
-                value="Intuicao"
-                [(ngModel)]="pericias['intuicao']">
+            <input type="checkbox" id="intuicao" name="pericia" value="Intuicao"
+                    (change)="togglePericia('intuicao')"
+                    [checked]="isSelecionada('intuicao')">
             <label>{{ getValorPericia('intuicao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="intuicao">Intuição (SAB)</label><br>
 
             <!-- Intimidação -->
-            <input type="checkbox" 
-                id="intimidacao" 
-                name="pericia" 
-                value="Intimidacao"
-                [(ngModel)]="pericias['intimidacao']">
+            <input type="checkbox" id="intimidacao" name="pericia" value="Intimidacao"
+                    (change)="togglePericia('intimidacao')"
+                    [checked]="isSelecionada('intimidacao')">
             <label>{{ getValorPericia('intimidacao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="intimidacao">Intimidação (CAR)</label><br>
 
             <!-- Investigação -->
-            <input type="checkbox" 
-                id="investigacao" 
-                name="pericia" 
-                value="Investigacao"
-                [(ngModel)]="pericias['investigacao']">
+            <input type="checkbox" id="investigacao" name="pericia" value="Investigacao"
+                    (change)="togglePericia('investigacao')"
+                    [checked]="isSelecionada('investigacao')">
             <label>{{ getValorPericia('investigacao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="investigacao">Investigação (INT)</label><br>
 
             <!-- Medicina -->
-            <input type="checkbox" 
-                id="medicina" 
-                name="pericia" 
-                value="Medicina"
-                [(ngModel)]="pericias['medicina']">
+            <input type="checkbox" id="medicina" name="pericia" value="Medicina"
+                    (change)="togglePericia('medicina')"
+                    [checked]="isSelecionada('medicina')">
             <label>{{ getValorPericia('medicina') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="medicina">Medicina (SAB)</label><br>
 
             <!-- Natureza -->
-            <input type="checkbox" 
-                id="natureza" 
-                name="pericia" 
-                value="Natureza"
-                [(ngModel)]="pericias['natureza']">
+            <input type="checkbox" id="natureza" name="pericia" value="Natureza"
+                    (change)="togglePericia('natureza')"
+                    [checked]="isSelecionada('natureza')">
             <label>{{ getValorPericia('natureza') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="natureza">Natureza (INT)</label><br>
 
             <!-- Percepção -->
-            <input type="checkbox" 
-                id="percepcao" 
-                name="pericia" 
-                value="Percepcao"
-                [(ngModel)]="pericias['percepcao']">
+            <input type="checkbox" id="percepcao" name="pericia" value="Percepcao"
+                    (change)="togglePericia('percepcao')"
+                    [checked]="isSelecionada('percepcao')">
             <label>{{ getValorPericia('percepcao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="percepcao">Percepção (SAB)</label><br>
 
             <!-- Atuação -->
-            <input type="checkbox" 
-                id="atuacao" 
-                name="pericia" 
-                value="Atuacao"
-                [(ngModel)]="pericias['atuacao']">
+            <input type="checkbox" id="atuacao" name="pericia" value="Atuacao"
+                    (change)="togglePericia('atuacao')"
+                    [checked]="isSelecionada('atuacao')">
             <label>{{ getValorPericia('atuacao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="atuacao">Atuação (CAR)</label><br>
 
             <!-- Persuasão -->
-            <input type="checkbox" 
-                id="persuacao" 
-                name="pericia" 
-                value="Persuacao"
-                [(ngModel)]="pericias['persuacao']">
-            <label>{{ getValorPericia('persuacao') }}</label>
+            <input type="checkbox" id="persuasao" name="pericia" value="Persuasao"
+                    (change)="togglePericia('persuasao')"
+                    [checked]="isSelecionada('persuasao')">
+            <label>{{ getValorPericia('persuasao') }}</label>
             <span style="margin: 0 3px;"></span>
-            <label for="persuacao">Persuasão (CAR)</label><br>
-            
+            <label for="persuasao">Persuasão (CAR)</label><br>
+
             <!-- Religião -->
-            <input type="checkbox" 
-                id="religiao" 
-                name="pericia" 
-                value="Religiao"
-                [(ngModel)]="pericias['religiao']">
+            <input type="checkbox" id="religiao" name="pericia" value="Religiao"
+                    (change)="togglePericia('religiao')"
+                    [checked]="isSelecionada('religiao')">
             <label>{{ getValorPericia('religiao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="religiao">Religião (INT)</label><br>
 
             <!-- Prestidigitação -->
-            <input type="checkbox" 
-                id="prestidigitacao" 
-                name="pericia" 
-                value="Prestidigitacao"
-                [(ngModel)]="pericias['prestidigitacao']">
+            <input type="checkbox" id="prestidigitacao" name="pericia" value="Prestidigitacao"
+                    (change)="togglePericia('prestidigitacao')"
+                    [checked]="isSelecionada('prestidigitacao')">
             <label>{{ getValorPericia('prestidigitacao') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="prestidigitacao">Prestidigitação (DES)</label><br>
 
             <!-- Furtividade -->
-            <input type="checkbox" 
-                id="furtividade" 
-                name="pericia" 
-                value="Furtividade"
-                [(ngModel)]="pericias['furtividade']">
+            <input type="checkbox" id="furtividade" name="pericia" value="Furtividade"
+                    (change)="togglePericia('furtividade')"
+                    [checked]="isSelecionada('furtividade')">
             <label>{{ getValorPericia('furtividade') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="furtividade">Furtividade (DES)</label><br>
 
             <!-- Sobrevivência -->
-            <input type="checkbox" 
-                id="sobrevivencia" 
-                name="pericia" 
-                value="Sobrevivencia"
-                [(ngModel)]="pericias['sobrevivencia']">
+            <input type="checkbox" id="sobrevivencia" name="pericia" value="Sobrevivencia"
+                    (change)="togglePericia('sobrevivencia')"
+                    [checked]="isSelecionada('sobrevivencia')">
             <label>{{ getValorPericia('sobrevivencia') }}</label>
             <span style="margin: 0 3px;"></span>
             <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
-        </div>
+            </div>
             <div class="percepcaoPassiva">
                 <span style="margin: 0 3px; font-size: 18px;">Valor</span>
                 <label style="font-size: 24px; font-weight: bold;">{{ getValorPericia('percepcao') +10}}</label>

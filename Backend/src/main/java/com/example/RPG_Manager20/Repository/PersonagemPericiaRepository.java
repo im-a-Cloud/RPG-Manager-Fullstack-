@@ -1,5 +1,6 @@
 package com.example.RPG_Manager20.Repository;
 
+import com.example.RPG_Manager20.Model.Entities.Pericia;
 import com.example.RPG_Manager20.Model.Entities.PersonagemPericia;
 
 import java.util.List;
@@ -16,5 +17,4 @@ public interface PersonagemPericiaRepository extends SoftDeletableRepository<Per
 
     // Deletar uma perícia específica
     void deleteByPersonagemIdAndPericiaId(Long personagemId, Long periciaId);
-
 }
