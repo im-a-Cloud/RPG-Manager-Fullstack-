@@ -378,18 +378,46 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // IMAGEM
   // ============================================
   onSelectedFile(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
+      const file = event.target.files[0];
+      if (!file) return;
+
       this.nomeArquivo = file.name;
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.imagemPreview = e.target.result;
-        this.imagemBase64 = e.target.result;
+          const img = new Image();
+          img.onload = () => {
+              // Redimensiona para no máximo 400x400
+              const MAX = 400;
+              let w = img.width;
+              let h = img.height;
+
+              if (w > h && w > MAX) {
+                  h = Math.round(h * MAX / w);
+                  w = MAX;
+              } else if (h > MAX) {
+                  w = Math.round(w * MAX / h);
+                  h = MAX;
+              }
+
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              if (!ctx) return;
+
+              ctx.drawImage(img, 0, 0, w, h);
+
+              // JPEG qualidade 0.8 = ~50-100KB
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+              this.imagemPreview = dataUrl;
+              this.imagemBase64 = dataUrl;
+          };
+          img.src = e.target.result;
       };
       reader.readAsDataURL(file);
-    }
   }
-
   removerImagem(): void {
     this.imagemPreview = null;
     this.imagemBase64 = null;
@@ -737,6 +765,8 @@ export class CriarFichaPersonagemComponent implements OnInit {
     console.log('📤 PERÍCIAS PARA ENVIAR:', pericias);
 
     const dadosParaEnviar = {
+      fotoBase64: this.imagemBase64 || null,
+
       nomePersonagem: this.personagem.nomePersonagem,
       nivelPersonagem: this.personagem.nivelPersonagem || 1,
       classeId: classeId,

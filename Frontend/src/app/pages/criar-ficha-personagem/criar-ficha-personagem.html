@@ -16,6 +16,16 @@
                     <img [src]="imagemPreview" class="preview-imagem"><br>
                     <button type="button" (click)="removerImagem()" class="btn-remover">Remover</button><br><br>
                 </div>
+                <div class="fotoPersonagem">
+                    <img *ngIf="personagem.fotoBase64"
+                        [src]="personagem.fotoBase64"
+                        alt="Foto de {{ personagem.nomePersonagem }}"
+                        class="foto-personagem">
+
+                    <div *ngIf="!personagem.fotoBase64" class="foto-placeholder">
+                        {{ personagem.nomePersonagem?.charAt(0) || '?' }}
+                    </div>
+                </div>
             </div>
 
             <div class="nomeClasse">

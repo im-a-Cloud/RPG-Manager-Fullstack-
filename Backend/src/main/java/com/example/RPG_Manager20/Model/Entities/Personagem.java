@@ -97,6 +97,10 @@ public class Personagem extends AbstractModel {
     @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
     private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
+    @Lob //para objetos grandes
+    @Column(name = "foto_base64", columnDefinition = "TEXT")
+    private String fotoBase64;
+
     public Personagem() {
         this.habilidades = new ArrayList<>();
         this.proficienciasPersonagem = new ArrayList<>();
@@ -416,5 +420,13 @@ public class Personagem extends AbstractModel {
     // Se quiser manter o nome "id" no JSON
     public Long getIdClasse() {
         return super.getId();
+    }
+
+    public String getFotoBase64() {
+        return fotoBase64;
+    }
+
+    public void setFotoBase64(String fotoBase64) {
+        this.fotoBase64 = fotoBase64;
     }
 }

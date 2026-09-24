@@ -79,7 +79,9 @@ public record PersonagemRequestDTO(
         @Valid
         List<MagiaDTO> magias,
         @Valid
-        List<PericiaPersonagemRequestDTO> pericias
+        List<PericiaPersonagemRequestDTO> pericias,
+        String fotoBase64
+
 ) {
     // Construtor com valores padrão
     public PersonagemRequestDTO {
@@ -96,6 +98,7 @@ public record PersonagemRequestDTO(
         if (movimento == null) movimento = 9;
         if (pesoPersonagem == null) pesoPersonagem = 0.0;
         if (alturaPersonagem == null) alturaPersonagem = 0.0;
+        if(fotoBase64 == null) fotoBase64 = "";
 
         if (proficiencias == null) proficiencias = List.of();
         if (pericias == null) pericias = List.of();

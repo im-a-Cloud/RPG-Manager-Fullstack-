@@ -38,7 +38,8 @@ public record PersonagemResponseDTO(
         @JsonProperty("ca") int ca,
         @JsonProperty("iniciativa") int iniciativa,
         @JsonProperty("movimento") int movimento,
-        int pontosVidaPersonagem
+        int pontosVidaPersonagem,
+        String fotoBase64
 ) {
 
     public record ClasseInfo(
@@ -254,7 +255,8 @@ public record PersonagemResponseDTO(
                 ca,
                 iniciativa,
                 movimento,
-                personagem.getPontosVidaPersonagem()
+                personagem.getPontosVidaPersonagem(),
+                personagem.getFotoBase64()
         );
     }
 }

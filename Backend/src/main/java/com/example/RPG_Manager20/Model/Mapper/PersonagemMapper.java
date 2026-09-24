@@ -33,6 +33,7 @@ public interface PersonagemMapper {
     @Mapping(source = "inventario", target = "inventarioPersonagem")
     @Mapping(source = "magias", target = "magias")
     @Mapping(source = "pericias", target = "periciasPersonagem", qualifiedByName = "mapPericias")
+    @Mapping(source = "fotoBase64", target = "fotoBase64")
     Personagem toEntity(PersonagemRequestDTO dto);
 
     // ============================================
