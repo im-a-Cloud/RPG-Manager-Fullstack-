@@ -19,26 +19,38 @@ public record PersonagemResponseDTO(
         AtributosInfo atributos,
         MagiaInfo magia,
         List<ItemDTO> inventario,
-        List<PericiaPersonagemResponseDTO> pericias,   // ← nome do campo faltava
+        List<PericiaPersonagemResponseDTO> pericias,
         List<HabilidadeDTO> habilidades,
         List<ProficienciaDTO> proficiencia,
         List<MagiaDTO> magias,
 
+        // ============ DESCRITIVOS ============
         String historiaPersonagem,
         String aparenciaPersonagem,
         String ideaisPersonagem,
         String defeitosPersonagem,
         String anotacoesPersonagem,
         String personalidadePersonagem,
+
+        // ============ BIOGRÁFICOS ============
         String racaPersonagem,
         String escalaPersonagem,
         String alinhamentoPersonagem,
+        Integer idadePersonagem,          // ← ADICIONADO
+        String generoPersonagem,          // ← ADICIONADO
+        String antecedentePersonagem,     // ← ADICIONADO
+
+        // ============ NUMÉRICOS ============
         double pesoPersonagem,
         double alturaPersonagem,
+
+        // ============ COMBATE ============
         @JsonProperty("ca") int ca,
         @JsonProperty("iniciativa") int iniciativa,
         @JsonProperty("movimento") int movimento,
         int pontosVidaPersonagem,
+
+        // ============ FOTO ============
         String fotoBase64
 ) {
 
@@ -241,21 +253,34 @@ public record PersonagemResponseDTO(
                 habilidadesDTO,
                 proficienciaDTO,
                 magiasDTO,
+
+                // ============ DESCRITIVOS ============
                 personagem.getHistoriaPersonagem(),
                 personagem.getAparenciaPersonagem(),
                 personagem.getIdeaisPersonagem(),
                 personagem.getDefeitosPersonagem(),
                 personagem.getAnotacoesPersonagem(),
                 personagem.getPersonalidadePersonagem(),
+
+                // ============ BIOGRÁFICOS ============
                 personagem.getRacaPersonagem(),
                 personagem.getEscalaPersonagem(),
                 personagem.getAlinhamentoPersonagem(),
+                personagem.getIdadePersonagem(),       // ← ADICIONADO
+                personagem.getGeneroPersonagem(),      // ← ADICIONADO
+                personagem.getAntecedentePersonagem(), // ← ADICIONADO
+
+                // ============ NUMÉRICOS ============
                 personagem.getPesoPersonagem(),
                 personagem.getAlturaPersonagem(),
+
+                // ============ COMBATE ============
                 ca,
                 iniciativa,
                 movimento,
                 personagem.getPontosVidaPersonagem(),
+
+                // ============ FOTO ============
                 personagem.getFotoBase64()
         );
     }

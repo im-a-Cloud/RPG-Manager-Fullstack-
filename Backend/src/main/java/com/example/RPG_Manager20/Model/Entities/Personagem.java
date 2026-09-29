@@ -46,7 +46,12 @@ public class Personagem extends AbstractModel {
     private String anotacoesPersonagem ="";
     @Column(columnDefinition = "TEXT")
     private String personalidadePersonagem ="";
+    @Column
+    private Integer idadePersonagem = 0;
     @Column(columnDefinition = "TEXT")
+    private String generoPersonagem ="";
+    @Column(columnDefinition = "TEXT")
+    private String antecedentePersonagem ="";
 
     //Semi-importantes(Não tem um BD de raças então é só string normal)
     private String racaPersonagem ="";
@@ -122,6 +127,7 @@ public class Personagem extends AbstractModel {
         this.inventarioPersonagem = inventarioPersonagem != null ? inventarioPersonagem : new ArrayList<>();
         this.periciasPersonagem = periciasPersonagem != null ? periciasPersonagem : new ArrayList<>();
         this.habilidades = habilidades != null ? habilidades : new ArrayList<>();
+
     }
 
     public void adicionarHabilidade(Habilidade habilidade) {
@@ -428,5 +434,29 @@ public class Personagem extends AbstractModel {
 
     public void setFotoBase64(String fotoBase64) {
         this.fotoBase64 = fotoBase64;
+    }
+
+    public Integer getIdadePersonagem() {
+        return idadePersonagem;
+    }
+
+    public void setIdadePersonagem(Integer idadePersonagem) {
+        this.idadePersonagem = idadePersonagem;
+    }
+
+    public String getGeneroPersonagem() {
+        return generoPersonagem;
+    }
+
+    public void setGeneroPersonagem(String generoPersonagem) {
+        this.generoPersonagem = generoPersonagem;
+    }
+
+    public String getAntecedentePersonagem() {
+        return antecedentePersonagem;
+    }
+
+    public void setAntecedentePersonagem(String antecedentePersonagem) {
+        this.antecedentePersonagem = antecedentePersonagem;
     }
 }

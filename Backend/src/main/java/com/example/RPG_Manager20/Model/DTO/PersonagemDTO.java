@@ -53,7 +53,8 @@ public record PersonagemDTO(
 
         // Campos numéricos
         Double pesoPersonagem,
-        Double alturaPersonagem
+        Double alturaPersonagem,
+        Integer idadePersonagem
 ) {
     // Métodos auxiliares para calcular bônus
     @JsonProperty("bonusForca")

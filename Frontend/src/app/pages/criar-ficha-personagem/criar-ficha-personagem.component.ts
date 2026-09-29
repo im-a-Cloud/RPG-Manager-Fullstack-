@@ -58,11 +58,21 @@ export class CriarFichaPersonagemComponent implements OnInit {
     iniciativaPersonagem: 0,
     movimentoPersonagem: 9,
     pontosVidaPersonagem: 10,
+
     historiaPersonagem: '',
     aparenciaPersonagem: '',
     racaPersonagem: '',
     escalaPersonagem: '',
     antecedentePersonagem: '',
+    alinhamentoPersonagem: '',
+    ideaisPersonagem: '',
+    defeitosPersonagem: '',
+    anotacoesPersonagem: '',
+    personalidadePersonagem: '',
+    alturaPersonagem: 0,         
+    generoPersonagem: '',        
+    idadePersonagem: 0,
+    pesoPersonagem: 0.0,           
     habilidades: [],
     periciasPersonagem: [],
     proficienciasPersonagem: [],
@@ -539,6 +549,28 @@ export class CriarFichaPersonagemComponent implements OnInit {
     });
   }
 
+  adicionarProficiencia(): void {
+    if(this.novaProficiencia.listaProficiencias === null || this.novaProficiencia.listaProficiencias === undefined || this.novaProficiencia.listaProficiencias.trim() === '') {
+      this.mostrarMensagem('⚠️ A descrição da proficiência é obrigatória!', 'error');
+      return;
+    }
+    const dadosProficiencia = {
+      tipoProficiencia: this.novaProficiencia.tipoProficiencia || TipoProficiencia.OUTROS,
+      listaProficiencias: this.novaProficiencia.listaProficiencias
+    };
+    if (!this.personagem.proficienciasPersonagem) this.personagem.proficienciasPersonagem = [];
+    this.personagem.proficienciasPersonagem.push(dadosProficiencia);
+    
+    console.log('🔍 Proficiência adicionada:', dadosProficiencia);
+
+    this.mostrarMensagem(`✅ Proficiência "${dadosProficiencia.listaProficiencias}" adicionada!`, 'success');
+
+    this.novaProficiencia = {
+      tipoProficiencia: TipoProficiencia.OUTROS,
+      listaProficiencias: ''
+    }
+  }
+
   removerProficiencia(index: number): void {
     if (this.personagem.proficienciasPersonagem) {
       const removido = this.personagem.proficienciasPersonagem[index].tipoProficiencia;
@@ -770,20 +802,34 @@ export class CriarFichaPersonagemComponent implements OnInit {
       nomePersonagem: this.personagem.nomePersonagem,
       nivelPersonagem: this.personagem.nivelPersonagem || 1,
       classeId: classeId,
+
       valorForca: this.personagem.valorForca || 10,
       valorDestreza: this.personagem.valorDestreza || 10,
       valorConstituicao: this.personagem.valorConstituicao || 10,
       valorInteligencia: this.personagem.valorInteligencia || 10,
       valorSabedoria: this.personagem.valorSabedoria || 10,
       valorCarisma: this.personagem.valorCarisma || 10,
+
       racaPersonagem: this.personagem.racaPersonagem || '',
+
       ca: this.personagem.caPersonagem || 10,
       iniciativa: this.personagem.iniciativaPersonagem || 0,
       movimento: this.personagem.movimentoPersonagem || 9,
       pontosVida: this.personagem.pontosVidaPersonagem || 10,
+      
       historiaPersonagem: this.personagem.historiaPersonagem || '',
       aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
       escalaPersonagem: this.personagem.escalaPersonagem || '',
+      idadePersonagem: this.personagem.idadePersonagem || '',
+      antecedentePersonagem: this.personagem.antecedentePersonagem || '',
+      alinhamentoPersonagem: this.personagem.alinhamentoPersonagem || '',
+      ideaisPersonagem: this.personagem.ideaisPersonagem || '',
+      defeitosPersonagem: this.personagem.defeitosPersonagem || '',
+      anotacoesPersonagem: this.personagem.anotacoesPersonagem || '',
+      personalidadePersonagem: this.personagem.personalidadePersonagem || '',
+      alturaPersonagem: this.personagem.alturaPersonagem || 0,
+      generoPersonagem: this.personagem.generoPersonagem || '',
+      pesoPersonagem: this.personagem.pesoPersonagem || 0.0,
 
       habilidades: this.personagem.habilidades || [],
       proficiencias: this.personagem.proficienciasPersonagem || [],

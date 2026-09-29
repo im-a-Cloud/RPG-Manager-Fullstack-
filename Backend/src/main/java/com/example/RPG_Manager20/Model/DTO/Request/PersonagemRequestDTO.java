@@ -19,57 +19,66 @@ public record PersonagemRequestDTO(
 
         @Min(value = 1, message = "Nível deve ser entre 1 e 20")
         @Max(value = 20, message = "Nível deve ser entre 1 e 20")
-        Integer nivelPersonagem,  // ← Mude para Integer
+        Integer nivelPersonagem,
 
         @NotNull(message = "ID da classe é obrigatório")
         Long classeId,
 
+        // ============ ATRIBUTOS ============
         @Min(value = 1, message = "Força deve ser entre 1 e 20")
         @Max(value = 20, message = "Força deve ser entre 1 e 20")
-        Integer valorForca,  // ← Mude para Integer
+        Integer valorForca,
 
         @Min(value = 1, message = "Destreza deve ser entre 1 e 20")
         @Max(value = 20, message = "Destreza deve ser entre 1 e 20")
-        Integer valorDestreza,  // ← Mude para Integer
+        Integer valorDestreza,
 
         @Min(value = 1, message = "Constituição deve ser entre 1 e 20")
         @Max(value = 20, message = "Constituição deve ser entre 1 e 20")
-        Integer valorConstituicao,  // ← Mude para Integer
+        Integer valorConstituicao,
 
         @Min(value = 1, message = "Inteligência deve ser entre 1 e 20")
         @Max(value = 20, message = "Inteligência deve ser entre 1 e 20")
-        Integer valorInteligencia,  // ← Mude para Integer
+        Integer valorInteligencia,
 
         @Min(value = 1, message = "Sabedoria deve ser entre 1 e 20")
         @Max(value = 20, message = "Sabedoria deve ser entre 1 e 20")
-        Integer valorSabedoria,  // ← Mude para Integer
+        Integer valorSabedoria,
 
         @Min(value = 1, message = "Carisma deve ser entre 1 e 20")
         @Max(value = 20, message = "Carisma deve ser entre 1 e 20")
-        Integer valorCarisma,  // ← Mude para Integer
+        Integer valorCarisma,
 
-        // Combate
-        Integer ca,  // ← Mude para Integer
-        Integer iniciativa,  // ← Mude para Integer
-        Integer pontosVida,  // ← Mude para Integer
-        Integer movimento,  // ← Mude para Integer
+        // ============ COMBATE ============
+        Integer ca,
+        Integer iniciativa,
+        Integer pontosVida,
+        Integer movimento,
 
-        // Campos de texto (opcionais)
+        // ============ DESCRITIVOS ============
         String historiaPersonagem,
         String aparenciaPersonagem,
         String ideaisPersonagem,
         String defeitosPersonagem,
         String anotacoesPersonagem,
         String personalidadePersonagem,
+
+        // ============ DADOS BIOGRÁFICOS ============
         String racaPersonagem,
         String escalaPersonagem,
         String alinhamentoPersonagem,
+        Integer idadePersonagem,          // ← ADICIONADO
+        String generoPersonagem,         // ← ADICIONADO
+        String antecedentePersonagem,    // ← ADICIONADO (se usar)
 
-        // Campos numéricos
-        Double pesoPersonagem,  // ← Mude para Double
-        Double alturaPersonagem,  // ← Mude para Double
+        // ============ NUMÉRICOS ============
+        Double pesoPersonagem,
+        Double alturaPersonagem,
 
-        // Listas
+        // ============ FOTO ============
+        String fotoBase64,
+
+        // ============ LISTAS ============
         @Valid
         List<HabilidadeDTO> habilidades,
         @Valid
@@ -79,9 +88,7 @@ public record PersonagemRequestDTO(
         @Valid
         List<MagiaDTO> magias,
         @Valid
-        List<PericiaPersonagemRequestDTO> pericias,
-        String fotoBase64
-
+        List<PericiaPersonagemRequestDTO> pericias
 ) {
     // Construtor com valores padrão
     public PersonagemRequestDTO {
@@ -98,8 +105,23 @@ public record PersonagemRequestDTO(
         if (movimento == null) movimento = 9;
         if (pesoPersonagem == null) pesoPersonagem = 0.0;
         if (alturaPersonagem == null) alturaPersonagem = 0.0;
-        if(fotoBase64 == null) fotoBase64 = "";
 
+        // Strings descritivas vazias
+        if (historiaPersonagem == null) historiaPersonagem = "";
+        if (aparenciaPersonagem == null) aparenciaPersonagem = "";
+        if (ideaisPersonagem == null) ideaisPersonagem = "";
+        if (defeitosPersonagem == null) defeitosPersonagem = "";
+        if (anotacoesPersonagem == null) anotacoesPersonagem = "";
+        if (personalidadePersonagem == null) personalidadePersonagem = "";
+        if (racaPersonagem == null) racaPersonagem = "";
+        if (escalaPersonagem == null) escalaPersonagem = "";
+        if (alinhamentoPersonagem == null) alinhamentoPersonagem = "";
+        if (idadePersonagem == null) idadePersonagem = 0;
+        if (generoPersonagem == null) generoPersonagem = "";
+        if (antecedentePersonagem == null) antecedentePersonagem = "";
+        if (fotoBase64 == null) fotoBase64 = "";
+
+        // Listas
         if (proficiencias == null) proficiencias = List.of();
         if (pericias == null) pericias = List.of();
         if (habilidades == null) habilidades = List.of();

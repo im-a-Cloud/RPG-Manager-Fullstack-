@@ -2,19 +2,14 @@ package com.example.RPG_Manager20.Service;
 
 import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
 import com.example.RPG_Manager20.Model.DTO.PersonagemDTO;
+import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
 import com.example.RPG_Manager20.Model.DTO.Request.PericiaPersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Request.PersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
-import com.example.RPG_Manager20.Model.Entities.Classe;
-import com.example.RPG_Manager20.Model.Entities.Pericia;
-import com.example.RPG_Manager20.Model.Entities.Personagem;
-import com.example.RPG_Manager20.Model.Entities.PersonagemPericia;
+import com.example.RPG_Manager20.Model.Entities.*;
 import com.example.RPG_Manager20.Model.Enums.ErrorMessageUtils;
 import com.example.RPG_Manager20.Model.Mapper.PersonagemMapper;
-import com.example.RPG_Manager20.Repository.ClasseRepository;
-import com.example.RPG_Manager20.Repository.PericiaRepository;
-import com.example.RPG_Manager20.Repository.PersonagemPericiaRepository;
-import com.example.RPG_Manager20.Repository.PersonagemRepository;
+import com.example.RPG_Manager20.Repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +34,9 @@ public class PersonagemService {
 
     @Autowired
     private PersonagemPericiaService personagemPericiaService;
+
+    @Autowired
+    private ProficienciaRepository proficienciaRepository;
 
     @Autowired
     PericiaRepository periciaRepository;
@@ -103,6 +102,31 @@ public class PersonagemService {
                 savedPersonagem.getPericiasPersonagem().add(personagemPericia);
 
                 System.out.println("Perícia adicionada: " + pericia.getNomeExibicao());
+            }
+        }
+        if (requestDTO.proficiencias() != null && !requestDTO.proficiencias().isEmpty()) {
+            for (ProficienciaDTO pDTO : requestDTO.proficiencias()) {
+
+                // Evita duplicar se já veio da classe
+                boolean jaExiste = savedPersonagem.getProficienciasPersonagem().stream()
+                        .anyMatch(p -> p.getTipoProficiencia() == pDTO.tipoProficiencia()
+                                && Objects.equals(p.getListaProficiencias(), pDTO.listaProficiencias()));
+
+                if (jaExiste) {
+                    System.out.println("Proficiência já existente (ignorada): " + pDTO.listaProficiencias());
+                    continue;
+                }
+
+                Proficiencia prof = new Proficiencia();
+                prof.setTipoProficiencia(pDTO.tipoProficiencia());
+                prof.setListaProficiencias(pDTO.listaProficiencias());
+                prof.setPersonagem(savedPersonagem);
+                prof.setDeleted(false);
+
+                proficienciaRepository.save(prof);
+                savedPersonagem.getProficienciasPersonagem().add(prof);
+
+                System.out.println("Proficiência adicionada: " + prof.getListaProficiencias());
             }
         }
         // 7. Buscar o personagem atualizado
@@ -173,12 +197,10 @@ public class PersonagemService {
             personagemExistente.setClassePersonagem(classe);
 
             if (classe.getListaProficienciasClasse() != null) {
-                personagemExistente.setProficienciasPersonagem(
-                        new ArrayList<>(classe.getListaProficienciasClasse())
-                );
+                personagemExistente.setProficienciasPersonagem(new ArrayList<>(classe.getListaProficienciasClasse()));
             }
         }
-
+        System.out.println("🔍 Passo 7 - proficiências do request: " + requestDTO.proficiencias());
         // Recalcular valores
         calcularValoresAutomaticos(personagemExistente);
 

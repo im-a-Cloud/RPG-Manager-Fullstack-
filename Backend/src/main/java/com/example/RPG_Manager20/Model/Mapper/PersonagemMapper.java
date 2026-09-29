@@ -15,30 +15,26 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface PersonagemMapper {
 
-    // ============================================
-    // REQUEST DTO → ENTITY
-    // ============================================
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "classePersonagem", ignore = true)
 
-    // Mapeia os campos de combate
+    // Campos com nomes diferentes
     @Mapping(target = "caPersonagem", source = "ca")
     @Mapping(target = "iniciativaPersonagem", source = "iniciativa")
     @Mapping(target = "movimentoPersonagem", source = "movimento")
     @Mapping(target = "pontosVidaPersonagem", source = "pontosVida")
 
-    // 🔥 LISTAS - MAPEAMENTO
+    // Listas com nomes diferentes
     @Mapping(source = "habilidades", target = "habilidades")
-    @Mapping(source = "proficiencias", target = "proficienciasPersonagem")
     @Mapping(source = "inventario", target = "inventarioPersonagem")
     @Mapping(source = "magias", target = "magias")
-    @Mapping(source = "pericias", target = "periciasPersonagem", qualifiedByName = "mapPericias")
-    @Mapping(source = "fotoBase64", target = "fotoBase64")
+
+    // 🔥 O service monta (busca Pericia pelo slug, adiciona proeficiências da classe + request)
+    @Mapping(target = "periciasPersonagem", ignore = true)
+    @Mapping(target = "proficienciasPersonagem", ignore = true)
+
     Personagem toEntity(PersonagemRequestDTO dto);
 
-    // ============================================
-    // ENTITY → RESPONSE DTO
-    // ============================================
     default PersonagemResponseDTO toResponseDto(Personagem personagem) {
         if (personagem == null) {
             return null;

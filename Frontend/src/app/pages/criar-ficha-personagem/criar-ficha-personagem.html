@@ -23,7 +23,7 @@
                         class="foto-personagem">
 
                     <div *ngIf="!personagem.fotoBase64" class="foto-placeholder">
-                        {{ personagem.nomePersonagem?.charAt(0) || '?' }}
+                        {{  '' }}
                     </div>
                 </div>
             </div>
@@ -446,6 +446,8 @@
                     [(ngModel)]="novaProficiencia.listaProficiencias"
                     required><br><br>
                     <button (click)="salvarProficiencia()">Adicionar Proficiência</button>
+                    <button (click)="adicionarProficiencia()">SALVAR Proficiência</button>
+
                 </div>
             </div>
         <!-- INVENTÁRIO -->
@@ -1204,17 +1206,17 @@
         <div class="dadosPessoaisPersonagem">
             <div class="idadeContainer">
                 <label for="idadePersonagem">Idade</label>
-                <input type="text" id="idadePersonagem" name="idadePersonagem">
+                <input type="text" id="idadePersonagem" name="idadePersonagem" required [(ngModel)]="personagem.idadePersonagem">
             </div>
             
             <div class="alturaContainer">
                 <label for="alturaPersonagem">Altura</label>
-                <input type="text" id="alturaPersonagem" name="alturaPersonagem">
+                <input type="text" id="alturaPersonagem" name="alturaPersonagem" required [(ngModel)]="personagem.alturaPersonagem">
             </div>
             
             <div class="pesoContainer">
                 <label for="pesoPersonagem">Peso</label>
-                <input type="text" id="pesoPersonagem" name="pesoPersonagem">
+                <input type="text" id="pesoPersonagem" name="pesoPersonagem" required [(ngModel)]="personagem.pesoPersonagem">
             </div>
             
             <div class="tamanhoContainer">
@@ -1224,43 +1226,43 @@
             
             <div class="generoContainer">
                 <label for="generoPersonagem">Gênero</label>
-                <input type="text" id="generoPersonagem" name="generoPersonagem">
+                <input type="text" id="generoPersonagem" name="generoPersonagem" required [(ngModel)]="personagem.generoPersonagem">
             </div>
             
             <div class="alinhamentoContainer">
                 <label for="alinhamentoPersonagem">Alinhamento</label>
-                <input type="text" id="alinhamentoPersonagem" name="alinhamentoPersonagem">
+                <input type="text" id="alinhamentoPersonagem" name="alinhamentoPersonagem" required [(ngModel)]="personagem.alinhamentoPersonagem">
             </div>
         </div>
             <div class="anotacoesInferior">
                 <div class="historiaContainer">
                         <label for="historiaPersonagem">História do personagem</label>
-                        <textarea id="historiaPersonagem" name="historiaPersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="historiaPersonagem" name="historiaPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.historiaPersonagem"></textarea>
                     </div>
                     
                     <div class="aparenciaContainer">
                         <label for="aparenciaPersonagem">Aparência do personagem</label><br>
-                        <textarea id="aparenciaPersonagem" name="aparenciaPersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="aparenciaPersonagem" name="aparenciaPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.aparenciaPersonagem"></textarea>
                     </div>
                     
                     <div class="personalidadeContainer">
                         <label for="personalidadePersonagem">Traços de personalidade</label><br>
-                        <textarea id="personalidadePersonagem" name="personalidadePersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="personalidadePersonagem" name="personalidadePersonagem" rows="4" cols="50" required [(ngModel)]="personagem.personalidadePersonagem"></textarea>
                     </div>
                     
                     <div class="ideaisContainer">
                         <label for="ideaisPersonagem">Ideais</label><br>
-                        <textarea id="ideaisPersonagem" name="ideaisPersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="ideaisPersonagem" name="ideaisPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.ideaisPersonagem"></textarea>
                     </div>
                     
                     <div class="defeitosContainer">
                         <label for="defeitosPersonagem">Defeitos</label><br>
-                        <textarea id="defeitosPersonagem" name="defeitosPersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="defeitosPersonagem" name="defeitosPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.defeitosPersonagem"></textarea>
                     </div>
                     
                     <div class="anotacoesContainer">
                         <label for="anotacoesPersonagem">Anotações</label><br>
-                        <textarea id="anotacoesPersonagem" name="anotacoesPersonagem" rows="4" cols="50"></textarea>
+                        <textarea id="anotacoesPersonagem" name="anotacoesPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.anotacoesPersonagem"></textarea>
                     </div>      
                 </div>
             </div>
