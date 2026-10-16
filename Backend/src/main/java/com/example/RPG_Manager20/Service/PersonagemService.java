@@ -39,12 +39,17 @@ public class PersonagemService {
     private ProficienciaRepository proficienciaRepository;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     PericiaRepository periciaRepository;
     // ============================================
     // 1️⃣ CRIAR PERSONAGEM (COMPLETO)
     // ============================================
     @Transactional
-    public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO) {
+    public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO, Long idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
         if (requestDTO.pericias() != null) {
             for (var p : requestDTO.pericias()) {
                 System.out.println("🔍 DTO perícia: " + p + " | classe=" + p.getClass().getName());
@@ -71,6 +76,8 @@ public class PersonagemService {
         // 2. Converter Request → Entity
         Personagem personagem = personagemMapper.toEntity(requestDTO);
         personagem.setClassePersonagem(classe);
+        personagem.setUsuario(usuario);   // ← SETA O USUÁRIO
+
 
         // 3. Copiar proficiências da classe
         if (classe.getListaProficienciasClasse() != null) {
@@ -153,6 +160,13 @@ public class PersonagemService {
                 .stream()
                 .map(personagemMapper::toResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<PersonagemResponseDTO> listarPorUsuario(Long usuarioId) {
+        return personagemRepository.findByUsuarioId(usuarioId)
+                .stream()
+                .map(p -> PersonagemResponseDTO.from(p, p.getClassePersonagem()))
+                .toList();
     }
 
     // ============================================

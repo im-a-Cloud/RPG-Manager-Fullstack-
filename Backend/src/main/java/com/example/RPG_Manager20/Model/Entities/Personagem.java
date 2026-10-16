@@ -102,9 +102,12 @@ public class Personagem extends AbstractModel {
     @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
     private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
-    @Lob //para objetos grandes
     @Column(name = "foto_base64", columnDefinition = "TEXT")
     private String fotoBase64;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Personagem() {
         this.habilidades = new ArrayList<>();
@@ -458,5 +461,13 @@ public class Personagem extends AbstractModel {
 
     public void setAntecedentePersonagem(String antecedentePersonagem) {
         this.antecedentePersonagem = antecedentePersonagem;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

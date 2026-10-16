@@ -38,7 +38,6 @@ public class ClasseService {
     @Transactional
     public ClasseDTO criarClasse(ClasseDTO classeDTO) {
 
-
         Classe classe = classeMapper.toEntity(classeDTO);
 
         classe.setConjurador(classeDTO.isConjurador());

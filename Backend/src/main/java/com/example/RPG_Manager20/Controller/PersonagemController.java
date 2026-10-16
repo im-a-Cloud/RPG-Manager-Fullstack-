@@ -2,6 +2,7 @@ package com.example.RPG_Manager20.Controller;
 
 import com.example.RPG_Manager20.Model.DTO.Request.PersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
+import com.example.RPG_Manager20.Model.Entities.Usuario;
 import com.example.RPG_Manager20.Service.PersonagemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,25 +25,30 @@ public class PersonagemController {
     private final PersonagemService personagemService;
 
     @PostMapping
-    public ResponseEntity<PersonagemResponseDTO> criarPersonagem(@Valid @RequestBody PersonagemRequestDTO requestDTO) {
-        PersonagemResponseDTO response = personagemService.criarPersonagem(requestDTO);
+    public ResponseEntity<PersonagemResponseDTO> criarPersonagem(
+            @Valid @RequestBody PersonagemRequestDTO dto,
+            @AuthenticationPrincipal Usuario usuario) {
+        PersonagemResponseDTO response = personagemService.criarPersonagem(dto, usuario.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
+    @GetMapping
+    public ResponseEntity<List<PersonagemResponseDTO>> listar(@AuthenticationPrincipal Usuario usuario) {
+        return ResponseEntity.ok(personagemService.listarPorUsuario(usuario.getId()));
+    }
     @GetMapping("/{id}")
     @Operation(summary = "Buscar personagem por ID")
     public ResponseEntity<PersonagemResponseDTO> buscarPorId(@PathVariable Long id) {
         PersonagemResponseDTO response = personagemService.buscarPersonagemPorId(id);
         return ResponseEntity.ok(response);
     }
-
+    /*
     @GetMapping
     @Operation(summary = "Listar todos os personagens")
     public ResponseEntity<List<PersonagemResponseDTO>> listarTodos() {
         List<PersonagemResponseDTO> lista = personagemService.listarTodos();
         return ResponseEntity.ok(lista);
     }
-
+    */
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar personagem")
     public ResponseEntity<PersonagemResponseDTO> atualizar(
