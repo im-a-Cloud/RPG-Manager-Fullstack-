@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/pericias/**").permitAll()
                         .requestMatchers("/classes/**").permitAll()
+                        .requestMatchers("/auth/usuarios").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(h -> h.frameOptions(f -> f.disable()))
