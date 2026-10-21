@@ -31,9 +31,6 @@ public class PericiaController {
         this.periciaRepository = periciaRepository;
     }
 
-    // ============================================
-    // POST - CRIAR PERÍCIA
-    // ============================================
     @PostMapping
     public ResponseEntity<PericiaDTO> criar(@RequestBody PericiaDTO periciaDTO) {
         Pericia pericia = periciaEntityMapper.toEntity(periciaDTO);
@@ -41,18 +38,12 @@ public class PericiaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(periciaEntityMapper.toDto(pericia));
     }
 
-    // ============================================
-    // GET - BUSCAR POR ID
-    // ============================================
     @GetMapping("/{idPericia}")
     public ResponseEntity<PericiaDTO> buscarPorId(@PathVariable("idPericia") Long idPericia) {
         Pericia pericia = periciaService.findById(idPericia);
         return ResponseEntity.ok(periciaEntityMapper.toDto(pericia));
     }
 
-    // ============================================
-    // GET - LISTAR TODOS
-    // ============================================
     @GetMapping
     public List<PericiaResponseDTO> listar() {
         return periciaRepository.findAllByOrderByNomeExibicaoAsc()
@@ -61,9 +52,6 @@ public class PericiaController {
                 .toList();
     }
 
-    // ============================================
-    // DELETE - DELETAR
-    // ============================================
     @DeleteMapping("/{idPericia}")
     public ResponseEntity<Void> deletar(@PathVariable("idPericia") Long idPericia) {
         periciaService.delete(idPericia);

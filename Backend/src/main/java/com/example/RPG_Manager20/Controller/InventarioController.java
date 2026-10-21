@@ -53,12 +53,12 @@ public class InventarioController {
     }
 
     // Buscar item específico no inventário
-    @GetMapping("/itens/{idItem}")
+    @GetMapping("/itens/{nomeItem}")
     public ResponseEntity<ItemResponseDTO> buscarItemNoInventario(
             @PathVariable("idPersonagem") Long idPersonagem,  // ← mesmo nome
-            @PathVariable Long idItem) {
+            @PathVariable String nomeItem) {
 
-        ItemResponseDTO item = inventarioService.buscarItemIventario(idPersonagem, idItem);
+        ItemResponseDTO item = inventarioService.buscarItemIventario(idPersonagem, nomeItem);
         return ResponseEntity.ok(item);
     }
 

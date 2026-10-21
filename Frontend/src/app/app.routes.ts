@@ -12,6 +12,6 @@ export const routes: Routes = [
     {path: 'cadastro', component: CadastroComponent},
     {path: 'login', component: LoginComponent },
     {path: 'teste-conexao', component: TesteConexao},
-    {path: 'characters-detail', component: CharacterDetailComponent},
+    { path: 'personagem/:id', component: CharacterDetailComponent },
     {path: 'criar-ficha', component: CriarFichaPersonagemComponent}
 ];

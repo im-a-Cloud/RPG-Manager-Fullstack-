@@ -29,6 +29,9 @@ public class InventarioService {
     @Autowired
     private ItemMapper itemMapper;
 
+    @Autowired
+    private ItemService itemService;
+
     @Transactional
     public ItemResponseDTO criarItem(ItemRequestDTO requestDTO) {
         Item item = itemMapper.toEntity(requestDTO);
@@ -74,11 +77,11 @@ public class InventarioService {
     }
 
     @Transactional
-    public ItemResponseDTO buscarItemIventario(Long personagemId, Long itemId) {
+    public ItemResponseDTO buscarItemIventario(Long personagemId, String nomeItem) {
         Personagem personagem = personagemService.findById(personagemId);
 
         Item item = personagem.getInventarioPersonagem().stream()
-                .filter(i -> i.getId().equals(itemId))
+                .filter(i -> i.getNomeItem().equals(nomeItem))
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
                         "Item não encontrado no inventário"));
