@@ -1,8 +1,6 @@
 package com.example.RPG_Manager20.Service;
 
-import com.example.RPG_Manager20.Model.DTO.PericiaPersonagemDTO;
-import com.example.RPG_Manager20.Model.DTO.PersonagemDTO;
-import com.example.RPG_Manager20.Model.DTO.ProficienciaDTO;
+import com.example.RPG_Manager20.Model.DTO.*;
 import com.example.RPG_Manager20.Model.DTO.Request.PericiaPersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Request.PersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
@@ -173,13 +171,20 @@ public class PersonagemService {
     // 4️⃣ ATUALIZAR PERSONAGEM
     // ============================================
     @Transactional
-    public PersonagemResponseDTO atualizarPersonagem(Long id, PersonagemRequestDTO requestDTO) {
+    public PersonagemResponseDTO atualizarPersonagem(Long id, PersonagemRequestDTO requestDTO, Long idUsuario) {
         System.out.println("📤 ATUALIZANDO PERSONAGEM ID: " + id);
 
         Personagem personagemExistente = findById(id);
+
+        // Verifica se pertence ao usuário
+        if (personagemExistente.getUsuario() == null
+                || !personagemExistente.getUsuario().getId().equals(idUsuario)) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, "Você não tem acesso a esse personagem");
+        }
+
         Classe classe = personagemExistente.getClassePersonagem();
 
-        // Atualizar campos básicos
+        // ============ CAMPOS BÁSICOS ============
         personagemExistente.setNomePersonagem(requestDTO.nomePersonagem());
         personagemExistente.setNivelPersonagem(requestDTO.nivelPersonagem());
         personagemExistente.setRacaPersonagem(requestDTO.racaPersonagem());
@@ -193,8 +198,12 @@ public class PersonagemService {
         personagemExistente.setAlinhamentoPersonagem(requestDTO.alinhamentoPersonagem());
         personagemExistente.setPesoPersonagem(requestDTO.pesoPersonagem());
         personagemExistente.setAlturaPersonagem(requestDTO.alturaPersonagem());
+        personagemExistente.setFotoBase64(requestDTO.fotoBase64());
+        personagemExistente.setIdadePersonagem(requestDTO.idadePersonagem());
+        personagemExistente.setGeneroPersonagem(requestDTO.generoPersonagem());
+        personagemExistente.setAntecedentePersonagem(requestDTO.antecedentePersonagem());
 
-        // Atualizar atributos
+        // ============ ATRIBUTOS ============
         personagemExistente.setValorForca(requestDTO.valorForca());
         personagemExistente.setValorDestreza(requestDTO.valorDestreza());
         personagemExistente.setValorConstituicao(requestDTO.valorConstituicao());
@@ -202,7 +211,7 @@ public class PersonagemService {
         personagemExistente.setValorSabedoria(requestDTO.valorSabedoria());
         personagemExistente.setValorCarisma(requestDTO.valorCarisma());
 
-        // Atualizar classe (se mudou)
+        // ============ CLASSE ============
         if (requestDTO.classeId() != null &&
                 (classe == null || !classe.getId().equals(requestDTO.classeId()))) {
             classe = classeRepository.findById(requestDTO.classeId())
@@ -211,19 +220,113 @@ public class PersonagemService {
             personagemExistente.setClassePersonagem(classe);
 
             if (classe.getListaProficienciasClasse() != null) {
-                personagemExistente.setProficienciasPersonagem(new ArrayList<>(classe.getListaProficienciasClasse()));
+                personagemExistente.setProficienciasPersonagem(
+                        new ArrayList<>(classe.getListaProficienciasClasse()));
             }
         }
-        System.out.println("🔍 Passo 7 - proficiências do request: " + requestDTO.proficiencias());
-        // Recalcular valores
+
+        // ============ PERÍCIAS ============
+        if (requestDTO.pericias() != null) {
+            personagemExistente.getPericiasPersonagem().clear();
+            for (PericiaPersonagemRequestDTO pDTO : requestDTO.pericias()) {
+                Pericia pericia = periciaRepository.findBySlug(pDTO.slug())
+                        .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+                                "Perícia não encontrada: " + pDTO.slug()));
+
+                PersonagemPericia pp = new PersonagemPericia();
+                pp.setPericia(pericia);
+                pp.setPersonagem(personagemExistente);
+                pp.setProficiente(Boolean.TRUE.equals(pDTO.isProficiente()));
+                personagemExistente.getPericiasPersonagem().add(pp);
+            }
+        }
+
+        // ============ HABILIDADES ============
+        if (requestDTO.habilidades() != null) {
+            personagemExistente.getHabilidades().clear();
+            for (HabilidadeDTO hDTO : requestDTO.habilidades()) {
+                Habilidade h = new Habilidade();
+                h.setNomeHabilidade(hDTO.nomeHabilidade());
+                h.setDescricaoHabilidade(hDTO.descricaoHabilidade());
+                h.setOrigemHabilidade(hDTO.origemHabilidade());
+                h.setUsosHabilidade(hDTO.usosHabilidade());
+                h.setRecargaHabilidade(hDTO.recargaHabilidade());
+                h.setPersonagem(personagemExistente);
+                personagemExistente.getHabilidades().add(h);
+            }
+        }
+
+        // ============ PROFICIÊNCIAS ============
+        if (requestDTO.proficiencias() != null) {
+            personagemExistente.getProficienciasPersonagem().clear();
+            for (ProficienciaDTO pDTO : requestDTO.proficiencias()) {
+                Proficiencia p = new Proficiencia();
+                p.setTipoProficiencia(pDTO.tipoProficiencia());
+                p.setListaProficiencias(pDTO.listaProficiencias());
+                p.setPersonagem(personagemExistente);
+                personagemExistente.getProficienciasPersonagem().add(p);
+            }
+        }
+
+        // ============ MAGIAS ============
+        if (requestDTO.magias() != null) {
+            personagemExistente.getMagias().clear();
+            for (MagiaDTO mDTO : requestDTO.magias()) {
+                Magia m = new Magia();
+                m.setName(mDTO.name());
+                m.setLevel(mDTO.level());
+                m.setCasting_time(mDTO.casting_time());
+                m.setRange(mDTO.range());
+                m.setDescription(mDTO.description());
+                m.setDuration(mDTO.duration());
+                m.setSchool(mDTO.school());
+                m.setRitual(mDTO.ritual());
+                m.setConcentration(mDTO.concentration());
+                m.setType(mDTO.type());
+                m.setClasses(mDTO.classes());
+                m.setTags(mDTO.tags());
+                // Components: se o DTO tem components, converta
+                if (mDTO.components() != null) {
+                    Components c = new Components();
+                    c.setVerbal(mDTO.components().verbal());
+                    c.setSomatic(mDTO.components().somatic());
+                    c.setMaterial(mDTO.components().material());
+                    c.setRaw(mDTO.components().raw());
+                    m.setComponents(c);
+                }
+                m.setPersonagem(personagemExistente);
+                personagemExistente.getMagias().add(m);
+            }
+        }
+
+        // ============ INVENTÁRIO ============
+        if (requestDTO.inventario() != null) {
+            personagemExistente.getInventarioPersonagem().clear();
+            for (ItemDTO iDTO : requestDTO.inventario()) {
+                Item item = new Item();
+                item.setNomeItem(iDTO.nomeItem());
+                item.setDescricaoItem(iDTO.descricaoItem());
+                item.setPrecoItem(iDTO.precoItem());
+                item.setRaridadeItem(iDTO.raridadeItem());
+                item.setPesoItem(iDTO.pesoItem());
+                item.setMagico(iDTO.isMagico());
+                item.setPrecisaSintonizacao(iDTO.precisaSintonizacao());
+                item.setQuantidade(iDTO.quantidade());
+                item.setTipoItem(iDTO.tipoItem());
+                item.setPersonagem(personagemExistente);
+                personagemExistente.getInventarioPersonagem().add(item);
+            }
+        }
+
+        // ============ RECALCULAR ============
         calcularValoresAutomaticos(personagemExistente);
 
+        // ============ SALVAR ============
         Personagem updated = personagemRepository.save(personagemExistente);
         System.out.println("✅ Personagem atualizado ID: " + updated.getId());
 
         return PersonagemResponseDTO.from(updated, classe);
     }
-
     // ============================================
     // 5️⃣ DELETAR PERSONAGEM
     // ============================================

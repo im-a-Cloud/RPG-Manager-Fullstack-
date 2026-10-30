@@ -55,6 +55,7 @@ public record PersonagemResponseDTO(
 ) {
 
     public record ClasseInfo(
+            Long id,
             Classes nome,
             DadosDeVida dadoDeVida,
             boolean isConjurador,
@@ -232,6 +233,7 @@ public record PersonagemResponseDTO(
                 personagem.getNomePersonagem(),
                 personagem.getNivelPersonagem(),
                 new ClasseInfo(
+                        classe.getId(),
                         classe.getNomeClasse(),
                         classe.getDadoDeVida(),
                         classe.isConjurador(),

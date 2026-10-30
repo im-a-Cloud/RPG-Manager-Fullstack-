@@ -53,8 +53,9 @@ public class PersonagemController {
     @Operation(summary = "Atualizar personagem")
     public ResponseEntity<PersonagemResponseDTO> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody PersonagemRequestDTO requestDTO) {
-        PersonagemResponseDTO response = personagemService.atualizarPersonagem(id, requestDTO);
+            @Valid @RequestBody PersonagemRequestDTO requestDTO,
+            @AuthenticationPrincipal Usuario usuario) {
+        PersonagemResponseDTO response = personagemService.atualizarPersonagem(id, requestDTO, usuario.getId());
         return ResponseEntity.ok(response);
     }
 

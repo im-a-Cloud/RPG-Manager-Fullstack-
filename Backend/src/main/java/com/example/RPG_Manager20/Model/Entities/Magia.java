@@ -1,5 +1,6 @@
 package com.example.RPG_Manager20.Model.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -35,6 +36,11 @@ public class Magia extends AbstractModel{
     private List<String> tags; //tags para fazer pesquisa no Json, geralmente classes que podem usar, tipo de dano, etc.
 
     private String type;
+
+    @ManyToOne
+    @JoinColumn(name = "personagem_id")
+    @JsonIgnore
+    private Personagem personagem;
 
     public Magia(){
 
@@ -174,5 +180,13 @@ public class Magia extends AbstractModel{
 
     public void setConcentration(boolean concentration) {
         this.concentration = concentration;
+    }
+
+    public Personagem getPersonagem() {
+        return personagem;
+    }
+
+    public void setPersonagem(Personagem personagem) {
+        this.personagem = personagem;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.RPG_Manager20.Model.Entities;
 
 import com.example.RPG_Manager20.Model.Enums.Atributos;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,11 @@ public class Pericia extends AbstractModel {
 
     private int valorTotal;
 
+    @ManyToOne
+    @JoinColumn(name = "personagem_id")
+    @JsonIgnore
+    private Personagem personagem;
+
     // ============ getters/setters ============
     public String getSlug() { return slug; }
     public void setSlug(String slug) { this.slug = slug; }
@@ -36,4 +42,12 @@ public class Pericia extends AbstractModel {
 
     public int getValorTotal() { return valorTotal; }
     public void setValorTotal(int valorTotal) { this.valorTotal = valorTotal; }
+
+    public Personagem getPersonagem() {
+        return personagem;
+    }
+
+    public void setPersonagem(Personagem personagem) {
+        this.personagem = personagem;
+    }
 }

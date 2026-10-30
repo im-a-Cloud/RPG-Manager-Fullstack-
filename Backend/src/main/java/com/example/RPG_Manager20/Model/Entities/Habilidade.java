@@ -1,6 +1,7 @@
 package com.example.RPG_Manager20.Model.Entities;
 
 import com.example.RPG_Manager20.Model.Enums.OrigemHabilidade;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,11 @@ public class Habilidade extends AbstractModel{
     private OrigemHabilidade origemHabilidade;
     private String usosHabilidade;
     private String recargaHabilidade;
+
+    @ManyToOne
+    @JoinColumn(name = "personagem_id")
+    @JsonIgnore
+    private Personagem personagem;
 
     public Habilidade() {
     }
@@ -63,5 +69,13 @@ public class Habilidade extends AbstractModel{
 
     public void setRecargaHabilidade(String recargaHabilidade) {
         this.recargaHabilidade = recargaHabilidade;
+    }
+
+    public Personagem getPersonagem() {
+        return personagem;
+    }
+
+    public void setPersonagem(Personagem personagem) {
+        this.personagem = personagem;
     }
 }

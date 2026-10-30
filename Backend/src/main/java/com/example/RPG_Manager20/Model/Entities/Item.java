@@ -2,7 +2,10 @@ package com.example.RPG_Manager20.Model.Entities;
 
 import com.example.RPG_Manager20.Model.Enums.RaridadeItem;
 import com.example.RPG_Manager20.Model.Enums.TipoItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +20,11 @@ public class Item extends AbstractModel{
     private boolean isMagico;
     private boolean precisaSintonizacao;
     private int quantidade;
+
+    @ManyToOne
+    @JoinColumn(name = "personagem_id")
+    @JsonIgnore
+    private Personagem personagem;
 
     public Item(){
 
@@ -103,5 +111,13 @@ public class Item extends AbstractModel{
 
     public void setRaridadeItem(RaridadeItem raridadeItem) {
         this.raridadeItem = raridadeItem;
+    }
+
+    public Personagem getPersonagem() {
+        return personagem;
+    }
+
+    public void setPersonagem(Personagem personagem) {
+        this.personagem = personagem;
     }
 }
