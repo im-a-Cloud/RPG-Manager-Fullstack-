@@ -1,5 +1,6 @@
 package com.example.RPG_Manager20.Controller;
 
+import com.example.RPG_Manager20.Model.DTO.PericiaCatalogoDTO;
 import com.example.RPG_Manager20.Model.DTO.PericiaDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PericiaResponseDTO;
 import com.example.RPG_Manager20.Model.Entities.Pericia;
@@ -43,12 +44,11 @@ public class PericiaController {
         Pericia pericia = periciaService.findById(idPericia);
         return ResponseEntity.ok(periciaEntityMapper.toDto(pericia));
     }
-
     @GetMapping
-    public List<PericiaResponseDTO> listar() {
+    public List<PericiaCatalogoDTO> listar() {
         return periciaRepository.findAllByOrderByNomeExibicaoAsc()
                 .stream()
-                .map(PericiaResponseDTO::from)
+                .map(PericiaCatalogoDTO::from)
                 .toList();
     }
 

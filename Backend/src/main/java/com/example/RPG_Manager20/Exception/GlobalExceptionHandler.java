@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        log.error("Erro interno: {}", ex.getMessage(), ex);
+        log.error("Erro interno não tratado", ex);   // ← loga o stack trace completo
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR,
                         "Ocorreu um erro interno no servidor"));

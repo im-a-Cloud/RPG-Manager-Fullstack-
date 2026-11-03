@@ -56,6 +56,7 @@ public class PersonagemController {
             @Valid @RequestBody PersonagemRequestDTO requestDTO,
             @AuthenticationPrincipal Usuario usuario) {
         PersonagemResponseDTO response = personagemService.atualizarPersonagem(id, requestDTO, usuario.getId());
+        System.out.println("🔍 [Controller] pericias no request: " + requestDTO.pericias());
         return ResponseEntity.ok(response);
     }
 

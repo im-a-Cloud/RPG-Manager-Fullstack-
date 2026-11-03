@@ -1,14 +1,14 @@
 package com.example.RPG_Manager20.Model.DTO.Response;
 
 import com.example.RPG_Manager20.Model.DTO.*;
-import com.example.RPG_Manager20.Model.Entities.Components;
+import com.example.RPG_Manager20.Model.Entities.*;
 import com.example.RPG_Manager20.Model.Enums.*;
-import com.example.RPG_Manager20.Model.Entities.Personagem;
-import com.example.RPG_Manager20.Model.Entities.Classe;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public record PersonagemResponseDTO(
@@ -19,7 +19,7 @@ public record PersonagemResponseDTO(
         AtributosInfo atributos,
         MagiaInfo magia,
         List<ItemDTO> inventario,
-        List<PericiaPersonagemResponseDTO> pericias,
+        List<PericiaResponseDTO> pericias,
         List<HabilidadeDTO> habilidades,
         List<ProficienciaDTO> proficiencia,
         List<MagiaDTO> magias,
@@ -112,7 +112,7 @@ public record PersonagemResponseDTO(
     // ============================================
     // MÉTODO FACTORY
     // ============================================
-    public static PersonagemResponseDTO from(Personagem personagem, Classe classe) {
+    public static PersonagemResponseDTO from(Personagem personagem, Classe classe, List<Pericia> catalogoPericias) {
         if (personagem == null || classe == null) {
             throw new IllegalArgumentException("Personagem e Classe não podem ser nulos");
         }
@@ -163,14 +163,27 @@ public record PersonagemResponseDTO(
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
+        Map<String, PericiaResponseDTO> porSlug = new LinkedHashMap<>();
+        for (PersonagemPericia pp : personagem.getPericiasPersonagem()) {
+            PericiaResponseDTO dto = PericiaResponseDTO.from(pp, personagem, bonusProficiencia);
+            porSlug.put(dto.slug(), dto);
+        }
+
+        List<PericiaResponseDTO> pericias = new ArrayList<>();
+
+        for (Pericia pericia : catalogoPericias) {
+            PericiaResponseDTO dto = porSlug.remove(pericia.getSlug());
+            if (dto == null) {
+                dto = PericiaResponseDTO.naoProficiente(pericia, personagem);
+            }
+            pericias.add(dto);
+        }
+
+        pericias.addAll(porSlug.values());
+
         // ============================================
         // CONVERTER PERÍCIAS
         // ============================================
-        List<PericiaPersonagemResponseDTO> periciasDTO = personagem.getPericiasPersonagem() != null
-                ? personagem.getPericiasPersonagem().stream()
-                .map(pp -> PericiaPersonagemResponseDTO.from(pp, personagem, bonusProficiencia))
-                .collect(Collectors.toList())
-                : new ArrayList<>();
 
         // ============================================
         // CONVERTER HABILIDADES
@@ -226,7 +239,7 @@ public record PersonagemResponseDTO(
         System.out.println("📊 RESPOSTA - Magias: " + magiasDTO.size());
         System.out.println("📊 RESPOSTA - Itens: " + inventarioDTO.size());
         System.out.println("📊 RESPOSTA - Proficiências: " + proficienciaDTO.size());
-        System.out.println("📊 RESPOSTA - Perícias: " + periciasDTO.size());
+        System.out.println("📊 RESPOSTA - Perícias: " + pericias.size());
 
         return new PersonagemResponseDTO(
                 personagem.getId(),
@@ -251,7 +264,7 @@ public record PersonagemResponseDTO(
                 ),
                 new MagiaInfo(bonusProficiencia, cd, ataque),
                 inventarioDTO,
-                periciasDTO,
+                pericias,
                 habilidadesDTO,
                 proficienciaDTO,
                 magiasDTO,

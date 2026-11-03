@@ -1,3 +1,5 @@
+
+/*
 package com.example.RPG_Manager20.Model.DTO.Response;
 
 import com.example.RPG_Manager20.Model.Entities.Pericia;
@@ -48,3 +50,5 @@ public record PericiaPersonagemResponseDTO(
         );
     }
 }
+
+ */

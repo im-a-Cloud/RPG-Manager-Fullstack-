@@ -2,11 +2,14 @@ package com.example.RPG_Manager20.Model.Mapper;
 
 import com.example.RPG_Manager20.Model.DTO.Request.PersonagemRequestDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
+import com.example.RPG_Manager20.Model.Entities.Pericia;
 import com.example.RPG_Manager20.Model.Entities.Personagem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
@@ -35,10 +38,11 @@ public interface PersonagemMapper {
 
     Personagem toEntity(PersonagemRequestDTO dto);
 
-    default PersonagemResponseDTO toResponseDto(Personagem personagem) {
+    default PersonagemResponseDTO toResponseDto(Personagem personagem, List<Pericia> catalogo) {
         if (personagem == null) {
             return null;
         }
-        return PersonagemResponseDTO.from(personagem, personagem.getClassePersonagem());
+        return PersonagemResponseDTO.from(personagem, personagem.getClassePersonagem(), catalogo);
     }
+
 }

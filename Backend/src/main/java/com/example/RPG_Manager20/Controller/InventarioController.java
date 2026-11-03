@@ -2,8 +2,6 @@ package com.example.RPG_Manager20.Controller;
 
 import com.example.RPG_Manager20.Model.DTO.Response.ItemResponseDTO;
 import com.example.RPG_Manager20.Model.DTO.Response.PersonagemResponseDTO;
-import com.example.RPG_Manager20.Model.Entities.Personagem;
-import com.example.RPG_Manager20.Model.Mapper.PersonagemMapper;
 import com.example.RPG_Manager20.Service.InventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,63 +11,70 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/personagem/{idPersonagem}/inventario")  // ← usa {idPersonagem}
-@CrossOrigin(origins = "http://localhost:4200")  // ← PERMITE ANGULAR
+@RequestMapping("/personagem/{idPersonagem}/inventario")
+@CrossOrigin(origins = "http://localhost:4200")
 public class InventarioController {
 
     @Autowired
     private InventarioService inventarioService;
 
-    @Autowired
-    private PersonagemMapper personagemMapper;
-
-    // Listar inventário
+    // ============================================
+    // LISTAR INVENTÁRIO
+    // ============================================
     @GetMapping
     public ResponseEntity<List<ItemResponseDTO>> listarInventario(
-            @PathVariable("idPersonagem") Long idPersonagem) {  // ← nome consistente
-        List<ItemResponseDTO> inventario = inventarioService.listarInventario(idPersonagem);
-        return ResponseEntity.ok(inventario);
+            @PathVariable("idPersonagem") Long idPersonagem) {
+
+        return ResponseEntity.ok(inventarioService.listarInventario(idPersonagem));
     }
 
-    // Adicionar item ao inventário
+    // ============================================
+    // ADICIONAR ITEM
+    // ============================================
     @PostMapping("/itens/{itemId}")
     public ResponseEntity<PersonagemResponseDTO> adicionarInventario(
-            @PathVariable("idPersonagem") Long idPersonagem,  // ← mesmo nome do RequestMapping
+            @PathVariable("idPersonagem") Long idPersonagem,
             @PathVariable Long itemId,
             @RequestParam(defaultValue = "1") int quantidade) {
 
-        Personagem personagem = inventarioService.adicionarItemIventario(idPersonagem, itemId, quantidade);
-        return ResponseEntity.status(HttpStatus.CREATED).body(personagemMapper.toResponseDto(personagem));
+        PersonagemResponseDTO response =
+                inventarioService.adicionarItemIventario(idPersonagem, itemId, quantidade);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Remover item do inventário
+    // ============================================
+    // REMOVER ITEM
+    // ============================================
     @DeleteMapping("/itens/{idItem}")
     public ResponseEntity<PersonagemResponseDTO> removerItem(
-            @PathVariable("idPersonagem") Long idPersonagem,  // ← mesmo nome
+            @PathVariable("idPersonagem") Long idPersonagem,
             @PathVariable Long idItem) {
 
-        Personagem personagem = inventarioService.removerItem(idPersonagem, idItem);
-        return ResponseEntity.ok(personagemMapper.toResponseDto(personagem));
+        return ResponseEntity.ok(inventarioService.removerItem(idPersonagem, idItem));
     }
 
-    // Buscar item específico no inventário
+    // ============================================
+    // BUSCAR ITEM POR NOME
+    // ============================================
     @GetMapping("/itens/{nomeItem}")
     public ResponseEntity<ItemResponseDTO> buscarItemNoInventario(
-            @PathVariable("idPersonagem") Long idPersonagem,  // ← mesmo nome
+            @PathVariable("idPersonagem") Long idPersonagem,
             @PathVariable String nomeItem) {
 
-        ItemResponseDTO item = inventarioService.buscarItemIventario(idPersonagem, nomeItem);
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(inventarioService.buscarItemIventario(idPersonagem, nomeItem));
     }
 
-    // Atualizar quantidade de um item
+    // ============================================
+    // ATUALIZAR QUANTIDADE
+    // ============================================
     @PutMapping("/itens/{itemId}/quantidade")
     public ResponseEntity<PersonagemResponseDTO> atualizarQuantidade(
-            @PathVariable("idPersonagem") Long idPersonagem,  // ← mesmo nome
+            @PathVariable("idPersonagem") Long idPersonagem,
             @PathVariable Long itemId,
             @RequestParam int quantidade) {
 
-        Personagem personagem = inventarioService.atualizarQuantidadeItem(idPersonagem, itemId, quantidade);
-        return ResponseEntity.ok(personagemMapper.toResponseDto(personagem));
+        return ResponseEntity.ok(
+                inventarioService.atualizarQuantidadeItem(idPersonagem, itemId, quantidade));
     }
 }

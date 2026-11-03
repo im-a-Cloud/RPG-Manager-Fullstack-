@@ -8,12 +8,11 @@ import com.example.RPG_Manager20.Model.Entities.*;
 import com.example.RPG_Manager20.Model.Enums.ErrorMessageUtils;
 import com.example.RPG_Manager20.Model.Mapper.PersonagemMapper;
 import com.example.RPG_Manager20.Repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,16 +30,14 @@ public class PersonagemService {
     private PersonagemMapper personagemMapper;
 
     @Autowired
-    private PersonagemPericiaService personagemPericiaService;
-
-    @Autowired
     private ProficienciaRepository proficienciaRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    PericiaRepository periciaRepository;
+    private PericiaRepository periciaRepository;
+
     // ============================================
     // 1️⃣ CRIAR PERSONAGEM (COMPLETO)
     // ============================================
@@ -48,12 +45,7 @@ public class PersonagemService {
     public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO, Long idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if (requestDTO.pericias() != null) {
-            for (var p : requestDTO.pericias()) {
-                System.out.println("🔍 DTO perícia: " + p + " | classe=" + p.getClass().getName());
-            }
-        }
-        System.out.println("🔍 RAW requestDTO = " + requestDTO);
+
         System.out.println("========================================");
         System.out.println("📤 CRIANDO PERSONAGEM COMPLETO:");
         System.out.println("   Nome: " + requestDTO.nomePersonagem());
@@ -74,96 +66,49 @@ public class PersonagemService {
         // 2. Converter Request → Entity
         Personagem personagem = personagemMapper.toEntity(requestDTO);
         personagem.setClassePersonagem(classe);
-        personagem.setUsuario(usuario);   // ← SETA O USUÁRIO
+        personagem.setUsuario(usuario);
 
-
-        // 3. Copiar proficiências da classe
-        if (classe.getListaProficienciasClasse() != null) {
-            personagem.setProficienciasPersonagem(new ArrayList<>(classe.getListaProficienciasClasse()));
-        }
-
-        // 4. Calcular valores automáticos
+        // 3. Calcular valores automáticos
         calcularValoresAutomaticos(personagem);
 
-        // 5. Salvar o personagem (primeiro para ter o ID)
+        // 4. Salvar o personagem (primeiro para ter o ID)
         Personagem savedPersonagem = personagemRepository.save(personagem);
         System.out.println("✅ Personagem salvo com ID: " + savedPersonagem.getId());
 
-        // 🔥 6. ADICIONAR PERÍCIAS (agora buscando por SLUG)
-        if (requestDTO.pericias() != null && !requestDTO.pericias().isEmpty()) {
-            for (PericiaPersonagemRequestDTO pDTO : requestDTO.pericias()) {
+        // 5. Sincronizar coleções filhas
+        sincronizarPericias(savedPersonagem, requestDTO.pericias());
+        sincronizarHabilidades(savedPersonagem, requestDTO.habilidades());
+        sincronizarItens(savedPersonagem, requestDTO.inventario());
+        sincronizarProficiencias(savedPersonagem, requestDTO.proficiencias());
+        sincronizarMagias(savedPersonagem, requestDTO.magias());
 
-                System.out.println("🔍 Processando perícia: " + pDTO);   // ← DEBUG
-
-                Pericia pericia = periciaRepository.findBySlug(pDTO.slug())
-                        .orElseThrow(() -> new BusinessException(
-                                HttpStatus.NOT_FOUND,
-                                "Perícia não encontrada: " + pDTO.slug()));
-
-                PersonagemPericia personagemPericia = new PersonagemPericia();
-                personagemPericia.setPericia(pericia);
-                personagemPericia.setPersonagem(savedPersonagem);
-                personagemPericia.setProficiente(Boolean.TRUE.equals(pDTO.isProficiente()));
-                savedPersonagem.getPericiasPersonagem().add(personagemPericia);
-
-                System.out.println("Perícia adicionada: " + pericia.getNomeExibicao());
-            }
-        }
-        if (requestDTO.proficiencias() != null && !requestDTO.proficiencias().isEmpty()) {
-            for (ProficienciaDTO pDTO : requestDTO.proficiencias()) {
-
-                // Evita duplicar se já veio da classe
-                boolean jaExiste = savedPersonagem.getProficienciasPersonagem().stream()
-                        .anyMatch(p -> p.getTipoProficiencia() == pDTO.tipoProficiencia()
-                                && Objects.equals(p.getListaProficiencias(), pDTO.listaProficiencias()));
-
-                if (jaExiste) {
-                    System.out.println("Proficiência já existente (ignorada): " + pDTO.listaProficiencias());
-                    continue;
-                }
-
-                Proficiencia prof = new Proficiencia();
-                prof.setTipoProficiencia(pDTO.tipoProficiencia());
-                prof.setListaProficiencias(pDTO.listaProficiencias());
-                prof.setPersonagem(savedPersonagem);
-                prof.setDeleted(false);
-
-                proficienciaRepository.save(prof);
-                savedPersonagem.getProficienciasPersonagem().add(prof);
-
-                System.out.println("Proficiência adicionada: " + prof.getListaProficiencias());
-            }
-        }
-        // 7. Buscar o personagem atualizado
-        Personagem finalPersonagem = personagemRepository.findById(savedPersonagem.getId())
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Personagem não encontrado"));
-
-        // 8. Retornar Response
-        return PersonagemResponseDTO.from(finalPersonagem, classe);
+        return PersonagemResponseDTO.from(savedPersonagem, classe, catalogo());
     }
+
     // ============================================
     // 2️⃣ BUSCAR PERSONAGEM POR ID
     // ============================================
     public PersonagemResponseDTO buscarPersonagemPorId(Long id) {
         Personagem personagem = findById(id);
         Classe classe = personagem.getClassePersonagem();
-        return PersonagemResponseDTO.from(personagem, classe);
+        return PersonagemResponseDTO.from(personagem, classe, catalogo());
     }
 
     // ============================================
-    // 3️⃣ LISTAR TODOS
+    // 3️⃣ LISTAR
     // ============================================
     public List<PersonagemResponseDTO> listarTodos() {
+        List<Pericia> cat = catalogo();
         return personagemRepository.findAll()
                 .stream()
-                .map(personagemMapper::toResponseDto)
-                .collect(Collectors.toList());
+                .map(p -> PersonagemResponseDTO.from(p, p.getClassePersonagem(), cat))
+                .toList();
     }
 
     public List<PersonagemResponseDTO> listarPorUsuario(Long usuarioId) {
         return personagemRepository.findByUsuarioId(usuarioId)
                 .stream()
-                .map(p -> PersonagemResponseDTO.from(p, p.getClassePersonagem()))
+                .map(p -> PersonagemResponseDTO.from(p, p.getClassePersonagem(), catalogo()))
                 .toList();
     }
 
@@ -218,104 +163,23 @@ public class PersonagemService {
                     .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
                             "Classe não encontrada com ID: " + requestDTO.classeId()));
             personagemExistente.setClassePersonagem(classe);
-
-            if (classe.getListaProficienciasClasse() != null) {
-                personagemExistente.setProficienciasPersonagem(
-                        new ArrayList<>(classe.getListaProficienciasClasse()));
-            }
         }
 
-        // ============ PERÍCIAS ============
+        // ============ COLEÇÕES FILHAS ============
         if (requestDTO.pericias() != null) {
-            personagemExistente.getPericiasPersonagem().clear();
-            for (PericiaPersonagemRequestDTO pDTO : requestDTO.pericias()) {
-                Pericia pericia = periciaRepository.findBySlug(pDTO.slug())
-                        .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
-                                "Perícia não encontrada: " + pDTO.slug()));
-
-                PersonagemPericia pp = new PersonagemPericia();
-                pp.setPericia(pericia);
-                pp.setPersonagem(personagemExistente);
-                pp.setProficiente(Boolean.TRUE.equals(pDTO.isProficiente()));
-                personagemExistente.getPericiasPersonagem().add(pp);
-            }
+            sincronizarPericias(personagemExistente, requestDTO.pericias());
         }
-
-        // ============ HABILIDADES ============
         if (requestDTO.habilidades() != null) {
-            personagemExistente.getHabilidades().clear();
-            for (HabilidadeDTO hDTO : requestDTO.habilidades()) {
-                Habilidade h = new Habilidade();
-                h.setNomeHabilidade(hDTO.nomeHabilidade());
-                h.setDescricaoHabilidade(hDTO.descricaoHabilidade());
-                h.setOrigemHabilidade(hDTO.origemHabilidade());
-                h.setUsosHabilidade(hDTO.usosHabilidade());
-                h.setRecargaHabilidade(hDTO.recargaHabilidade());
-                h.setPersonagem(personagemExistente);
-                personagemExistente.getHabilidades().add(h);
-            }
+            sincronizarHabilidades(personagemExistente, requestDTO.habilidades());
         }
-
-        // ============ PROFICIÊNCIAS ============
-        if (requestDTO.proficiencias() != null) {
-            personagemExistente.getProficienciasPersonagem().clear();
-            for (ProficienciaDTO pDTO : requestDTO.proficiencias()) {
-                Proficiencia p = new Proficiencia();
-                p.setTipoProficiencia(pDTO.tipoProficiencia());
-                p.setListaProficiencias(pDTO.listaProficiencias());
-                p.setPersonagem(personagemExistente);
-                personagemExistente.getProficienciasPersonagem().add(p);
-            }
-        }
-
-        // ============ MAGIAS ============
-        if (requestDTO.magias() != null) {
-            personagemExistente.getMagias().clear();
-            for (MagiaDTO mDTO : requestDTO.magias()) {
-                Magia m = new Magia();
-                m.setName(mDTO.name());
-                m.setLevel(mDTO.level());
-                m.setCasting_time(mDTO.casting_time());
-                m.setRange(mDTO.range());
-                m.setDescription(mDTO.description());
-                m.setDuration(mDTO.duration());
-                m.setSchool(mDTO.school());
-                m.setRitual(mDTO.ritual());
-                m.setConcentration(mDTO.concentration());
-                m.setType(mDTO.type());
-                m.setClasses(mDTO.classes());
-                m.setTags(mDTO.tags());
-                // Components: se o DTO tem components, converta
-                if (mDTO.components() != null) {
-                    Components c = new Components();
-                    c.setVerbal(mDTO.components().verbal());
-                    c.setSomatic(mDTO.components().somatic());
-                    c.setMaterial(mDTO.components().material());
-                    c.setRaw(mDTO.components().raw());
-                    m.setComponents(c);
-                }
-                m.setPersonagem(personagemExistente);
-                personagemExistente.getMagias().add(m);
-            }
-        }
-
-        // ============ INVENTÁRIO ============
         if (requestDTO.inventario() != null) {
-            personagemExistente.getInventarioPersonagem().clear();
-            for (ItemDTO iDTO : requestDTO.inventario()) {
-                Item item = new Item();
-                item.setNomeItem(iDTO.nomeItem());
-                item.setDescricaoItem(iDTO.descricaoItem());
-                item.setPrecoItem(iDTO.precoItem());
-                item.setRaridadeItem(iDTO.raridadeItem());
-                item.setPesoItem(iDTO.pesoItem());
-                item.setMagico(iDTO.isMagico());
-                item.setPrecisaSintonizacao(iDTO.precisaSintonizacao());
-                item.setQuantidade(iDTO.quantidade());
-                item.setTipoItem(iDTO.tipoItem());
-                item.setPersonagem(personagemExistente);
-                personagemExistente.getInventarioPersonagem().add(item);
-            }
+            sincronizarItens(personagemExistente, requestDTO.inventario());
+        }
+        if (requestDTO.proficiencias() != null) {
+            sincronizarProficiencias(personagemExistente, requestDTO.proficiencias());
+        }
+        if (requestDTO.magias() != null) {
+            sincronizarMagias(personagemExistente, requestDTO.magias());
         }
 
         // ============ RECALCULAR ============
@@ -325,8 +189,9 @@ public class PersonagemService {
         Personagem updated = personagemRepository.save(personagemExistente);
         System.out.println("✅ Personagem atualizado ID: " + updated.getId());
 
-        return PersonagemResponseDTO.from(updated, classe);
+        return PersonagemResponseDTO.from(updated, classe, catalogo());
     }
+
     // ============================================
     // 5️⃣ DELETAR PERSONAGEM
     // ============================================
@@ -368,7 +233,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 8️⃣ MÉTODOS AUXILIARES
+    // 8️⃣ MÉTODOS AUXILIARES — CÁLCULOS
     // ============================================
     private void calcularValoresAutomaticos(Personagem personagem) {
         int destrezaBonus = calcularBonusAtributo(personagem.getValorDestreza());
@@ -377,8 +242,9 @@ public class PersonagemService {
         personagem.setMovimentoPersonagem(9);
 
         int constBonus = calcularBonusAtributo(personagem.getValorConstituicao());
-        int dadoVida = personagem.getClassePersonagem() != null ?
-                personagem.getClassePersonagem().getDadoDeVida().getValor() : 6;
+        int dadoVida = personagem.getClassePersonagem() != null
+                ? personagem.getClassePersonagem().getDadoDeVida().getValor()
+                : 6;
         personagem.setPontosVidaPersonagem(
                 personagem.getNivelPersonagem() * dadoVida + constBonus
         );
@@ -386,6 +252,140 @@ public class PersonagemService {
 
     private int calcularBonusAtributo(Integer valor) {
         if (valor == null) return 0;
-        return (valor - 10) / 2;
+        return Math.floorDiv(valor - 10, 2);
+    }
+
+    // ============================================
+    // 9️⃣ SINCRONIZADORES (clear + recriar)
+    // ============================================
+    private void sincronizarPericias(Personagem personagem, List<PericiaPersonagemRequestDTO> dtos) {
+        personagem.getPericiasPersonagem().clear();
+
+        if (dtos == null || dtos.isEmpty()) {
+            System.out.println("⚠️ sincronizarPericias: lista vazia");
+            return;
+        }
+
+        for (PericiaPersonagemRequestDTO dto : dtos) {
+            System.out.println("🔍 sincronizarPericias: slug=" + dto.slug()
+                    + ", proficiente=" + dto.isProficiente());
+            if (dto.slug() == null || dto.slug().isBlank()) continue;
+
+            Pericia pericia = periciaRepository.findBySlug(dto.slug())
+                    .orElseThrow(() -> new BusinessException(
+                            HttpStatus.NOT_FOUND,
+                            "Perícia não encontrada: " + dto.slug()));
+
+            PersonagemPericia pp = new PersonagemPericia();
+            pp.setPersonagem(personagem);
+            pp.setPericia(pericia);
+            pp.setProficiente(dto.isProficiente());
+            personagem.getPericiasPersonagem().add(pp);
+        }
+    }
+
+    private void sincronizarHabilidades(Personagem personagem, List<HabilidadeDTO> dtos) {
+        personagem.getHabilidades().clear();
+
+        if (dtos == null || dtos.isEmpty()) {
+            return;
+        }
+
+        for (HabilidadeDTO dto : dtos) {
+            Habilidade h = new Habilidade();
+            h.setNomeHabilidade(dto.nomeHabilidade());
+            h.setDescricaoHabilidade(dto.descricaoHabilidade());
+            h.setOrigemHabilidade(dto.origemHabilidade());
+            h.setUsosHabilidade(dto.usosHabilidade());
+            h.setRecargaHabilidade(dto.recargaHabilidade());
+            h.setPersonagem(personagem);
+            personagem.getHabilidades().add(h);
+        }
+    }
+
+    private void sincronizarItens(Personagem personagem, List<ItemDTO> dtos) {
+        personagem.getInventarioPersonagem().clear();
+
+        if (dtos == null || dtos.isEmpty()) {
+            return;
+        }
+
+        for (ItemDTO dto : dtos) {
+            Item item = new Item();
+            item.setNomeItem(dto.nomeItem());
+            item.setDescricaoItem(dto.descricaoItem());
+            item.setPrecoItem(dto.precoItem());
+            item.setRaridadeItem(dto.raridadeItem());
+            item.setPesoItem(dto.pesoItem());
+            item.setMagico(dto.isMagico());
+            item.setPrecisaSintonizacao(dto.precisaSintonizacao());
+            item.setQuantidade(dto.quantidade());
+            item.setTipoItem(dto.tipoItem());
+            item.setPersonagem(personagem);
+            personagem.getInventarioPersonagem().add(item);
+        }
+    }
+
+    private void sincronizarProficiencias(Personagem personagem, List<ProficienciaDTO> dtos) {
+        personagem.getProficienciasPersonagem().clear();
+
+        if (dtos == null || dtos.isEmpty()) {
+            return;
+        }
+
+        for (ProficienciaDTO dto : dtos) {
+            Proficiencia p = new Proficiencia();
+            p.setTipoProficiencia(dto.tipoProficiencia());
+            p.setListaProficiencias(dto.listaProficiencias());
+            p.setDeleted(false);
+            p.setPersonagem(personagem);
+            personagem.getProficienciasPersonagem().add(p);
+        }
+    }
+
+    private void sincronizarMagias(Personagem personagem, List<MagiaDTO> dtos) {
+        personagem.getMagias().clear();
+
+        if (dtos == null || dtos.isEmpty()) {
+            return;
+        }
+
+        for (MagiaDTO dto : dtos) {
+            Magia m = new Magia();
+            m.setName(dto.name());
+            m.setLevel(dto.level());
+            m.setCasting_time(dto.casting_time());
+            m.setRange(dto.range());
+            m.setDescription(dto.description());
+            m.setDuration(dto.duration());
+            m.setSchool(dto.school());
+            m.setRitual(dto.ritual());
+            m.setConcentration(dto.concentration());
+            m.setType(dto.type());
+            m.setClasses(dto.classes());
+            m.setTags(dto.tags());
+
+            if (dto.components() != null) {
+                Components c = new Components();
+                c.setVerbal(dto.components().verbal());
+                c.setSomatic(dto.components().somatic());
+                c.setMaterial(dto.components().material());
+                c.setRaw(dto.components().raw());
+                m.setComponents(c);
+            }
+
+            m.setPersonagem(personagem);
+            personagem.getMagias().add(m);
+        }
+    }
+    private List<Pericia> catalogo() {
+        return periciaRepository.findAllByOrderByNomeExibicaoAsc();
+    }
+    public PersonagemResponseDTO toResponseDto(Personagem personagem) {
+        return PersonagemResponseDTO.from(
+                personagem,
+                personagem.getClassePersonagem(),
+                catalogo()   // o catalogo() que já existe no PersonagemService
+        );
     }
 }

@@ -30,6 +30,8 @@ public class PersonagemPericiaService {
     @Autowired
     private PericiaRepository periciaRepository;
 
+    @Autowired
+    private PersonagemService personagemService;
     // ============================================
     // FIND BY ID (DIRETO)
     // ============================================
@@ -38,7 +40,7 @@ public class PersonagemPericiaService {
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
                         "Personagem não encontrado com ID: " + id));
     }
-
+    /*
     @Transactional
     public List<PericiaResponseDTO> listarPericiaPersonagem(Long idPersonagem) {
         Personagem personagem = findPersonagemById(idPersonagem);
@@ -52,7 +54,7 @@ public class PersonagemPericiaService {
                 .map(pericias -> PericiaResponseDTO.from(pericias, personagemDTO))
                 .collect(Collectors.toList());
     }
-
+    */
     @Transactional
     public PersonagemResponseDTO addPersonagemPericia(Long idPersonagem, Long periciaId, Boolean isProficiente) {
         Personagem personagem = findPersonagemById(idPersonagem);
@@ -75,7 +77,8 @@ public class PersonagemPericiaService {
         personagemPericiaRepository.save(personagemPericia);
 
         Classe classe = personagem.getClassePersonagem();
-        return PersonagemResponseDTO.from(personagem, classe);
+
+        return personagemService.toResponseDto(personagem);
     }
 
     @Transactional
@@ -91,6 +94,6 @@ public class PersonagemPericiaService {
         personagemPericiaRepository.save(personagemPericia);
 
         Classe classe = personagem.getClassePersonagem();
-        return PersonagemResponseDTO.from(personagem, classe);
+        return personagemService.toResponseDto(personagem);
     }
 }

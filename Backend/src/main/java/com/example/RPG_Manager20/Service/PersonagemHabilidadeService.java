@@ -60,7 +60,7 @@ public class PersonagemHabilidadeService {
         personagem.getHabilidades().add(habilidade);
         personagem = personagemRepository.save(personagem);
 
-        return PersonagemResponseDTO.from(personagem, personagem.getClassePersonagem());
+        return personagemService.toResponseDto(personagem);
     }
 
     @Transactional
@@ -77,7 +77,7 @@ public class PersonagemHabilidadeService {
         personagem = personagemRepository.save(personagem);
 
         // Retorna o personagem atualizado (consistente com adicionarHabilidade)
-        return PersonagemResponseDTO.from(personagem, personagem.getClassePersonagem());
+        return personagemService.toResponseDto(personagem);
     }
 
     public List<HabilidadeResponseDTO> listarHabilidadesDoPersonagem(Long personagemId) {
