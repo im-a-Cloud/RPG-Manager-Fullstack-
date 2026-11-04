@@ -279,29 +279,6 @@ ativarEdicao(): void {
   // ============================================
   // MAGIAS
   // ============================================
-  adicionarMagia(): void {
-    this.personagemEditavel.magias.push({
-      name: 'Nova magia',
-      level: '0',
-      casting_time: '',
-      range: '',
-      description: '',
-      duration: '',
-      school: '',
-      ritual: false,
-      concentration: false,
-      type: '',
-      classes: [],
-      tags: [],
-      components: {
-        verbal: false,
-        somatic: false,
-        material: false,
-        raw: ''
-      }
-    });
-    this.cdr.detectChanges();
-  }
 
   removerMagia(index: number): void {
     this.personagemEditavel.magias.splice(index, 1);
@@ -423,4 +400,48 @@ ativarEdicao(): void {
     const b = campo ? mapaBonus[campo] : 0;
     return b >= 0 ? `+${b}` : `${b}`;
   }
+
+// ============================================
+// AGRUPAMENTO POR NÍVEL
+// ============================================
+getMagiasPorNivel(nivel: string): any[] {
+  return (this.personagem?.magias ?? []).filter((m: any) => String(m.level) === nivel);
+}
+
+getMagiasEditaveisPorNivel(nivel: string): any[] {
+  return (this.personagemEditavel?.magias ?? []).filter((m: any) => String(m.level) === nivel);
+}
+
+removerMagiaPorReferencia(magia: any): void {
+  const idx = this.personagemEditavel.magias.indexOf(magia);
+  if (idx >= 0) {
+    this.personagemEditavel.magias.splice(idx, 1);
+    this.cdr.detectChanges();
+  }
+}
+
+adicionarMagia(): void {
+  this.personagemEditavel.magias.push({
+    name: 'Nova magia',
+    level: '0',
+    casting_time: '',
+    range: '',
+    description: '',
+    duration: '',
+    school: 'EVOCACAO',
+    ritual: false,
+    concentration: false,
+    type: '',
+    classes: [],
+    tags: [],
+    components: {
+      verbal: false,
+      somatic: false,
+      material: false,
+      raw: ''
+    }
+  });
+  this.cdr.detectChanges();
+}
+
 }
