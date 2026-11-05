@@ -31,6 +31,10 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
+  magiaSelecionada: any = null;   
+  modalAberto = false;
+  magiaEditando: any = null;
+  magiaOriginal: any = null;   // null = nova; referência = edição
   personagem: PersonagemResponse | null = null;
   carregando = true;
   erro: string | null = null;
@@ -444,4 +448,49 @@ adicionarMagia(): void {
   this.cdr.detectChanges();
 }
 
+  selecionarMagia(magia: any): void {
+    this.magiaSelecionada = (this.magiaSelecionada === magia) ? null : magia;
+  }
+
+  isMagiaSelecionada(magia: any): boolean {
+    return this.magiaSelecionada === magia;
+  }
+  abrirModal(magia?: any, event?: Event): void {
+  event?.stopPropagation();
+
+  if (magia) {
+    this.magiaEditando = structuredClone(magia);
+    this.magiaOriginal = magia;
+  } else {
+    this.magiaEditando = {
+      name: '', level: '0', casting_time: '', range: '',
+      description: '', duration: '', school: 'EVOCACAO',
+      ritual: false, concentration: false, type: '',
+      classes: [], tags: [],
+      components: { verbal: false, somatic: false, material: false, raw: '' }
+    };
+    this.magiaOriginal = null;
+  }
+
+  this.modalAberto = true;
+}
+
+fecharModal(): void {
+  this.modalAberto = false;
+  this.magiaEditando = null;
+  this.magiaOriginal = null;
+}
+
+salvarMagia(): void {
+  if (!this.magiaEditando) return;
+
+  if (this.magiaOriginal) {
+    const idx = this.personagemEditavel.magias.indexOf(this.magiaOriginal);
+    if (idx >= 0) this.personagemEditavel.magias[idx] = structuredClone(this.magiaEditando);
+  } else {
+    this.personagemEditavel.magias.push(structuredClone(this.magiaEditando));
+  }
+
+  this.fecharModal();
+}
 }
