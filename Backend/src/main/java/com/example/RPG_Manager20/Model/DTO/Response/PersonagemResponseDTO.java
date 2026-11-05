@@ -5,10 +5,7 @@ import com.example.RPG_Manager20.Model.Entities.*;
 import com.example.RPG_Manager20.Model.Enums.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public record PersonagemResponseDTO(
@@ -120,9 +117,9 @@ public record PersonagemResponseDTO(
         int nivel = personagem.getNivelPersonagem();
         int bonusProficiencia = ((nivel + 3) / 4) + 1;
         int bonusDestreza = (personagem.getValorDestreza() - 10) / 2;
-        int ca = 10 + bonusDestreza;
-        int iniciativa = bonusDestreza;
-        int movimento = 9;
+        int ca = personagem.getCaPersonagem();
+        int iniciativa = personagem.getIniciativaPersonagem();
+        int movimento = personagem.getMovimentoPersonagem();
         int cd = 0;
         int ataque = 0;
 
@@ -203,14 +200,31 @@ public record PersonagemResponseDTO(
         // ============================================
         // CONVERTER PROFICIÊNCIAS
         // ============================================
-        List<ProficienciaDTO> proficienciaDTO = personagem.getProficienciasPersonagem() != null
-                ? personagem.getProficienciasPersonagem().stream()
-                .map(proficiencia -> new ProficienciaDTO(
-                        proficiencia.getTipoProficiencia(),
-                        proficiencia.getListaProficiencias()
-                ))
-                .collect(Collectors.toList())
-                : new ArrayList<>();
+        List<ProficienciaDTO> proficienciaDTO = new ArrayList<>();
+
+// 1) extras do personagem primeiro (para sobrescrever as da classe)
+        Map<TipoProficiencia, ProficienciaDTO> porTipo = new LinkedHashMap<>();
+
+        if (personagem.getProficienciasPersonagem() != null) {
+            for (Proficiencia p : personagem.getProficienciasPersonagem()) {
+                porTipo.put(p.getTipoProficiencia(), new ProficienciaDTO(
+                        p.getTipoProficiencia(),
+                        p.getListaProficiencias()
+                ));
+            }
+        }
+
+// 2) da classe — só adiciona se o tipo ainda não foi coberto pelas extras
+        if (classe.getListaProficienciasClasse() != null) {
+            for (Proficiencia p : classe.getListaProficienciasClasse()) {
+                porTipo.putIfAbsent(p.getTipoProficiencia(), new ProficienciaDTO(
+                        p.getTipoProficiencia(),
+                        p.getListaProficiencias()
+                ));
+            }
+        }
+
+        proficienciaDTO.addAll(porTipo.values());
 
         // ============================================
         // CONVERTER MAGIAS

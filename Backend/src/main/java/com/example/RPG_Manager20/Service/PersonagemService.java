@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -156,6 +158,12 @@ public class PersonagemService {
         personagemExistente.setValorSabedoria(requestDTO.valorSabedoria());
         personagemExistente.setValorCarisma(requestDTO.valorCarisma());
 
+        // ============ COMBATE ============
+        personagemExistente.setCaPersonagem(requestDTO.ca());
+        personagemExistente.setIniciativaPersonagem(requestDTO.iniciativa());
+        personagemExistente.setMovimentoPersonagem(requestDTO.movimento());
+        personagemExistente.setPontosVidaPersonagem(requestDTO.pontosVida());
+
         // ============ CLASSE ============
         if (requestDTO.classeId() != null &&
                 (classe == null || !classe.getId().equals(requestDTO.classeId()))) {
@@ -183,7 +191,7 @@ public class PersonagemService {
         }
 
         // ============ RECALCULAR ============
-        calcularValoresAutomaticos(personagemExistente);
+        //calcularValoresAutomaticos(personagemExistente);
 
         // ============ SALVAR ============
         Personagem updated = personagemRepository.save(personagemExistente);
@@ -328,12 +336,21 @@ public class PersonagemService {
 
     private void sincronizarProficiencias(Personagem personagem, List<ProficienciaDTO> dtos) {
         personagem.getProficienciasPersonagem().clear();
+        if (dtos == null || dtos.isEmpty()) return;
 
-        if (dtos == null || dtos.isEmpty()) {
-            return;
+        // chaves (tipo + lista) das proficiências da classe — para não duplicar no personagem
+        Set<String> chavesDaClasse = new HashSet<>();
+        if (personagem.getClassePersonagem() != null
+                && personagem.getClassePersonagem().getListaProficienciasClasse() != null) {
+            for (Proficiencia p : personagem.getClassePersonagem().getListaProficienciasClasse()) {
+                chavesDaClasse.add(p.getTipoProficiencia() + "|" + p.getListaProficiencias());
+            }
         }
 
         for (ProficienciaDTO dto : dtos) {
+            String chave = dto.tipoProficiencia() + "|" + dto.listaProficiencias();
+            if (chavesDaClasse.contains(chave)) continue;   // ignora as que já são da classe
+
             Proficiencia p = new Proficiencia();
             p.setTipoProficiencia(dto.tipoProficiencia());
             p.setListaProficiencias(dto.listaProficiencias());
