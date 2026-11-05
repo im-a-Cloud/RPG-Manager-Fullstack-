@@ -48,6 +48,8 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   catalogoPericias: Pericia[] = [];
   periciasMarcadas = new Set<string>();
 
+  itemSelecionado: any = null;
+
   private readonly mapaAbreviacao: Record<string, string> = {
     FORCA: 'FOR', DESTREZA: 'DES', CONSTITUICAO: 'CON',
     INTELIGENCIA: 'INT', SABEDORIA: 'SAB', CARISMA: 'CAR'
@@ -452,6 +454,13 @@ adicionarMagia(): void {
     this.magiaSelecionada = (this.magiaSelecionada === magia) ? null : magia;
   }
 
+  isItemSelecionado(item: any): boolean {
+    return this.itemSelecionado === item;
+  }
+
+  selecionarItem(item: any): void {
+    this.itemSelecionado = (this.itemSelecionado === item) ? null : item;
+  }
   isMagiaSelecionada(magia: any): boolean {
     return this.magiaSelecionada === magia;
   }
@@ -492,5 +501,43 @@ salvarMagia(): void {
   }
 
   this.fecharModal();
+}
+  getPercepcaoPassiva(): number {
+    const p = (this.personagem?.pericias as any[])?.find(x => x.slug === 'percepcao');
+    return (p?.valorTotalPericia ?? 0) + 10;
+  }
+
+    getCdMagia(): number {
+    if (this.personagemEditavel.classePersonagem?.conjurador) {
+      const atributoConjuracao = this.personagemEditavel.classePersonagem.atributoConjuracao;
+      if (atributoConjuracao) {
+        return this.getBonusAtributo(atributoConjuracao) + this.personagemEditavel.getBonusProficiencia() + 8;
+      }
+    }
+    return 0;
+  }
+
+  getAtaqueMagico(): number {
+    if (this.personagemEditavel.classePersonagem?.conjurador) {
+      const atributoConjuracao = this.personagemEditavel.classePersonagem?.atributoConjuracao;
+      if (atributoConjuracao) {
+        return this.getBonusAtributo(atributoConjuracao) + this.personagemEditavel.getBonusProficiencia();
+      }
+    }
+    return 0;
+  }
+  getBonusAtributo(atributo: string): number {
+  const attrs = this.personagemEditavel?.atributos ?? this.personagem?.atributos;
+  if (!attrs) return 0;
+
+  switch (atributo) {
+    case 'FORCA':        return attrs.bonusForca ?? Math.floor((attrs.forca - 10) / 2);
+    case 'DESTREZA':     return attrs.bonusDestreza ?? Math.floor((attrs.destreza - 10) / 2);
+    case 'CONSTITUICAO': return attrs.bonusConstituicao ?? Math.floor((attrs.constituicao - 10) / 2);
+    case 'INTELIGENCIA': return attrs.bonusInteligencia ?? Math.floor((attrs.inteligencia - 10) / 2);
+    case 'SABEDORIA':    return attrs.bonusSabedoria ?? Math.floor((attrs.sabedoria - 10) / 2);
+    case 'CARISMA':      return attrs.bonusCarisma ?? Math.floor((attrs.carisma - 10) / 2);
+    default: return 0;
+  }
 }
 }
