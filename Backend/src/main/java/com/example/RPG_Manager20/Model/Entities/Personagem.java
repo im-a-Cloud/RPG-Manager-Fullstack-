@@ -470,17 +470,4 @@ public class Personagem extends AbstractModel {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-    /*
-    public void setPericiasPersonagem(List<Pericia> pericias) {
-        this.proficienciasPersonagem = proficienciasPersonagem != null ? proficienciasPersonagem : new ArrayList<>();
-    }
-
-    public List<Pericia> getPericiasPersonagem() {
-        if (pericias == null) {
-            pericias = new ArrayList<>();
-        }
-        return pericias;
-    }
-     */
 }

@@ -1,1271 +1,675 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>cuzinho</title>
-    <link rel="stylesheet" href="criar-ficha-personagem.scss">
+  <meta charset="UTF-8">
+  <title>Criar Ficha</title>
 </head>
 <body>
-    <form>
-        <!-- CABEÇALHO -->
-        <div id="cabeçalho">
-            <div class="fotoPersonagem">
-                <label for="imagemPersonagem">Foto do Personagem</label><br>
-                <input type="file" id="imagemPersonagem" name="imagemPersonagem" (change)="onSelectedFile($event)" accept="image/*"><br><br>
-                <div *ngIf="imagemPreview" class="preview-container"><br>
-                    <img [src]="imagemPreview" class="preview-imagem"><br>
-                    <button type="button" (click)="removerImagem()" class="btn-remover">Remover</button><br><br>
-                </div>
-                <div class="fotoPersonagem">
-                    <img *ngIf="personagem.fotoBase64"
-                        [src]="personagem.fotoBase64"
-                        alt="Foto de {{ personagem.nomePersonagem }}"
-                        class="foto-personagem">
-
-                    <div *ngIf="!personagem.fotoBase64" class="foto-placeholder">
-                        {{  '' }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="nomeClasse">
-                <label for="nomePersonagem">Nome</label><br>
-                <input type="text" id="nomePersonagem" name="nomePersonagem" required [(ngModel)]="personagem.nomePersonagem"><br>
-                <label>Classe</label><br>
-                <select name="classePersonagem" 
-                        [(ngModel)]="personagem.classePersonagem"
-                        [compareWith]="compararClasses"
-                        (ngModelChange)="onClasseSelecionada($event)"
-                        style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; max-width: 300px;">
-                
-                <option [ngValue]="null" disabled selected>Selecione uma classe...</option>
-                
-                <option *ngFor="let classe of classesDisponiveis" [ngValue]="classe">
-                    {{ classe.nomeClasse }}
-                </option>
-                </select>
-            </div>
-
-            <div class="raçaAntecedente">
-                <label for="raçaPersonagem">Raça</label><br>
-                <input type="text" id="raçaPersonagem" name="raçaPersonagem" required [(ngModel)]="personagem.racaPersonagem"><br>
-                <label for="antecedentePersonagem">Antecedente</label><br>
-                <input type="text" id="antecedentePersonagem" name="antecedentePersonagem" [(ngModel)]="personagem.antecedentePersonagem"><br>
-            </div>
-
-            <div class="escalaNivel">
-                <label for="escalaPersonagem">Escala</label><br>
-                <input type="text" id="escalaPersonagem" name="escalaPersonagem" required [(ngModel)]="personagem.escalaPersonagem"><br>
-                <label for="nivelPersonagem">Nível</label><br>
-                <input type="number" 
-                id="nivelPersonagem" 
-                name="nivelPersonagem" 
-                required
-                min="1"
-                max="30"
-                [(ngModel)]="personagem.nivelPersonagem"]>
-                <br>
-                <label for="xpPersonagem">XP</label><br>
-                <input type="text" id="xpPersonagem" name="xpPersonagem" required><br>
-            </div>
-        </div>
-        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid #ddd;">
-
-        <button (click)="voltar()"
-                style="padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-            ⬅ Voltar
-        </button>
-        <button (click)="salvarPersonagem()"
-                style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1; min-width: 150px;">💾 Salvar Personagem
-        </button>
-        </div>
-    <div class="cabeçalhoSuperior">
-            <div class="atributos">
-                <h2>Atributos</h2>
-                <label for="forcaPersonagem">Força</label><br>
-                <input type="number" 
-                    id="forcaPersonagem" 
-                    name="forcaPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorForca"
-                    required><br>
-                <label for="bonusForça">{{ bonusForca }}</label><br>
-
-                <label for="destrezaPersonagem">Destreza</label><br>
-                <input type="number" 
-                    id="destrezaPersonagem" 
-                    name="destrezaPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorDestreza"
-                    required><br>
-                <label for="bonusDestreza">{{ bonusDestreza }}</label><br>
-
-                <label for="constituicaoPersonagem">Constituição</label><br>
-                <input type="number" 
-                    id="constituicaoPersonagem" 
-                    name="constituicaoPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorConstituicao"
-                    required><br>
-                <label for="bonusConstituicao">{{ bonusConstituicao }}</label><br>
-
-                <label for="inteligenciaPersonagem">Inteligência</label><br>
-                <input type="number" 
-                    id="inteligenciaPersonagem" 
-                    name="inteligenciaPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorInteligencia"
-                    required><br>
-                <label for="bonusInteligencia">{{ bonusInteligencia }}</label><br>
-
-                <label for="sabedoriaPersonagem">Sabedoria</label><br>
-                <input type="number" 
-                    id="sabedoriaPersonagem" 
-                    name="sabedoriaPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorSabedoria"
-                    required><br>
-                <label for="bonusSabedoria">{{ bonusSabedoria }}</label><br>
-
-                <label for="carismaPersonagem">Carisma</label><br>
-                <input type="number" 
-                    id="carismaPersonagem" 
-                    name="carismaPersonagem" 
-                    min="1" 
-                    max="30" 
-                    [(ngModel)]="personagem.valorCarisma"
-                    required><br>
-                <label for="bonusCarisma">{{ bonusCarisma }}</label><br>
-            </div>
-            <div class="bonusProf">
-                <label for="profPersonagem" class="profPersonagem">Bônus proficiência</label><br>
-                <label for="bonusProficiencia" class="bonusProficiencia"> {{bonusProficiencia}}</label><br>
-            </div>
-            <div class="testesResistencia">
-                <input type="checkbox" 
-                id="resistenciaForca" 
-                name="resistencia" 
-                value="forca"
-                [(ngModel)]="resistencias['forca']">
-                <label>{{ getTesteResistencia('forca') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaForca">Força</label><br>
-
-                <!-- Destreza -->
-                <input type="checkbox" 
-                id="resistenciaDestreza" 
-                name="resistencia" 
-                value="destreza"
-                [(ngModel)]="resistencias['destreza']">
-                <label>{{ getTesteResistencia('destreza') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaDestreza">Destreza</label><br>
-
-                <!-- Constituição -->
-                <input type="checkbox" 
-                id="resistenciaConstituicao" 
-                name="resistencia" 
-                value="constituicao"
-                [(ngModel)]="resistencias['constituicao']">
-                <label>{{ getTesteResistencia('constituicao') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaConstituicao">Constituição</label><br>
-
-                <!-- Inteligência -->
-                <input type="checkbox" 
-                id="resistenciaInteligencia" 
-                name="resistencia" 
-                value="inteligencia"
-                [(ngModel)]="resistencias['inteligencia']">
-                <label>{{ getTesteResistencia('inteligencia') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaInteligencia">Inteligência</label><br>
-
-                <!-- Sabedoria -->
-                <input type="checkbox" 
-                id="resistenciaSabedoria" 
-                name="resistencia" 
-                value="sabedoria"
-                [(ngModel)]="resistencias['sabedoria']">
-                <label>{{ getTesteResistencia('sabedoria') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaSabedoria">Sabedoria</label><br>
-
-                <!-- Carisma -->
-                <input type="checkbox" 
-                id="resistenciaCarisma" 
-                name="resistencia" 
-                value="carisma"
-                [(ngModel)]="resistencias['carisma']">
-                <label>{{ getTesteResistencia('carisma') }}</label>
-                <span style="margin: 0 3px;"></span>
-                <label for="resistenciaCarisma">Carisma</label><br>
-            </div>
-            <div class="CaIniMov">
-                <div class="campo">
-                    <label for="caPersonagem">Classe de Armadura (CA)</label>
-                    <input type="number" id="caPersonagem" name="caPersonagem" 
-                        [value]="getCaPersonagem()" min="1" max="30" required>                    
-                    <small>10 + modificador de Destreza</small>
-                </div>
-
-                <div class="campo">
-                    <label for="iniciativaPersonagem">Iniciativa</label>
-                    <input type="number" id="iniciativaPersonagem" name="iniciativaPersonagem" value={{bonusDestreza}} required>
-                    <small>modificador de Destreza</small>
-                </div>
-
-                <div class="campo">
-                    <label for="movimentoPersonagem">Movimentação</label>
-                    <input type="text" id="movimentoPersonagem" name="movimentoPersonagem" value="9m" required>
-                    <small>definido pela raça</small>
-                </div>
-
-                <div class="campo">
-                    <label for="vidaPersonagem">Pontos de vida</label>
-                    <input type="number" id="vidaPersonagem" name="vidaPersonagem" value="0" required>
-                    <small>bônus de CON + dado de vida</small>
-                </div>
-                <div class="campo">
-                    <label for="dadoVidaPersonagem">Dado de vida</label>
-                    <label for="dadoVidaPersonagem">Quantidade = nível</label>
-                    <label for="dadoVidaPersonagem">valor pela classe</label>
-                </div>
-            </div>
-            <div class="pericias">
-            <h1>Perícias</h1>
-
-            <!-- Acrobacia -->
-            <input type="checkbox" id="acrobacia" name="pericia" value="Acrobacia"
-                    (change)="togglePericia('acrobacia')"
-                    [checked]="isSelecionada('acrobacia')">
-            <label>{{ getValorPericia('acrobacia') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="acrobacia">Acrobacia (DES)</label><br>
-
-            <!-- Adestrar Animais -->
-            <input type="checkbox" id="adestrarAnimais" name="pericia" value="AdestrarAnimais"
-                    (change)="togglePericia('adestrarAnimais')"
-                    [checked]="isSelecionada('adestrarAnimais')">
-            <label>{{ getValorPericia('adestrarAnimais') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="adestrarAnimais">Adestrar animais (SAB)</label><br>
-
-            <!-- Arcanismo -->
-            <input type="checkbox" id="arcanismo" name="pericia" value="Arcanismo"
-                    (change)="togglePericia('arcanismo')"
-                    [checked]="isSelecionada('arcanismo')">
-            <label>{{ getValorPericia('arcanismo') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="arcanismo">Arcanismo (INT)</label><br>
-
-            <!-- Atletismo -->
-            <input type="checkbox" id="atletismo" name="pericia" value="Atletismo"
-                    (change)="togglePericia('atletismo')"
-                    [checked]="isSelecionada('atletismo')">
-            <label>{{ getValorPericia('atletismo') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="atletismo">Atletismo (FOR)</label><br>
-
-            <!-- Enganação -->
-            <input type="checkbox" id="enganacao" name="pericia" value="Enganacao"
-                    (change)="togglePericia('enganacao')"
-                    [checked]="isSelecionada('enganacao')">
-            <label>{{ getValorPericia('enganacao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="enganacao">Enganação (CAR)</label><br>
-
-            <!-- História -->
-            <input type="checkbox" id="historia" name="pericia" value="Historia"
-                    (change)="togglePericia('historia')"
-                    [checked]="isSelecionada('historia')">
-            <label>{{ getValorPericia('historia') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="historia">História (INT)</label><br>
-
-            <!-- Intuição -->
-            <input type="checkbox" id="intuicao" name="pericia" value="Intuicao"
-                    (change)="togglePericia('intuicao')"
-                    [checked]="isSelecionada('intuicao')">
-            <label>{{ getValorPericia('intuicao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="intuicao">Intuição (SAB)</label><br>
-
-            <!-- Intimidação -->
-            <input type="checkbox" id="intimidacao" name="pericia" value="Intimidacao"
-                    (change)="togglePericia('intimidacao')"
-                    [checked]="isSelecionada('intimidacao')">
-            <label>{{ getValorPericia('intimidacao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="intimidacao">Intimidação (CAR)</label><br>
-
-            <!-- Investigação -->
-            <input type="checkbox" id="investigacao" name="pericia" value="Investigacao"
-                    (change)="togglePericia('investigacao')"
-                    [checked]="isSelecionada('investigacao')">
-            <label>{{ getValorPericia('investigacao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="investigacao">Investigação (INT)</label><br>
-
-            <!-- Medicina -->
-            <input type="checkbox" id="medicina" name="pericia" value="Medicina"
-                    (change)="togglePericia('medicina')"
-                    [checked]="isSelecionada('medicina')">
-            <label>{{ getValorPericia('medicina') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="medicina">Medicina (SAB)</label><br>
-
-            <!-- Natureza -->
-            <input type="checkbox" id="natureza" name="pericia" value="Natureza"
-                    (change)="togglePericia('natureza')"
-                    [checked]="isSelecionada('natureza')">
-            <label>{{ getValorPericia('natureza') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="natureza">Natureza (INT)</label><br>
-
-            <!-- Percepção -->
-            <input type="checkbox" id="percepcao" name="pericia" value="Percepcao"
-                    (change)="togglePericia('percepcao')"
-                    [checked]="isSelecionada('percepcao')">
-            <label>{{ getValorPericia('percepcao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="percepcao">Percepção (SAB)</label><br>
-
-            <!-- Atuação -->
-            <input type="checkbox" id="atuacao" name="pericia" value="Atuacao"
-                    (change)="togglePericia('atuacao')"
-                    [checked]="isSelecionada('atuacao')">
-            <label>{{ getValorPericia('atuacao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="atuacao">Atuação (CAR)</label><br>
-
-            <!-- Persuasão -->
-            <input type="checkbox" id="persuasao" name="pericia" value="Persuasao"
-                    (change)="togglePericia('persuasao')"
-                    [checked]="isSelecionada('persuasao')">
-            <label>{{ getValorPericia('persuasao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="persuasao">Persuasão (CAR)</label><br>
-
-            <!-- Religião -->
-            <input type="checkbox" id="religiao" name="pericia" value="Religiao"
-                    (change)="togglePericia('religiao')"
-                    [checked]="isSelecionada('religiao')">
-            <label>{{ getValorPericia('religiao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="religiao">Religião (INT)</label><br>
-
-            <!-- Prestidigitação -->
-            <input type="checkbox" id="prestidigitacao" name="pericia" value="Prestidigitacao"
-                    (change)="togglePericia('prestidigitacao')"
-                    [checked]="isSelecionada('prestidigitacao')">
-            <label>{{ getValorPericia('prestidigitacao') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="prestidigitacao">Prestidigitação (DES)</label><br>
-
-            <!-- Furtividade -->
-            <input type="checkbox" id="furtividade" name="pericia" value="Furtividade"
-                    (change)="togglePericia('furtividade')"
-                    [checked]="isSelecionada('furtividade')">
-            <label>{{ getValorPericia('furtividade') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="furtividade">Furtividade (DES)</label><br>
-
-            <!-- Sobrevivência -->
-            <input type="checkbox" id="sobrevivencia" name="pericia" value="Sobrevivencia"
-                    (change)="togglePericia('sobrevivencia')"
-                    [checked]="isSelecionada('sobrevivencia')">
-            <label>{{ getValorPericia('sobrevivencia') }}</label>
-            <span style="margin: 0 3px;"></span>
-            <label for="sobrevivencia">Sobrevivência (SAB)</label><br>
-            </div>
-            <div class="percepcaoPassiva">
-                <span style="margin: 0 3px; font-size: 18px;">Valor</span>
-                <label style="font-size: 24px; font-weight: bold;">{{ getValorPericia('percepcao') +10}}</label>
-            </div>
-        </div>
-        <br>
-        
-        <!-- PROFICIÊNCIAS -->
-      <div class="proficiencias">
-    <!-- Tabela de Proficiências -->
-        <table class="tabelaProficiencia">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Proficiência</th>
-                </tr>
-            </thead>
-    <tbody>
-      <tr *ngFor="let proficiencia of personagem.proficienciasPersonagem; let i = index">
-        <td>{{ proficiencia.tipoProficiencia }}</td>
-        <td>{{ proficiencia.listaProficiencias }}</td>
-        <td>
-          <button (click)="removerProficiencia(i)" 
-                  style="padding: 3px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            ✕
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="!personagem.proficienciasPersonagem?.length">
-        <td colspan="3" style="text-align: center; color: #999; padding: 20px;">
-          Nenhuma proficiência adicionada.
-        </td>
-      </tr>
-    </tbody>
-
-        </table>
-
-        <br>
-
-            <button (click)="toggleSecao('proficiencia')">Nova proficiência</button>
-            <br>
-                <div class="addProficiencia" [hidden]="!visivel['proficiencia']">
-                    <label>Tipo proficiência</label><br>
-                    <select name="tipoProfPersonagem"
-                    id = "tipoProfPersonagem"
-                    name="tipoProfPersonagem"
-                    [(ngModel)]="novaProficiencia.tipoProficiencia"
-                    required="">
-                        <option value="ARMAS">Armas</option>
-                        <option value="ARMADURAS">Armaduras</option>
-                        <option value="IDIOMAS">Idiomas</option>
-                        <option value="INSTRUMENTOS,">Instrumentos</option>
-                        <option value="FERRAMENTAS,">Ferramentas</option>
-                        <option value="OUTROS">Outros</option>
-                    </select><br>
-                    <label for="listaProficiencias">Proficiências</label><br>
-                    <input type="text" 
-                    id="listaProficiencias" 
-                    name="listaProficiencias" 
-                    [(ngModel)]="novaProficiencia.listaProficiencias"
-                    required><br><br>
-                    <button (click)="salvarProficiencia()">Adicionar Proficiência</button>
-                    <button (click)="adicionarProficiencia()">SALVAR Proficiência</button>
-
-                </div>
-            </div>
-        <!-- INVENTÁRIO -->
-        <h1>Inventário</h1>
-        <div class="inventario">
-        <table class="mochilaPersonagem">
-            <thead>
-                <tr>
-                    <th>Nome item</th>
-                    <th>Peso item</th>
-                    <th>Quantidade</th>
-                    <th>Peso Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let item of personagem.inventarioPersonagem; let i = index">
-                    <!-- Linha do item (clicável) -->
-                    <tr (click)="selecionarItem(item)">
-                        <td><strong>{{ item.nomeItem }}</strong></td>
-                        <td>{{ item.pesoItem }}</td>
-                        <td>{{ item.quantidadeItem }}</td>
-                        <td>{{ pesoTotal }}</td>
-                    </tr>
-                    <!-- Linha de detalhes (aparece ao clicar) -->
-                    <tr *ngIf="isItemSelecionado(item)">
-                        <td colspan="4">
-                            <div class="itemExpandido">
-                                <p><strong>Raridade:</strong> {{ item.raridadeItem }}</p>
-                                <p><strong>Descrição:</strong> {{ item.descricaoItem }}</p>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-container>
-            </tbody>
-        </table>   
-            <br>
-            <button (click)="toggleSecao('item')">Novo item</button>
-
-        <div class="addItem" [hidden]="!visivel['item']">
-            <label for="nomeItem">Nome item</label><br>
-            <input type="text" 
-                id="nomeItem" 
-                name="nomeItem" 
-                [(ngModel)]="novoItem.nomeItem"
-                required><br>
-            
-            <label for="raridadeItem">Raridade item</label><br>
-            <select 
-                name="raridadeItem" 
-                id="raridadeItem"
-                [(ngModel)]="novoItem.raridadeItem"
-                required>
-                <option value="" disabled selected>Selecione a raridade...</option>
-                <option value="COMUM">Comum</option>
-                <option value="INCOMUM">Incomum</option>
-                <option value="RARO">Raro</option>
-                <option value="MUITO_RARO">Muito raro</option>
-                <option value="LENDARIO">Lendário</option>
-                <option value="ARTEFATO">Artefato</option>
-            </select><br>
-            
-            <label for="quantidadeItem">Quantidade item</label><br>
-            <input type="number" 
-                id="quantidadeItem" 
-                name="quantidadeItem" 
-                [(ngModel)]="novoItem.quantidadeItem"
-                min="1"
-                placeholder="1"
-                required><br>
-            <label for="pesoItem">Peso item</label><br>
-            <input type="number" 
-                id="pesoItem" 
-                name="pesoItem" 
-                [(ngModel)]="novoItem.pesoItem"
-                placeholder="1"
-                min="1"
-                required><br>
-            <label for="precoItem">Preço item</label><br>
-            <input type="number" 
-                id="precoItem" 
-                name="precoItem" 
-                [(ngModel)]="novoItem.precoItem"
-                min="1"
-                placeholder="1"
-                required><br>
-            <label for="tipoItem">Tipo item</label><br>
-            <select 
-                id="tipoItem" 
-                name="tipoItem" 
-                [(ngModel)]="novoItem.tipoItem"
-                placeholder="Ex: Arma, Armadura, Poção"><br>
-                <option value="" disabled selected>Selecione o tipo do item...</option>
-                    <option value="ARMA">Arma</option>
-                    <option value="ARMADURA">Armadura</option>
-                    <option value="POCAO">Poção</option>
-                    <option value="FERRAMENTA">Ferramenta</option>
-                    <option value="ITEM_MAGICO">Item Mágico</option>
-                    <option value="TESOURO">Tesouro</option>
-                    <option value="VARIADOS">Variados</option>
-            </select><br>
-            <label for="isMagicoItem">É Mágico?</label><br>
-            <input type="checkbox"  
-            id="isMagicoItem"
-            name="isMagicoItem"
-            [(ngModel)]="novoItem.isMagicoItem!"><br>
-
-            <label for="precisaSintonizacao">Precisa sintonicação?</label><br>
-            <input type="checkbox"  
-            id="precisaSintonizacao"
-            name="precisaSintonizacao"
-            [(ngModel)]="novoItem.precisaSintonizacao"><br>
-            
-            <label for="descricaoItem">Descrição item</label><br>
-            <textarea 
-                id="descricaoItem" 
-                name="descricaoItem" 
-                rows="3"
-                [(ngModel)]="novoItem.descricaoItem"
-                placeholder="Descreva o item..."></textarea><br>
-        <button (click)="salvarItem()" class="btn-adicionar">Adicionar Item</button>
-        </div>
-            <div class="resumo-inventario" *ngIf="personagem.inventarioPersonagem && personagem.inventarioPersonagem.length > 0">
-                <p><strong>Total de Itens:</strong> {{ quantidadeTotal }}</p>
-                <p><strong>Peso Total:</strong> {{ pesoTotal }} kg</p>
-            </div>
-            <div class="moedas">
-                <label>Bolsa de moedas</label><br>
-                <div class="moedas-container">
-                    <div class="moeda-item">
-                        <label for="moedaPC">PC (Platina)</label><br>
-                        <input type="number" id="moedaPC" name="moedaPC" value="0" min="0"><br>
-                    </div>
-                    <div class="moeda-item">
-                        <label for="moedaPO">PO (Ouro)</label><br>
-                        <input type="number" id="moedaPO" name="moedaPO" value="0" min="0"><br>
-                    </div>
-                    <div class="moeda-item">
-                        <label for="moedaPE">PP (Prata)</label><br>
-                        <input type="number" id="moedaPE" name="moedaPE" value="0" min="0"><br>
-                    </div>
-                    <div class="moeda-item">
-                        <label for="moedaPCobre">PC (Cobre)</label><br>
-                        <input type="number" id="moedaPCobre" name="moedaPCobre" value="0" min="0"><br>
-                        </div>
-                    </div>
-                </div>
-        </div>
-
-        <!-- HABILIDADES -->
-        <h1>Habilidades personagem</h1>
-        <div class="listaHabilidades" *ngIf="personagem.habilidades && personagem.habilidades.length > 0">
-            <div *ngFor="let habilidade of personagem.habilidades; let i = index" class="habilidade-item">
-                <h3>Nome:{{ habilidade.nomeHabilidade }}</h3>
-                <p><strong>Origem:</strong> {{ habilidade.origemHabilidade }}</p>
-                <p><strong>Descrição:</strong> {{ habilidade.descricaoHabilidade }}</p>
-                <p><strong>Usos:</strong> {{ habilidade.usosHabilidade }}</p>
-                <p><strong>Recarga:</strong> {{ habilidade.recargaHabilidade }}</p>
-            <hr>
-            </div>
-            </div>
-            <button (click)="toggleSecao('habilidade')">Nova Habilidade</button>
-            <div class="addHabildiade" [hidden]="!visivel['habilidade']">
-
-        <div class="habilidades">
-            <h3>⚡ Adicionar Habilidade</h3>
-            
-            <label for="nomeHabilidade">Nome Habilidade</label><br>
-            <input type="text" 
-                id="nomeHabilidade" 
-                name="nomeHabilidade" 
-                [(ngModel)]="novaHabilidade.nomeHabilidade"
-                required><br>
-            
-            <label for="origemHabilidade">Origem Habilidade</label><br>
-            <select id="origemHabilidade" 
-                    name="origemHabilidade" 
-                    [(ngModel)]="novaHabilidade.origemHabilidade"
-                    required>
-                <option value="RACIAL">Racial</option>
-                <option value="CLASSE">Classe</option>
-                <option value="TALENTO">Talento</option>
-                <option value="ITEM">Item</option>
-                <option value="OUTROS">Outros</option>
-            </select><br>
-            
-            <label for="descricaoHabilidade">Descrição Habilidade</label><br>
-            <textarea 
-                id="descricaoHabilidade" 
-                name="descricaoHabilidade" 
-                rows="4" 
-                cols="50"
-                [(ngModel)]="novaHabilidade.descricaoHabilidade"
-                required>
-            </textarea><br>
-            
-            <label for="usosHabilidade">Usos</label><br>
-            <input 
-                type="number" 
-                id="usosHabilidade" 
-                name="usosHabilidade"
-                [(ngModel)]="novaHabilidade.usosHabilidade"
-                required><br>
-            
-            <label for="recargaHabilidade">Recarga Habilidade</label><br>
-            <input type="text" 
-                id="recargaHabilidade" 
-                name="recargaHabilidade" 
-                [(ngModel)]="novaHabilidade.recargaHabilidade"
-                placeholder="Ex: Descanso longo, curto, passiva, N/A"
-                required><br>
-            
-            <button (click)="adicionarHabilidade()">Adicionar Habilidade</button>
-        </div>
-        <div class="lista-habilidades" style="margin-top: 20px; border-top: 2px solid #ddd; padding-top: 15px;">
-            <h4>📋 Habilidades do Personagem ({{ personagem.habilidades?.length || 0 }})</h4>
-            
-            <div *ngIf="personagem.habilidades?.length === 0" 
-                style="color: #999; font-style: italic; padding: 15px; text-align: center;">
-                Nenhuma habilidade adicionada.
-            </div>
-            
-            <div *ngFor="let hab of personagem.habilidades; let i = index"
-                style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 8px; background: #fafafa;">
-                
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
-                        <strong>{{ hab.nomeHabilidade }}</strong>
-                        <span style="background: #2196F3; color: white; padding: 2px 12px; border-radius: 12px; font-size: 12px; margin-left: 8px;">
-                            {{ hab.origemHabilidade }}
-                        </span>
-                        <div style="font-size: 13px; color: #666; margin-top: 5px;">
-                            {{ hab.descricaoHabilidade }}
-                        </div>
-                        <div style="font-size: 12px; color: #888; margin-top: 3px;">
-                            🎯 Usos: {{ hab.usosHabilidade }} | 🔄 Recarga: {{ hab.recargaHabilidade }}
-                        </div>
-                    </div>
-                    <button (click)="removerHabilidade(i)"
-                            style="padding: 3px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        ✕
-                    </button>
-                </div>
-            </div>
-        </div>
-        </div>
-        <!-- GRIMÓRIO -->
-        <h1>Grimório</h1>
-        <div class="blocoGrimorio">
-            <div class="detalhesConjuracao">
-                <h3>CD Magia {{getCdMagia()}}</h3>
-                <h3>Bônus ataque mágico {{getAtaqueMagico()}}</h3>
-                <h3>Atributo-chave: {{personagem.classePersonagem?.atributoConjuracao}}</h3>
-            </div>
-            <div class="grimorioPersonagem">
-        <div class="listaMagiasSeção1">
-        <!-- Truques -->
-        <h3>Truques</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('0')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="name" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 1 -->
-        <h3>Nível 1</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('1')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-        <!-- Nível 2 -->
-        <h3>Nível 2</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('2')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 3 -->
-        <h3>Nível 3</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('3')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
+<form>
+  <!-- ============================================ -->
+  <!-- CABEÇALHO                                     -->
+  <!-- ============================================ -->
+  <div id="cabecalho">
+    <div class="fotoPersonagem">
+      <label for="imagemPersonagem">Foto do Personagem</label>
+      <input type="file" id="imagemPersonagem" name="imagemPersonagem"
+             (change)="onSelectedFile($event)" accept="image/*">
+
+      <div *ngIf="imagemPreview" class="preview-container">
+        <img [src]="imagemPreview" class="preview-imagem">
+        <button type="button" (click)="removerImagem()" class="btn-remover">Remover</button>
+      </div>
+
+      <img *ngIf="personagem.fotoBase64"
+           [src]="personagem.fotoBase64"
+           alt="Foto de {{ personagem.nomePersonagem }}"
+           class="foto-personagem">
     </div>
 
-    <!-- Seção 2: Níveis 4, 5, 6 -->
-    <div class="listaMagiasSeção2">
-        <!-- Nível 4 -->
-        <h3>Nível 4</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('4')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+    <div class="nomeClasse">
+      <label for="nomePersonagem">Nome</label>
+      <input type="text" id="nomePersonagem" name="nomePersonagem" required
+             [(ngModel)]="personagem.nomePersonagem">
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 5 -->
-        <h3>Nível 5</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('5')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 6 -->
-        <h3>Nível 6</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('6')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
+      <label>Classe</label>
+      <select name="classePersonagem"
+              [(ngModel)]="personagem.classePersonagem"
+              [compareWith]="compararClasses"
+              (ngModelChange)="onClasseSelecionada($event)">
+        <option [ngValue]="null" disabled selected>Selecione uma classe...</option>
+        <option *ngFor="let classe of classesDisponiveis" [ngValue]="classe">
+          {{ classe.nomeClasse }}
+        </option>
+      </select>
     </div>
 
-    <!-- Seção 3: Níveis 7, 8, 9 -->
-    <div class="listaMagiasSeção3">
-        <!-- Nível 7 -->
-        <h3>Nível 7</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('7')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+    <div class="racaAntecedente">
+      <label for="racaPersonagem">Raça</label>
+      <input type="text" id="racaPersonagem" name="racaPersonagem" required
+             [(ngModel)]="personagem.racaPersonagem">
 
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 8 -->
-        <h3>Nível 8</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('8')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
-
-        <!-- Nível 9 -->
-        <h3>Nível 9</h3>
-        <div class="nomeMagiaMenu">
-            <div *ngFor="let magia of getMagiasPorNivel('9')" class="magia-container">
-                <!-- Nome da magia (clicável) -->
-                <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                    <h4>{{ magia.name }}</h4>
-                </div>
-        <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-            <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-
-            <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
-
-            <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
-
-            <h4><strong>Componentes:</strong></h4>
-
-            <p>
-                V: {{ magia.components.verbal ? 'Sim' : 'Não' }} |
-                S: {{ magia.components.somatic ? 'Sim' : 'Não' }} |
-                M: {{ magia.components.material ? 'Sim' : 'Não' }}
-            </p>
-
-            <h4><strong>Material:</strong> {{ magia.components.material ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-
-            <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
-
-            <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-
-            <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
-        </div>
-        </div>
-            <button (click)="toggleSecao('habilidade')" class="btn-nova-magia">Nova Magia</button>
-        </div>
+      <label for="antecedentePersonagem">Antecedente</label>
+      <input type="text" id="antecedentePersonagem" name="antecedentePersonagem"
+             [(ngModel)]="personagem.antecedentePersonagem">
     </div>
-            <div class="adicionarMagia" [hidden]="!visivel['habilidade']">
-                <h2>Adicionar Magia</h2>
-                
-                <label for="nomeMagia">Nome magia</label><br>
-                <input type="text" 
-                    id="nomeMagia" 
-                    name="nomeMagia" 
-                    [(ngModel)]="novaMagia.name"
-                    required><br>
-                
-                <label for="nivelMagia">Nível magia</label><br>
-                <input type="text" 
-                    id="nivelMagia" 
-                    name="nivelMagia" 
-                    [(ngModel)]="novaMagia.level"
-                    min = "0"
-                    max = "9"
-                    placeholder="0 = Truque, 1-9 = Nível"
-                    required><br>
-                
-                <label for="tempoConjuracaoMagia">Tempo conjuração</label><br>
-                <input type="text" 
-                    id="tempoConjuracaoMagia" 
-                    name="tempoConjuracaoMagia" 
-                    [(ngModel)]="novaMagia.casting_time"
-                    placeholder="Ex: 1 ação, 1 minuto, 1 hora"
-                    required><br>
-                
-                <label for="areaMagia">Área/Alcance</label><br>
-                <input type="text" 
-                    id="areaMagia" 
-                    name="areaMagia" 
-                    [(ngModel)]="novaMagia.range"
-                    placeholder="Ex: Próprio, Toque, 30 pés"
-                    required><br>
-                
-                <label>Componentes</label><br>
-                <input type="checkbox" 
-                    name="componentesMagia" 
-                    value="V"
-                    [(ngModel)]="novaMagia.components!.verbal"> V
-                <input type="checkbox" 
-                    name="componentesMagia" 
-                    value="S"
-                    [(ngModel)]="novaMagia.components!.somatic"> S
-                <input type="checkbox" 
-                    name="componentesMagia" 
-                    value="M"
-                    [(ngModel)]="novaMagia.components!.material"> M
-                <input type="text" 
-                    id="componentesMaterial" 
-                    name="componentesMaterial" 
-                    [(ngModel)]="novaMagia.components!.raw"
-                    placeholder="Material (se houver)"><br>
-                <input type="checkbox" 
-                    id="ritualMagia" 
-                    name="ritualMagia"
-                    [(ngModel)]="novaMagia.ritual"> Ritual<br>
-                
-                <input type="checkbox" 
-                    id="concentracaoMagia" 
-                    name="concentracaoMagia"
-                    [(ngModel)]="novaMagia.concentration"> Concentração<br>
-                
-                <label for="duracaoMagia">Duração</label><br>
-                <input type="text" 
-                    id="duracaoMagia" 
-                    name="duracaoMagia" 
-                    [(ngModel)]="novaMagia.duration"
-                    placeholder="Ex: Instantânea, 1 minuto, 1 hora"
-                    required><br>
 
-                <label for="escolaMagia">Escola magia</label><br>
-                <select 
-                    name="escolaMagia" 
-                    id="escolaMagia"
-                    [(ngModel)]="novaMagia.school"
-                    required>
-                    <option value="" disabled selected>Selecione a escola de magia...</option>
-                    <option value="ABJURACAO">Abjuração</option>
-                    <option value="ADIVINHACAO">Adivinhação</option>
-                    <option value="CONJURACAO">Conjuração</option>
-                    <option value="ENCANTACAO">Encantação</option>
-                    <option value="EVOCACAO">Evocação</option>
-                    <option value="ILUSAO">Ilusão</option>
-                    <option value="NECROMANCIA">Necromancia</option>
-                    <option value="TRANSMUTACAO">Transmutação</option>
-                </select><br>
-                
-                <label for="descricaoMagia">Descrição da magia</label><br>
-                <textarea id="descricaoMagia" 
-                        name="descricaoMagia" 
-                        rows="4" 
-                        cols="50"
-                        [(ngModel)]="novaMagia.description"></textarea><br>
-                
-                <button (click)="adicionarMagia()" class="btn-adicionar">Adicionar Magia</button>
-            </div>
-            </div>
+    <div class="escalaNivel">
+      <label for="escalaPersonagem">Escala</label>
+      <input type="text" id="escalaPersonagem" name="escalaPersonagem" required
+             [(ngModel)]="personagem.escalaPersonagem">
+
+      <label for="nivelPersonagem">Nível</label>
+      <input type="number" id="nivelPersonagem" name="nivelPersonagem" required
+             min="1" max="30" [(ngModel)]="personagem.nivelPersonagem">
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- BOTÕES                                        -->
+  <!-- ============================================ -->
+  <div class="acoes-form">
+    <button type="button" class="btn-voltar" (click)="voltar()">⬅ Voltar</button>
+    <button type="button" class="btn-salvar" (click)="salvarPersonagem()">💾 Salvar Personagem</button>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- CABEÇALHO SUPERIOR                            -->
+  <!-- ============================================ -->
+  <div class="cabecalhoSuperior">
+
+    <!-- ATRIBUTOS -->
+    <div class="atributos">
+      <h2>Atributos</h2>
+
+      <label for="forcaPersonagem">Força</label>
+      <input type="number" id="forcaPersonagem" name="forcaPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorForca" required>
+      <small>{{ bonusForca }}</small>
+
+      <label for="destrezaPersonagem">Destreza</label>
+      <input type="number" id="destrezaPersonagem" name="destrezaPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorDestreza" required>
+      <small>{{ bonusDestreza }}</small>
+
+      <label for="constituicaoPersonagem">Constituição</label>
+      <input type="number" id="constituicaoPersonagem" name="constituicaoPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorConstituicao" required>
+      <small>{{ bonusConstituicao }}</small>
+
+      <label for="inteligenciaPersonagem">Inteligência</label>
+      <input type="number" id="inteligenciaPersonagem" name="inteligenciaPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorInteligencia" required>
+      <small>{{ bonusInteligencia }}</small>
+
+      <label for="sabedoriaPersonagem">Sabedoria</label>
+      <input type="number" id="sabedoriaPersonagem" name="sabedoriaPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorSabedoria" required>
+      <small>{{ bonusSabedoria }}</small>
+
+      <label for="carismaPersonagem">Carisma</label>
+      <input type="number" id="carismaPersonagem" name="carismaPersonagem" min="1" max="30"
+             [(ngModel)]="personagem.valorCarisma" required>
+      <small>{{ bonusCarisma }}</small>
+    </div>
+
+    <!-- BÔNUS PROFICIÊNCIA -->
+    <div class="bonusProf">
+      <span class="profPersonagem">Bônus proficiência</span>
+      <span class="bonusProficiencia">{{ bonusProficiencia }}</span>
+    </div>
+
+    <!-- TESTES DE RESISTÊNCIA -->
+    <div class="testesResistencia">
+      <div class="teste-item" *ngFor="let attr of ['forca','destreza','constituicao','inteligencia','sabedoria','carisma']">
+        <input type="checkbox" [id]="'resistencia_' + attr" [name]="'resistencia_' + attr"
+               [(ngModel)]="resistencias[attr]">
+        <span class="valor">{{ getTesteResistencia(attr) }}</span>
+        <label [for]="'resistencia_' + attr">{{ attr | titlecase }}</label>
+      </div>
+    </div>
+
+    <!-- CA / INI / MOV / PV -->
+    <div class="CaIniMov">
+      <div class="campo">
+        <label for="caPersonagem">CA</label>
+        <input type="number" id="caPersonagem" name="caPersonagem"
+               [value]="getCaPersonagem()" min="1" max="30" required>
+        <small>10 + mod Dex</small>
+      </div>
+
+      <div class="campo">
+        <label for="iniciativaPersonagem">Iniciativa</label>
+        <input type="number" id="iniciativaPersonagem" name="iniciativaPersonagem"
+               [value]="bonusDestreza" required>
+        <small>mod Dex</small>
+      </div>
+
+      <div class="campo">
+        <label for="movimentoPersonagem">Movimento</label>
+        <input type="text" id="movimentoPersonagem" name="movimentoPersonagem"
+               [(ngModel)]="personagem.movimentoPersonagem" required>
+        <small>definido pela raça</small>
+      </div>
+
+      <div class="campo">
+        <label for="vidaPersonagem">Pontos de Vida</label>
+        <input type="number" id="vidaPersonagem" name="vidaPersonagem"
+               [(ngModel)]="personagem.pontosVidaPersonagem" required>
+        <small>CON + dado de vida</small>
+      </div>
+    </div>
+
+    <!-- PERÍCIAS -->
+    <div class="pericias">
+      <h2>Perícias</h2>
+
+      <div *ngFor="let p of pericias" class="pericia-linha">
+        <span class="valor">{{ getValorPericia(p.slug) }}</span>
+        <input type="checkbox"
+               [id]="'pericia_' + p.slug"
+               [name]="'pericia_' + p.slug"
+               (change)="togglePericia(p.slug)"
+               [checked]="isSelecionada(p.slug)">
+        <label [for]="'pericia_' + p.slug">
+          {{ p.nomeExibicao }} ({{ abreviarAtributo(p.atributoChave) }})
+        </label>
+      </div>
+
+      <div class="percepcaoPassiva">
+        <span>Percepção passiva:</span>
+        <strong>{{ getPercepcaoPassiva() }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PROFICIÊNCIAS                                 -->
+  <!-- ============================================ -->
+  <div class="proficiencias">
+    <h2>Proficiências</h2>
+
+    <table class="tabelaProficiencia">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Proficiência</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prof of personagem.proficienciasPersonagem; let i = index">
+          <td>{{ prof.tipoProficiencia }}</td>
+          <td>{{ prof.listaProficiencias }}</td>
+          <td>
+            <button type="button" class="btn-remover" (click)="removerProficiencia(i)">✕</button>
+          </td>
+        </tr>
+        <tr *ngIf="!personagem.proficienciasPersonagem?.length">
+          <td colspan="3" class="vazio">Nenhuma proficiência adicionada.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button type="button" class="btn-add" (click)="toggleSecao('proficiencia')">+ Nova proficiência</button>
+
+    <div class="addProficiencia" [hidden]="!visivel['proficiencia']">
+      <label for="tipoProfPersonagem">Tipo</label>
+      <select id="tipoProfPersonagem" name="tipoProfPersonagem"
+              [(ngModel)]="novaProficiencia.tipoProficiencia" required>
+        <option value="ARMAS">Armas</option>
+        <option value="ARMADURAS">Armaduras</option>
+        <option value="IDIOMAS">Idiomas</option>
+        <option value="INSTRUMENTOS">Instrumentos</option>
+        <option value="FERRAMENTAS">Ferramentas</option>
+        <option value="OUTROS">Outros</option>
+      </select>
+
+      <label for="listaProficiencias">Proficiências</label>
+      <input type="text" id="listaProficiencias" name="listaProficiencias"
+             [(ngModel)]="novaProficiencia.listaProficiencias" required>
+
+      <button type="button" class="btn-add" (click)="salvarProficiencia()">Adicionar</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- INVENTÁRIO                                    -->
+  <!-- ============================================ -->
+  <div class="inventario">
+    <h2>Inventário</h2>
+
+    <table class="mochilaPersonagem">
+      <thead>
+        <tr>
+          <th>Nome item</th>
+          <th>Peso</th>
+          <th>Quantidade</th>
+          <th>Peso Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of personagem.inventarioPersonagem; let i = index">
+          <tr class="inventario-linha" (click)="selecionarItem(item)">
+            <td><strong>{{ item.nomeItem }}</strong></td>
+            <td>{{ item.pesoItem }}</td>
+            <td>{{ item.quantidadeItem }}</td>
+          </tr>
+          <tr *ngIf="isItemSelecionado(item)" class="detalhes-linha">
+            <td colspan="4">
+              <div class="itemExpandido">
+                <p><strong>Raridade:</strong> {{ item.raridadeItem }}</p>
+                <p><strong>Descrição:</strong> {{ item.descricaoItem }}</p>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <button type="button" class="btn-add" (click)="toggleSecao('item')">+ Novo item</button>
+
+    <div class="addItem" [hidden]="!visivel['item']">
+      <label for="nomeItem">Nome item</label>
+      <input type="text" id="nomeItem" name="nomeItem" [(ngModel)]="novoItem.nomeItem" required>
+
+      <label for="raridadeItem">Raridade</label>
+      <select id="raridadeItem" name="raridadeItem" [(ngModel)]="novoItem.raridadeItem" required>
+        <option value="" disabled selected>Selecione a raridade...</option>
+        <option value="COMUM">Comum</option>
+        <option value="INCOMUM">Incomum</option>
+        <option value="RARO">Raro</option>
+        <option value="MUITO_RARO">Muito raro</option>
+        <option value="LENDARIO">Lendário</option>
+        <option value="ARTEFATO">Artefato</option>
+      </select>
+
+      <label for="quantidadeItem">Quantidade</label>
+      <input type="number" id="quantidadeItem" name="quantidadeItem"
+             [(ngModel)]="novoItem.quantidadeItem" min="1" required>
+
+      <label for="pesoItem">Peso</label>
+      <input type="number" id="pesoItem" name="pesoItem"
+             [(ngModel)]="novoItem.pesoItem" min="0" required>
+
+      <label for="precoItem">Preço</label>
+      <input type="number" id="precoItem" name="precoItem"
+             [(ngModel)]="novoItem.precoItem" min="0" required>
+
+      <label for="tipoItem">Tipo</label>
+      <select id="tipoItem" name="tipoItem" [(ngModel)]="novoItem.tipoItem">
+        <option value="" disabled selected>Selecione o tipo...</option>
+        <option value="ARMA">Arma</option>
+        <option value="ARMADURA">Armadura</option>
+        <option value="POCAO">Poção</option>
+        <option value="FERRAMENTA">Ferramenta</option>
+        <option value="ITEM_MAGICO">Item Mágico</option>
+        <option value="TESOURO">Tesouro</option>
+        <option value="VARIADOS">Variados</option>
+      </select>
+
+      <label class="checkbox-inline">
+        <input type="checkbox" id="isMagicoItem" name="isMagicoItem" [(ngModel)]="novoItem.isMagicoItem">
+        É Mágico?
+      </label>
+
+      <label class="checkbox-inline">
+        <input type="checkbox" id="precisaSintonizacao" name="precisaSintonizacao" [(ngModel)]="novoItem.precisaSintonizacao">
+        Precisa sintonização?
+      </label>
+
+      <label for="descricaoItem">Descrição</label>
+      <textarea id="descricaoItem" name="descricaoItem" rows="3"
+                [(ngModel)]="novoItem.descricaoItem" placeholder="Descreva o item..."></textarea>
+
+      <button type="button" class="btn-add" (click)="salvarItem()">Adicionar Item</button>
+    </div>
+
+    <div class="resumo-inventario" *ngIf="personagem.inventarioPersonagem?.length">
+      <p><strong>Total de Itens:</strong> {{ quantidadeTotal }}</p>
+      <p><strong>Peso Total:</strong> {{ pesoTotal }} kg</p>
+    </div>
+
+    <div class="moedas">
+      <label>Bolsa de moedas</label>
+      <div class="moedas-container">
+        <div class="moeda-item">
+          <label for="moedaPC">PC (Platina)</label>
+          <input type="number" id="moedaPC" name="moedaPC" value="0" min="0">
         </div>
-        <!-- ANOTAÇÕES & EXTRAS -->
-        <div class="extras">
-            <h1>Anotações & Extras</h1>
+        <div class="moeda-item">
+          <label for="moedaPO">PO (Ouro)</label>
+          <input type="number" id="moedaPO" name="moedaPO" value="0" min="0">
         </div>
-        <div class="anotacoes">
-        <div class="dadosPessoaisPersonagem">
-            <div class="idadeContainer">
-                <label for="idadePersonagem">Idade</label>
-                <input type="text" id="idadePersonagem" name="idadePersonagem" required [(ngModel)]="personagem.idadePersonagem">
-            </div>
-            
-            <div class="alturaContainer">
-                <label for="alturaPersonagem">Altura</label>
-                <input type="text" id="alturaPersonagem" name="alturaPersonagem" required [(ngModel)]="personagem.alturaPersonagem">
-            </div>
-            
-            <div class="pesoContainer">
-                <label for="pesoPersonagem">Peso</label>
-                <input type="text" id="pesoPersonagem" name="pesoPersonagem" required [(ngModel)]="personagem.pesoPersonagem">
-            </div>
-            
-            <div class="tamanhoContainer">
-                <label for="tamanhoPersonagem">Tamanho</label>
-                <input type="text" id="tamanhoPersonagem" name="tamanhoPersonagem">
-            </div>
-            
-            <div class="generoContainer">
-                <label for="generoPersonagem">Gênero</label>
-                <input type="text" id="generoPersonagem" name="generoPersonagem" required [(ngModel)]="personagem.generoPersonagem">
-            </div>
-            
-            <div class="alinhamentoContainer">
-                <label for="alinhamentoPersonagem">Alinhamento</label>
-                <input type="text" id="alinhamentoPersonagem" name="alinhamentoPersonagem" required [(ngModel)]="personagem.alinhamentoPersonagem">
-            </div>
+        <div class="moeda-item">
+          <label for="moedaPE">PP (Prata)</label>
+          <input type="number" id="moedaPE" name="moedaPE" value="0" min="0">
         </div>
-            <div class="anotacoesInferior">
-                <div class="historiaContainer">
-                        <label for="historiaPersonagem">História do personagem</label>
-                        <textarea id="historiaPersonagem" name="historiaPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.historiaPersonagem"></textarea>
-                    </div>
-                    
-                    <div class="aparenciaContainer">
-                        <label for="aparenciaPersonagem">Aparência do personagem</label><br>
-                        <textarea id="aparenciaPersonagem" name="aparenciaPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.aparenciaPersonagem"></textarea>
-                    </div>
-                    
-                    <div class="personalidadeContainer">
-                        <label for="personalidadePersonagem">Traços de personalidade</label><br>
-                        <textarea id="personalidadePersonagem" name="personalidadePersonagem" rows="4" cols="50" required [(ngModel)]="personagem.personalidadePersonagem"></textarea>
-                    </div>
-                    
-                    <div class="ideaisContainer">
-                        <label for="ideaisPersonagem">Ideais</label><br>
-                        <textarea id="ideaisPersonagem" name="ideaisPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.ideaisPersonagem"></textarea>
-                    </div>
-                    
-                    <div class="defeitosContainer">
-                        <label for="defeitosPersonagem">Defeitos</label><br>
-                        <textarea id="defeitosPersonagem" name="defeitosPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.defeitosPersonagem"></textarea>
-                    </div>
-                    
-                    <div class="anotacoesContainer">
-                        <label for="anotacoesPersonagem">Anotações</label><br>
-                        <textarea id="anotacoesPersonagem" name="anotacoesPersonagem" rows="4" cols="50" required [(ngModel)]="personagem.anotacoesPersonagem"></textarea>
-                    </div>      
+        <div class="moeda-item">
+          <label for="moedaPCobre">PC (Cobre)</label>
+          <input type="number" id="moedaPCobre" name="moedaPCobre" value="0" min="0">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- HABILIDADES                                   -->
+  <!-- ============================================ -->
+  <div class="habilidades">
+    <h2>Habilidades</h2>
+
+    <div *ngIf="personagem.habilidades?.length === 0" class="vazio">
+      Nenhuma habilidade adicionada.
+    </div>
+
+    <div *ngFor="let hab of personagem.habilidades; let i = index" class="itemHabilidade">
+      <div class="itemHabilidade-header">
+        <h3>{{ hab.nomeHabilidade }}</h3>
+        <span class="origem">{{ hab.origemHabilidade }}</span>
+      </div>
+      <p class="descricao">{{ hab.descricaoHabilidade }}</p>
+      <div class="itemHabilidade-info">
+        <span *ngIf="hab.usosHabilidade">Usos: {{ hab.usosHabilidade }}</span>
+        <span *ngIf="hab.recargaHabilidade">Recarga: {{ hab.recargaHabilidade }}</span>
+      </div>
+      <button type="button" class="btn-remover" (click)="removerHabilidade(i)">✕</button>
+    </div>
+
+    <button type="button" class="btn-add" (click)="toggleSecao('habilidade')">+ Nova Habilidade</button>
+
+    <div class="addHabilidade" [hidden]="!visivel['habilidade']">
+      <label for="nomeHabilidade">Nome</label>
+      <input type="text" id="nomeHabilidade" name="nomeHabilidade"
+             [(ngModel)]="novaHabilidade.nomeHabilidade" required>
+
+      <label for="origemHabilidade">Origem</label>
+      <select id="origemHabilidade" name="origemHabilidade"
+              [(ngModel)]="novaHabilidade.origemHabilidade" required>
+        <option value="RACIAL">Racial</option>
+        <option value="CLASSE">Classe</option>
+        <option value="TALENTO">Talento</option>
+        <option value="ITEM">Item</option>
+        <option value="OUTROS">Outros</option>
+      </select>
+
+      <label for="descricaoHabilidade">Descrição</label>
+      <textarea id="descricaoHabilidade" name="descricaoHabilidade" rows="4"
+                [(ngModel)]="novaHabilidade.descricaoHabilidade" required></textarea>
+
+      <label for="usosHabilidade">Usos</label>
+      <input type="number" id="usosHabilidade" name="usosHabilidade"
+             [(ngModel)]="novaHabilidade.usosHabilidade" required>
+
+      <label for="recargaHabilidade">Recarga</label>
+      <input type="text" id="recargaHabilidade" name="recargaHabilidade"
+             [(ngModel)]="novaHabilidade.recargaHabilidade"
+             placeholder="Ex: Descanso longo, curto, passiva" required>
+
+      <button type="button" class="btn-add" (click)="adicionarHabilidade()">Adicionar Habilidade</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- GRIMÓRIO                                      -->
+  <!-- ============================================ -->
+  <div class="blocoGrimorio">
+    <h2>Grimório</h2>
+
+    <div class="detalhesConjuracao">
+      <h3>CD Magia: {{ getCdMagia() }}</h3>
+      <h3>Bônus ataque mágico: {{ getAtaqueMagico() }}</h3>
+      <h3>Atributo-chave: {{ personagem.classePersonagem?.atributoConjuracao || '—' }}</h3>
+    </div>
+
+    <div class="grimorioPersonagem">
+      <ng-container *ngFor="let faixa of [
+          { titulo: 'Truques',   niveis: ['0'] },
+          { titulo: 'Nível 1',   niveis: ['1'] },
+          { titulo: 'Nível 2',   niveis: ['2'] },
+          { titulo: 'Nível 3',   niveis: ['3'] }
+        ]">
+        <div class="listaMagiasSeção1" *ngIf="faixa.niveis.length">
+          <ng-container *ngFor="let nivel of faixa.niveis">
+            <h3>{{ faixa.titulo }}</h3>
+            <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio">
+              <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                  <h4>{{ magia.name }}</h4>
                 </div>
+                <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+                  <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+                  <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
+                  <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
+                  <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+                  <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+                  <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
+                  <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+                  <p><strong>Descrição:</strong> {{ magia.description }}</p>
+                </div>
+              </div>
             </div>
-    </form>
+            <ng-template #vazio><p class="vazio-nivel">Nenhuma magia</p></ng-template>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <ng-container *ngFor="let nivel of ['4','5','6']">
+        <div class="listaMagiasSeção2">
+          <h3>Nível {{ nivel }}</h3>
+          <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio2">
+            <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+              <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                <h4>{{ magia.name }}</h4>
+              </div>
+              <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+                <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+                <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
+                <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
+                <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+                <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+                <p><strong>Descrição:</strong> {{ magia.description }}</p>
+              </div>
+            </div>
+          </div>
+          <ng-template #vazio2><p class="vazio-nivel">Nenhuma magia</p></ng-template>
+        </div>
+      </ng-container>
+
+      <ng-container *ngFor="let nivel of ['7','8','9']">
+        <div class="listaMagiasSeção3">
+          <h3>Nível {{ nivel }}</h3>
+          <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio3">
+            <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+              <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                <h4>{{ magia.name }}</h4>
+              </div>
+              <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+                <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+                <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
+                <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
+                <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+                <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+                <p><strong>Descrição:</strong> {{ magia.description }}</p>
+              </div>
+            </div>
+          </div>
+          <ng-template #vazio3><p class="vazio-nivel">Nenhuma magia</p></ng-template>
+        </div>
+      </ng-container>
+    </div>
+
+    <button type="button" class="btn-add" (click)="abrirModal()">+ Adicionar Magia</button>
+    <div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModal()">
+  <div class="modal-magia" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ novaMagia?.name || 'Nova magia' }}</h3>
+      <button type="button" class="btn-fechar" (click)="fecharModal()">✖️</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="edit-card-grid">
+        <div class="campo-editavel">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="novaMagia.name" name="mag_name" placeholder="Nome da magia">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Nível</label>
+            <select [(ngModel)]="novaMagia.level" name="mag_level">
+              <option *ngFor="let n of ['0','1','2','3','4','5','6','7','8','9']"
+                      [value]="n"
+                      [disabled]="!podeAprenderNivel(n)">
+                {{ n === '0' ? 'Truque' : 'Nível ' + n }}
+              </option>
+            </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label>Escola</label>
+          <select [(ngModel)]="novaMagia.school" name="mag_school">
+            <option value="ABJURACAO">Abjuração</option>
+            <option value="ADIVINHACAO">Adivinhação</option>
+            <option value="CONJURACAO">Conjuração</option>
+            <option value="ENCANTACAO">Encantação</option>
+            <option value="EVOCACAO">Evocação</option>
+            <option value="ILUSAO">Ilusão</option>
+            <option value="NECROMANCIA">Necromancia</option>
+            <option value="TRANSMUTACAO">Transmutação</option>
+          </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label>Tempo de conjuração</label>
+          <input type="text" [(ngModel)]="novaMagia.casting_time" name="mag_cast" placeholder="Ex: 1 ação">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Alcance</label>
+          <input type="text" [(ngModel)]="novaMagia.range" name="mag_range" placeholder="Ex: 30 pés">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Duração</label>
+          <input type="text" [(ngModel)]="novaMagia.duration" name="mag_dur" placeholder="Ex: Instantânea">
+        </div>
+      </div>
+
+      <div class="componentes-edit">
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="novaMagia.components.verbal" name="mag_v"> V
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="novaMagia.components.somatic" name="mag_s"> S
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="novaMagia.components.material" name="mag_m"> M
+        </label>
+        <input type="text" class="material" [(ngModel)]="novaMagia.components.raw" name="mag_raw" placeholder="Material (se houver)">
+
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="novaMagia.ritual" name="mag_ritual"> Ritual
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="novaMagia.concentration" name="mag_conc"> Concentração
+        </label>
+      </div>
+
+      <div class="campo-editavel">
+        <label>Descrição</label>
+        <textarea [(ngModel)]="novaMagia.description" name="mag_desc" rows="4" placeholder="Descrição da magia..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancelar-magia" (click)="fecharModal()">Cancelar</button>
+      <button type="button" class="btn-salvar-magia" (click)="adicionarMagia()">Salvar</button>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- ANOTAÇÕES                                     -->
+  <!-- ============================================ -->
+  <div class="anotacoes">
+    <h2>Anotações & Extras</h2>
+
+    <div class="dadosPessoaisPersonagem">
+      <div class="idadeContainer">
+        <label for="idadePersonagem">Idade</label>
+        <input type="number" id="idadePersonagem" name="idadePersonagem"
+               [(ngModel)]="personagem.idadePersonagem">
+      </div>
+
+      <div class="alturaContainer">
+        <label for="alturaPersonagem">Altura</label>
+        <input type="number" step="0.01" id="alturaPersonagem" name="alturaPersonagem"
+               [(ngModel)]="personagem.alturaPersonagem">
+      </div>
+
+      <div class="pesoContainer">
+        <label for="pesoPersonagem">Peso</label>
+        <input type="number" step="0.01" id="pesoPersonagem" name="pesoPersonagem"
+               [(ngModel)]="personagem.pesoPersonagem">
+      </div>
+
+      <div class="tamanhoContainer">
+        <label for="escalaPersonagem2">Tamanho</label>
+        <input type="text" id="escalaPersonagem2" name="escalaPersonagem2"
+               [(ngModel)]="personagem.escalaPersonagem">
+      </div>
+
+      <div class="generoContainer">
+        <label for="generoPersonagem">Gênero</label>
+        <input type="text" id="generoPersonagem" name="generoPersonagem"
+               [(ngModel)]="personagem.generoPersonagem">
+      </div>
+
+      <div class="alinhamentoContainer">
+        <label for="alinhamentoPersonagem">Alinhamento</label>
+        <input type="text" id="alinhamentoPersonagem" name="alinhamentoPersonagem"
+               [(ngModel)]="personagem.alinhamentoPersonagem">
+      </div>
+    </div>
+
+    <div class="anotacoesInferior">
+      <div class="historiaContainer">
+        <label for="historiaPersonagem">História</label>
+        <textarea id="historiaPersonagem" name="historiaPersonagem" rows="4"
+                  [(ngModel)]="personagem.historiaPersonagem"></textarea>
+      </div>
+
+      <div class="aparenciaContainer">
+        <label for="aparenciaPersonagem">Aparência</label>
+        <textarea id="aparenciaPersonagem" name="aparenciaPersonagem" rows="4"
+                  [(ngModel)]="personagem.aparenciaPersonagem"></textarea>
+      </div>
+
+      <div class="personalidadeContainer">
+        <label for="personalidadePersonagem">Personalidade</label>
+        <textarea id="personalidadePersonagem" name="personalidadePersonagem" rows="4"
+                  [(ngModel)]="personagem.personalidadePersonagem"></textarea>
+      </div>
+
+      <div class="ideaisContainer">
+        <label for="ideaisPersonagem">Ideais</label>
+        <textarea id="ideaisPersonagem" name="ideaisPersonagem" rows="4"
+                  [(ngModel)]="personagem.ideaisPersonagem"></textarea>
+      </div>
+
+      <div class="defeitosContainer">
+        <label for="defeitosPersonagem">Defeitos</label>
+        <textarea id="defeitosPersonagem" name="defeitosPersonagem" rows="4"
+                  [(ngModel)]="personagem.defeitosPersonagem"></textarea>
+      </div>
+
+      <div class="anotacoesContainer">
+        <label for="anotacoesPersonagem">Anotações</label>
+        <textarea id="anotacoesPersonagem" name="anotacoesPersonagem" rows="4"
+                  [(ngModel)]="personagem.anotacoesPersonagem"></textarea>
+      </div>
+    </div>
+  </div>
+</form>
 </body>
 </html>

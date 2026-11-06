@@ -141,10 +141,12 @@ public class MagiaService {
             case GUERREIRO -> "fighter";
             case LADINO -> "rogue";
             case MAGO -> "wizard";
+            case MONGE ->  "monk";
             case PALADINO -> "paladin";
-            case RANGER -> "ranger";
+            case PATRULHEIRO -> "ranger";
             case ARTIFICIE -> "artificer";
         };
+
     }
     private int calcularNivelMaximoMagia(int nivelPersonagem, TipoConjuracao tipo) {
         return switch (tipo) {

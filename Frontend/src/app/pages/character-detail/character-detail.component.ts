@@ -7,6 +7,7 @@ import { PersonagemService } from '../../core/services/personagem.service';
 import { PericiaService } from '../../core/services/pericia.service';
 import { PersonagemResponse } from '../../models/personagem-response';
 import { Pericia } from '../../models/pericia';
+import { Magia } from '../../models/magia';
 
 type CampoAtributo =
   | 'forca' | 'destreza' | 'constituicao'
@@ -202,10 +203,7 @@ ativarEdicao(): void {
       magias: this.personagemEditavel.magias || [],
       inventario: this.personagemEditavel.inventario || [],
     };
-    console.log('📤 [PUT] periciasMarcadas:', Array.from(this.periciasMarcadas));
-    console.log('📤 [PUT] catalogoPericias:', this.catalogoPericias.map(p => p.slug));
-    console.log('📤 [PUT] pericias no payload:', dto.pericias);
-    console.log('📤 [PUT] JSON enviado:', JSON.stringify(dto.pericias));
+    console.log('📤 [PUT] dto completo:', JSON.stringify(dto, null, 2));
     this.personagemService.atualizarPersonagem(this.personagem.id, dto)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -426,29 +424,34 @@ removerMagiaPorReferencia(magia: any): void {
   }
 }
 
-adicionarMagia(): void {
-  this.personagemEditavel.magias.push({
-    name: 'Nova magia',
-    level: '0',
-    casting_time: '',
-    range: '',
-    description: '',
-    duration: '',
-    school: 'EVOCACAO',
-    ritual: false,
-    concentration: false,
-    type: '',
-    classes: [],
-    tags: [],
-    components: {
-      verbal: false,
-      somatic: false,
-      material: false,
-      raw: ''
-    }
-  });
-  this.cdr.detectChanges();
-}
+  adicionarMagia(): void {
+
+  if (!this.personagemEditavel?.classe?.isConjurador) {
+    console.warn('⚠️ Personagem não é conjurador');
+    return;
+  }
+    this.personagemEditavel.magias.push({
+      name: 'Nova magia',
+      level: '0',
+      casting_time: '',
+      range: '',
+      description: '',
+      duration: '',
+      school: 'EVOCACAO',
+      ritual: false,
+      concentration: false,
+      type: '',
+      classes: [],
+      tags: [],
+      components: {
+        verbal: false,
+        somatic: false,
+        material: false,
+        raw: ''
+      }
+    });
+    this.cdr.detectChanges();
+  }
 
   selecionarMagia(magia: any): void {
     this.magiaSelecionada = (this.magiaSelecionada === magia) ? null : magia;
@@ -465,33 +468,43 @@ adicionarMagia(): void {
     return this.magiaSelecionada === magia;
   }
   abrirModal(magia?: any, event?: Event): void {
-  event?.stopPropagation();
+    event?.stopPropagation();
 
-  if (magia) {
-    this.magiaEditando = structuredClone(magia);
-    this.magiaOriginal = magia;
-  } else {
-    this.magiaEditando = {
-      name: '', level: '0', casting_time: '', range: '',
-      description: '', duration: '', school: 'EVOCACAO',
-      ritual: false, concentration: false, type: '',
-      classes: [], tags: [],
-      components: { verbal: false, somatic: false, material: false, raw: '' }
-    };
+    if (magia) {
+      this.magiaEditando = structuredClone(magia);
+      this.magiaOriginal = magia;
+
+      // se o nível da magia atual for inválido, ajusta para o máximo permitido
+      if (!this.podeAprenderEssaMagia(this.magiaEditando)) {
+        const max = this.getNivelMaximoMagia();
+        this.magiaEditando.level = String(max);
+      }
+    } else {
+      this.magiaEditando = {
+        name: '', level: '0', casting_time: '', range: '',
+        description: '', duration: '', school: 'EVOCACAO',
+        ritual: false, concentration: false, type: '',
+        classes: [], tags: [],
+        components: { verbal: false, somatic: false, material: false, raw: '' }
+      };
+      this.magiaOriginal = null;
+    }
+    this.modalAberto = true;
+  }
+
+  fecharModal(): void {
+    this.modalAberto = false;
+    this.magiaEditando = null;
     this.magiaOriginal = null;
   }
 
-  this.modalAberto = true;
-}
-
-fecharModal(): void {
-  this.modalAberto = false;
-  this.magiaEditando = null;
-  this.magiaOriginal = null;
-}
-
 salvarMagia(): void {
   if (!this.magiaEditando) return;
+
+  if (!this.podeAprenderEssaMagia(this.magiaEditando)) {
+    alert(`⚠️ Esta magia é de nível ${this.magiaEditando.level}, mas o personagem só pode aprender até nível ${this.getNivelMaximoMagia()}.`);
+    return;
+  }
 
   if (this.magiaOriginal) {
     const idx = this.personagemEditavel.magias.indexOf(this.magiaOriginal);
@@ -501,43 +514,99 @@ salvarMagia(): void {
   }
 
   this.fecharModal();
+  this.cdr.detectChanges();
 }
   getPercepcaoPassiva(): number {
     const p = (this.personagem?.pericias as any[])?.find(x => x.slug === 'percepcao');
     return (p?.valorTotalPericia ?? 0) + 10;
   }
 
-    getCdMagia(): number {
-    if (this.personagemEditavel.classePersonagem?.conjurador) {
-      const atributoConjuracao = this.personagemEditavel.classePersonagem.atributoConjuracao;
-      if (atributoConjuracao) {
-        return this.getBonusAtributo(atributoConjuracao) + this.personagemEditavel.getBonusProficiencia() + 8;
-      }
-    }
-    return 0;
+  getCdMagia(): number {
+    const classe = this.personagemEditavel?.classe ?? this.personagem?.classe;
+    if (!classe?.isConjurador || !classe.atributoConjuracao) return 0;
+
+    return 8 + this.getBonusProficiencia() + this.getBonusAtributo(classe.atributoConjuracao);
   }
 
   getAtaqueMagico(): number {
-    if (this.personagemEditavel.classePersonagem?.conjurador) {
-      const atributoConjuracao = this.personagemEditavel.classePersonagem?.atributoConjuracao;
-      if (atributoConjuracao) {
-        return this.getBonusAtributo(atributoConjuracao) + this.personagemEditavel.getBonusProficiencia();
-      }
-    }
-    return 0;
-  }
-  getBonusAtributo(atributo: string): number {
-  const attrs = this.personagemEditavel?.atributos ?? this.personagem?.atributos;
-  if (!attrs) return 0;
+    const classe = this.personagemEditavel?.classe ?? this.personagem?.classe;
+    if (!classe?.isConjurador || !classe.atributoConjuracao) return 0;
 
-  switch (atributo) {
-    case 'FORCA':        return attrs.bonusForca ?? Math.floor((attrs.forca - 10) / 2);
-    case 'DESTREZA':     return attrs.bonusDestreza ?? Math.floor((attrs.destreza - 10) / 2);
-    case 'CONSTITUICAO': return attrs.bonusConstituicao ?? Math.floor((attrs.constituicao - 10) / 2);
-    case 'INTELIGENCIA': return attrs.bonusInteligencia ?? Math.floor((attrs.inteligencia - 10) / 2);
-    case 'SABEDORIA':    return attrs.bonusSabedoria ?? Math.floor((attrs.sabedoria - 10) / 2);
-    case 'CARISMA':      return attrs.bonusCarisma ?? Math.floor((attrs.carisma - 10) / 2);
-    default: return 0;
+    return this.getBonusProficiencia() + this.getBonusAtributo(classe.atributoConjuracao);
   }
+
+  getBonusAtributo(atributo: string): number {
+    const attrs = this.personagemEditavel?.atributos ?? this.personagem?.atributos;
+    if (!attrs) return 0;
+
+    switch (atributo) {
+      case 'FORCA':        return attrs.bonusForca ?? Math.floor((attrs.forca - 10) / 2);
+      case 'DESTREZA':     return attrs.bonusDestreza ?? Math.floor((attrs.destreza - 10) / 2);
+      case 'CONSTITUICAO': return attrs.bonusConstituicao ?? Math.floor((attrs.constituicao - 10) / 2);
+      case 'INTELIGENCIA': return attrs.bonusInteligencia ?? Math.floor((attrs.inteligencia - 10) / 2);
+      case 'SABEDORIA':    return attrs.bonusSabedoria ?? Math.floor((attrs.sabedoria - 10) / 2);
+      case 'CARISMA':      return attrs.bonusCarisma ?? Math.floor((attrs.carisma - 10) / 2);
+      default: return 0;
+    }
+  }
+  private getBonusProficiencia(): number {
+    return this.personagemEditavel?.magia?.bonusProficiencia
+        ?? this.personagem?.magia?.bonusProficiencia
+        ?? 0;
+  }
+
+  private normalizarTipoConjuracao(tipo: any): 'COMPLETO' | 'MEIO' | 'TERCIARIO' | 'NENHUM' {
+    if (tipo === null || tipo === undefined) return 'NENHUM';
+
+    // se vier como número (ordinal do enum)
+    if (typeof tipo === 'number') {
+      return ['NENHUM', 'COMPLETO', 'MEIO', 'TERCIARIO'][tipo] as any ?? 'NENHUM';
+    }
+
+    // se vier como string
+    const s = String(tipo).toUpperCase();
+    if (s === 'COMPLETO' || s === 'MEIO' || s === 'TERCIARIO' || s === 'NENHUM') {
+      return s as any;
+    }
+
+    return 'NENHUM';
+  }
+
+podeAprenderEssaMagia(magia: Magia): boolean {
+  const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
+  if (tipo === 'NENHUM') return false;
+
+  const nivelMagia = Number(magia.level ?? 0);
+  const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
+
+  switch (tipo) {
+    case 'COMPLETO':  return nivelMagia <= Math.ceil(nivelPersonagem / 2);
+    case 'MEIO':      return nivelMagia <= Math.ceil(nivelPersonagem / 4);
+    case 'TERCIARIO': return nivelMagia <= Math.ceil(nivelPersonagem / 6);
+    default:          return false;
+  }
+}
+
+private getNivelMaximoMagia(): number {
+  const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
+  const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
+
+  switch (tipo) {
+    case 'COMPLETO':  return Math.ceil(nivelPersonagem / 2);
+    case 'MEIO':      return Math.ceil(nivelPersonagem / 4);
+    case 'TERCIARIO': return Math.ceil(nivelPersonagem / 6);
+    default:          return 0;
+  }
+}
+podeAprenderNivel(nivel: string | number): boolean {
+  console.log('🔍 [podeAprenderNivel]', {
+    nivel,
+    tipo: this.personagemEditavel?.classe?.tipo,
+    nivelPersonagem: this.personagemEditavel?.nivelPersonagem,
+    isConjurador: this.personagemEditavel?.classe?.isConjurador,
+    normalizado: this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo),
+    nivelMaximo: this.getNivelMaximoMagia(),
+  });
+  return this.podeAprenderEssaMagia({ level: String(nivel) } as Magia);
 }
 }

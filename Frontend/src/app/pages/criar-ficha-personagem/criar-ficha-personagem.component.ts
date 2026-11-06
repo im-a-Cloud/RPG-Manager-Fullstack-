@@ -41,7 +41,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
   private proficienciaService = inject(ProficienciaService);
   private magiaService = inject(MagiaService);
   private itemService = inject(ItemService);
-  private periciaService = inject(PericiaService);   // ← NOVO
+  private periciaService = inject(PericiaService);
+
+  modalAberto = false;
 
   classesDisponiveis: Classe[] = [];
 
@@ -69,10 +71,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
     defeitosPersonagem: '',
     anotacoesPersonagem: '',
     personalidadePersonagem: '',
-    alturaPersonagem: 0,         
-    generoPersonagem: '',        
+    alturaPersonagem: 0,
+    generoPersonagem: '',
     idadePersonagem: 0,
-    pesoPersonagem: 0.0,           
+    pesoPersonagem: 0.0,
     habilidades: [],
     periciasPersonagem: [],
     proficienciasPersonagem: [],
@@ -91,10 +93,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // UI
   // ============================================
   visivel: { [key: string]: boolean } = {
-    addProficiencia: false,
-    addMagia: false,
-    addItem: false,
-    addHabilidade: false
+    proficiencia: false,
+    item: false,
+    habilidade: false,
+    magia: false
   };
   mensagem = '';
   tipoMensagem: 'success' | 'error' | 'info' = 'info';
@@ -130,55 +132,15 @@ export class CriarFichaPersonagemComponent implements OnInit {
   };
 
   magiaSelecionada: any = null;
+  magiaOriginal: any = null; 
 
-  novaMagia: Partial<Magia> = {
-    name: '',
-    level: '0',
-    casting_time: '',
-    range: '',
-    components: {
-      verbal: false,
-      somatic: false,
-      material: false,
-      raw: ''
-    },
-    duration: '',
-    school: '',
-    ritual: false,
-    concentration: false,
-    description: '',
-    classes: [],
-    tags: [],
-    type: ''
-  };
+  novaMagia: Magia = this.magiaVazia();
 
   // ============================================
   // PERÍCIAS (fonte de verdade = backend)
   // ============================================
-
-  private atributoPorSlug: Record<string, string> = {
-  acrobacia: 'DESTREZA',
-  adestrarAnimais: 'SABEDORIA',
-  arcanismo: 'INTELIGENCIA',
-  atletismo: 'FORCA',
-  atuacao: 'CARISMA',
-  enganacao: 'CARISMA',
-  furtividade: 'DESTREZA',
-  historia: 'INTELIGENCIA',
-  intimidacao: 'CARISMA',
-  intuicao: 'SABEDORIA',
-  investigacao: 'INTELIGENCIA',
-  medicina: 'SABEDORIA',
-  natureza: 'INTELIGENCIA',
-  percepcao: 'SABEDORIA',
-  persuasao: 'CARISMA',
-  prestidigitacao: 'DESTREZA',
-  religiao: 'INTELIGENCIA',
-  sobrevivencia: 'SABEDORIA'
-};
-
-  pericias: Pericia[] = [];                     // ← vem do GET /pericias
-  slugsSelecionados = new Set<string>();        // ← slugs escolhidos
+  pericias: Pericia[] = [];
+  slugsSelecionados = new Set<string>();
 
   // ============================================
   // RESISTÊNCIAS
@@ -190,6 +152,18 @@ export class CriarFichaPersonagemComponent implements OnInit {
     inteligencia: false,
     sabedoria: false,
     carisma: false
+  };
+
+  // ============================================
+  // MAPA DE ABREVIAÇÃO DE ATRIBUTO
+  // ============================================
+  private readonly mapaAbreviacao: Record<string, string> = {
+    FORCA: 'FOR',
+    DESTREZA: 'DES',
+    CONSTITUICAO: 'CON',
+    INTELIGENCIA: 'INT',
+    SABEDORIA: 'SAB',
+    CARISMA: 'CAR'
   };
 
   // ============================================
@@ -259,6 +233,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
       .trim() || '';
   }
 
+  abreviarAtributo(attr: string): string {
+    return this.mapaAbreviacao[attr] ?? attr;
+  }
+
   // ============================================
   // CÁLCULOS AUTOMÁTICOS
   // ============================================
@@ -316,19 +294,25 @@ export class CriarFichaPersonagemComponent implements OnInit {
     return this.rpgService.getBonusAtributo(atributoNormalizado, atributos);
   }
 
-  /**
-   * Valor total da perícia para exibição.
-   * O backend já devolve `valorTotalPericia` no response; isso aqui é só
-   * para renderizar em tempo real conforme o usuário muda os atributos.
-   */
-    getValorPericia(slug: string): number {
-      const atributo = this.atributoPorSlug[slug];
-      if (!atributo) return 0;
-      const modificador = this.getBonusAtributo(atributo);
-      const prof = this.isSelecionada(slug) ? this.bonusProficiencia : 0;
-      return modificador + prof;
-    }
+  // ============================================
+  // PERÍCIAS — VALOR TOTAL (tempo real)
+  // ============================================
+  getValorPericia(slug: string): number {
+    const pericia = this.pericias.find(p => p.slug === slug);
+    if (!pericia) return 0;
 
+    const modificador = this.getBonusAtributo(pericia.atributoChave);
+    const prof = this.isSelecionada(slug) ? this.bonusProficiencia : 0;
+    return modificador + prof;
+  }
+
+  getPercepcaoPassiva(): number {
+    return 10 + this.getValorPericia('percepcao');
+  }
+
+  // ============================================
+  // TESTES DE RESISTÊNCIA
+  // ============================================
   getTesteResistencia(atributo: string) {
     const atributos = {
       forca: this.personagem.valorForca,
@@ -388,46 +372,45 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // IMAGEM
   // ============================================
   onSelectedFile(event: any): void {
-      const file = event.target.files[0];
-      if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-      this.nomeArquivo = file.name;
+    this.nomeArquivo = file.name;
 
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-          const img = new Image();
-          img.onload = () => {
-              // Redimensiona para no máximo 400x400
-              const MAX = 400;
-              let w = img.width;
-              let h = img.height;
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 400;
+        let w = img.width;
+        let h = img.height;
 
-              if (w > h && w > MAX) {
-                  h = Math.round(h * MAX / w);
-                  w = MAX;
-              } else if (h > MAX) {
-                  w = Math.round(w * MAX / h);
-                  h = MAX;
-              }
+        if (w > h && w > MAX) {
+          h = Math.round(h * MAX / w);
+          w = MAX;
+        } else if (h > MAX) {
+          w = Math.round(w * MAX / h);
+          h = MAX;
+        }
 
-              const canvas = document.createElement('canvas');
-              canvas.width = w;
-              canvas.height = h;
-              const ctx = canvas.getContext('2d');
-              if (!ctx) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-              ctx.drawImage(img, 0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
 
-              // JPEG qualidade 0.8 = ~50-100KB
-              const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-              this.imagemPreview = dataUrl;
-              this.imagemBase64 = dataUrl;
-          };
-          img.src = e.target.result;
+        this.imagemPreview = dataUrl;
+        this.imagemBase64 = dataUrl;
       };
-      reader.readAsDataURL(file);
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
+
   removerImagem(): void {
     this.imagemPreview = null;
     this.imagemBase64 = null;
@@ -501,7 +484,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
       usosHabilidade: 0,
       recargaHabilidade: ''
     };
-    this.visivel['addHabilidade'] = false;
+    this.visivel['habilidade'] = false;
   }
 
   removerHabilidade(index: number): void {
@@ -550,7 +533,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   adicionarProficiencia(): void {
-    if(this.novaProficiencia.listaProficiencias === null || this.novaProficiencia.listaProficiencias === undefined || this.novaProficiencia.listaProficiencias.trim() === '') {
+    if (!this.novaProficiencia.listaProficiencias?.trim()) {
       this.mostrarMensagem('⚠️ A descrição da proficiência é obrigatória!', 'error');
       return;
     }
@@ -560,7 +543,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     };
     if (!this.personagem.proficienciasPersonagem) this.personagem.proficienciasPersonagem = [];
     this.personagem.proficienciasPersonagem.push(dadosProficiencia);
-    
+
     console.log('🔍 Proficiência adicionada:', dadosProficiencia);
 
     this.mostrarMensagem(`✅ Proficiência "${dadosProficiencia.listaProficiencias}" adicionada!`, 'success');
@@ -568,7 +551,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.novaProficiencia = {
       tipoProficiencia: TipoProficiencia.OUTROS,
       listaProficiencias: ''
-    }
+    };
   }
 
   removerProficiencia(index: number): void {
@@ -636,9 +619,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
           precoItem: response.precoItem || dadosItem.precoItem,
           raridadeItem: response.raridadeItem || dadosItem.raridadeItem,
           pesoItem: response.pesoItem || dadosItem.pesoItem,
-          isMagicoItem: response.isMagicoItem || dadosItem.isMagicoItem,
+          isMagicoItem: response.isMagicoItem ?? response.isMagico ?? dadosItem.isMagicoItem,
           precisaSintonizacao: response.precisaSintonizacao || dadosItem.precisaSintonizacao,
-          quantidadeItem: response.quantidadeItem || dadosItem.quantidadeItem,
+          quantidadeItem: response.quantidadeItem ?? response.quantidade ?? dadosItem.quantidadeItem,
           tipoItem: response.tipoItem || dadosItem.tipoItem
         };
         this.personagem.inventarioPersonagem.push(novoItem);
@@ -691,7 +674,31 @@ export class CriarFichaPersonagemComponent implements OnInit {
       this.mostrarMensagem('🗑️ Magia removida.', 'info');
     }
   }
+  abrirModal(magia?: any, event?: Event): void {
+    event?.stopPropagation();
 
+    if (magia) {
+      this.novaMagia = structuredClone(magia);
+      this.magiaOriginal = magia;
+
+      // se o nível da magia atual for inválido, ajusta para o máximo permitido
+      if (!this.podeAprenderEssaMagia(this.novaMagia)) {
+        const max = this.getNivelMaximoMagia();
+        this.novaMagia.level = String(max);
+      }
+    } else {
+      this.novaMagia = {
+        name: '', level: '0', casting_time: '', range: '',
+        description: '', duration: '', school: 'EVOCACAO',
+        ritual: false, concentration: false, type: '',
+        classes: [], tags: [],
+        components: { verbal: false, somatic: false, material: false, raw: '' }
+      };
+      this.magiaOriginal = null;
+    }
+    this.modalAberto = true;
+  }
+  
   adicionarMagia(): void {
     if (!this.personagem.classePersonagem?.conjurador) {
       this.mostrarMensagem('⚠️ A classe selecionada não é conjuradora!', 'error');
@@ -701,7 +708,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
       this.mostrarMensagem('⚠️ O nome da magia é obrigatório!', 'error');
       return;
     }
-    if (!this.novaMagia.level?.trim()) {
+    if (!this.novaMagia.level?.toString().trim()) {
       this.mostrarMensagem('⚠️ O nível da magia é obrigatório!', 'error');
       return;
     }
@@ -757,7 +764,78 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.personagem.magias.push(dadosMagia);
 
     this.mostrarMensagem(`✅ Magia "${dadosMagia.name}" adicionada!`, 'success');
+
+    this.novaMagia = {
+      name: '',
+      level: '0',
+      casting_time: '',
+      range: '',
+      components: { verbal: false, somatic: false, material: false, raw: '' },
+      duration: '',
+      school: '',
+      ritual: false,
+      concentration: false,
+      description: '',
+      classes: [],
+      tags: [],
+      type: ''
+    };
+    this.visivel['magia'] = false;
   }
+
+  private magiaVazia(): Magia {
+    return {
+      name: '', level: '0', casting_time: '', range: '',
+      description: '', duration: '', school: 'EVOCACAO',
+      ritual: false, concentration: false, type: '',
+      classes: [], tags: [],
+      components: { verbal: false, somatic: false, material: false, raw: '' }
+    };
+  }
+
+  fecharModal(): void {
+    this.modalAberto = false;
+    this.novaMagia = this.magiaVazia();   // ← Magia, não null
+    this.magiaOriginal = null;
+    this.cdr.detectChanges();
+  }
+  podeAprenderEssaMagia(magia: Partial<Magia>): boolean {
+    const tipo = this.normalizarTipoConjuracao(this.personagem?.classePersonagem?.tipoConjuracao);
+    if (tipo === 'NENHUM') return false;
+
+    const nivelMagia = Number(magia.level ?? 0);
+    const nivelPersonagem = this.personagem?.nivelPersonagem ?? 1;
+
+    switch (tipo) {
+      case 'COMPLETO':  return nivelMagia <= Math.ceil(nivelPersonagem / 2);
+      case 'MEIO':      return nivelMagia <= Math.ceil(nivelPersonagem / 4);
+      case 'TERCIARIO': return nivelMagia <= Math.ceil(nivelPersonagem / 6);
+      default:          return false;
+    }
+  }
+
+private getNivelMaximoMagia(): number {
+  const tipo = this.normalizarTipoConjuracao(this.personagem?.classePersonagem?.tipoConjuracao);
+  const nivelPersonagem = this.personagem?.nivelPersonagem ?? 1;
+
+  switch (tipo) {
+    case 'COMPLETO':  return Math.ceil(nivelPersonagem / 2);
+    case 'MEIO':      return Math.ceil(nivelPersonagem / 4);
+    case 'TERCIARIO': return Math.ceil(nivelPersonagem / 6);
+    default:          return 0;
+  }
+}
+podeAprenderNivel(nivel: string | number): boolean {
+  console.log('🔍 [podeAprenderNivel]', {
+    nivel,
+    tipo: this.personagem?.classePersonagem?.tipoConjuracao,
+    nivelPersonagem: this.personagem?.nivelPersonagem,
+    isConjurador: this.personagem?.classePersonagem?.conjurador,
+    normalizado: this.normalizarTipoConjuracao(this.personagem?.classePersonagem?.tipoConjuracao),
+    nivelMaximo: this.getNivelMaximoMagia(),
+  });
+  return this.podeAprenderEssaMagia({ level: String(nivel) } as Magia);
+}
 
   // ============================================
   // SALVAR PERSONAGEM
@@ -788,7 +866,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
     this.calcularValoresAutomaticos();
 
-    // 🔥 MONTA AS PERÍCIAS COM SLUG (o backend busca por slug)
     const pericias = Array.from(this.slugsSelecionados).map(slug => ({
       slug,
       isProficiente: true
@@ -816,11 +893,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
       iniciativa: this.personagem.iniciativaPersonagem || 0,
       movimento: this.personagem.movimentoPersonagem || 9,
       pontosVida: this.personagem.pontosVidaPersonagem || 10,
-      
+
       historiaPersonagem: this.personagem.historiaPersonagem || '',
       aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
       escalaPersonagem: this.personagem.escalaPersonagem || '',
-      idadePersonagem: this.personagem.idadePersonagem || '',
+      idadePersonagem: this.personagem.idadePersonagem || 0,
       antecedentePersonagem: this.personagem.antecedentePersonagem || '',
       alinhamentoPersonagem: this.personagem.alinhamentoPersonagem || '',
       ideaisPersonagem: this.personagem.ideaisPersonagem || '',
@@ -835,7 +912,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
       proficiencias: this.personagem.proficienciasPersonagem || [],
       inventario: this.personagem.inventarioPersonagem || [],
       magias: this.personagem.magias || [],
-      pericias: pericias                     // ← AGORA COM SLUG
+      pericias: pericias
     };
 
     console.log('📤 DTO COMPLETO:');
@@ -880,5 +957,21 @@ export class CriarFichaPersonagemComponent implements OnInit {
 
   getCaPersonagem(): number {
     return this.bonusDestreza + 10;
+  }
+    private normalizarTipoConjuracao(tipo: any): 'COMPLETO' | 'MEIO' | 'TERCIARIO' | 'NENHUM' {
+    if (tipo === null || tipo === undefined) return 'NENHUM';
+
+    // se vier como número (ordinal do enum)
+    if (typeof tipo === 'number') {
+      return ['NENHUM', 'COMPLETO', 'MEIO', 'TERCIARIO'][tipo] as any ?? 'NENHUM';
+    }
+
+    // se vier como string
+    const s = String(tipo).toUpperCase();
+    if (s === 'COMPLETO' || s === 'MEIO' || s === 'TERCIARIO' || s === 'NENHUM') {
+      return s as any;
+    }
+
+    return 'NENHUM';
   }
 }

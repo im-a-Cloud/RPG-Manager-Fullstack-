@@ -151,8 +151,9 @@ public class PersonagemMagiaService {
             case GUERREIRO -> "fighter";
             case LADINO -> "rogue";
             case MAGO -> "wizard";
+            case MONGE ->  "monk";
             case PALADINO -> "paladin";
-            case RANGER -> "ranger";
+            case PATRULHEIRO -> "ranger";
             case ARTIFICIE -> "artificer";
         };
 
