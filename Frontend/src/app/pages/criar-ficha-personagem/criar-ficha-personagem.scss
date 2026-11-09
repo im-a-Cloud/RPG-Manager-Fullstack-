@@ -151,7 +151,7 @@ textarea {
   grid-template-columns: 12% 10% auto;
   grid-template-areas:
     "atributos bonusProf CaIniMov"
-    "atributos testesResistencia CaIniMov"
+    "atributos testesResistencia testesResistencia"
     "atributos pericias pericias";
   gap: 15px;
   border-radius: 15px;
@@ -247,6 +247,14 @@ textarea {
   padding: 15px;
   border: 1px solid $borda;
 
+    h2 {
+    font-size: 1.1rem;
+    color: $destaque;
+    margin: 0 0 10px;
+    border-bottom: 2px solid $destaque-forte;
+    padding-bottom: 5px;
+  }
+  
   .teste-item {
     display: flex;
     align-items: center;

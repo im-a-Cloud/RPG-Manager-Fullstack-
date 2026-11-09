@@ -864,6 +864,22 @@ podeAprenderNivel(nivel: string | number): boolean {
       return;
     }
 
+    //checa se o usuário está tentando criar um personagem não conjurador com magias, e se sim, remove as magias
+    if(!this.personagem.classePersonagem?.conjurador && (this.personagem.magias || []).length > 0) {
+      this.mostrarMensagem('⚠️ Tentando criar um personagem não conjurador com magias, deletando magias...', 'error');
+      this.personagem.magias = [];
+    }
+
+    for (const magia of this.personagem.magias || []) {
+      const magiasValidas = (this.personagem.magias ?? []).filter(m => this.podeAprenderEssaMagia(m));
+      this.personagem.magias = magiasValidas;
+
+      const removidas = (this.personagem.magias ?? []).length - magiasValidas.length;
+      if (removidas > 0) {
+        console.warn(`⚠️ ${removidas} magia(s) inválida(s) removida(s) (nível acima do permitido).`);
+      }
+    }
+
     this.calcularValoresAutomaticos();
 
     const pericias = Array.from(this.slugsSelecionados).map(slug => ({

@@ -120,6 +120,7 @@
 
     <!-- TESTES DE RESISTÊNCIA -->
     <div class="testesResistencia">
+      <h2>Testes de resistência</h2>
       <div class="teste-item" *ngFor="let attr of ['forca','destreza','constituicao','inteligencia','sabedoria','carisma']">
         <input type="checkbox" [id]="'resistencia_' + attr" [name]="'resistencia_' + attr"
                [(ngModel)]="resistencias[attr]">
@@ -502,7 +503,7 @@
     <div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModal()">
   <div class="modal-magia" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>{{ novaMagia?.name || 'Nova magia' }}</h3>
+      <h3>{{ novaMagia.name || 'Nova magia' }}</h3>
       <button type="button" class="btn-fechar" (click)="fecharModal()">✖️</button>
     </div>
 
