@@ -35,7 +35,8 @@
       <select name="classePersonagem"
               [(ngModel)]="personagem.classePersonagem"
               [compareWith]="compararClasses"
-              (ngModelChange)="onClasseSelecionada($event)">
+              (ngModelChange)="onClasseSelecionada($event)"
+              required>
         <option [ngValue]="null" disabled selected>Selecione uma classe...</option>
         <option *ngFor="let classe of classesDisponiveis" [ngValue]="classe">
           {{ classe.nomeClasse }}
@@ -60,7 +61,7 @@
 
       <label for="nivelPersonagem">Nível</label>
       <input type="number" id="nivelPersonagem" name="nivelPersonagem" required
-             min="1" max="30" [(ngModel)]="personagem.nivelPersonagem">
+             min="1" max="20" [(ngModel)]="personagem.nivelPersonagem">
     </div>
   </div>
 
@@ -70,8 +71,28 @@
   <div class="acoes-form">
     <button type="button" class="btn-voltar" (click)="voltar()">⬅ Voltar</button>
     <button type="button" class="btn-salvar" (click)="salvarPersonagem()">💾 Salvar Personagem</button>
+    
   </div>
+<!-- MODAL DE ALERTA -->
+<div class="modal-overlay alerta-overlay" *ngIf="alertaAberto" (click)="fecharAlerta()">
+  <div class="modal-alerta" (click)="$event.stopPropagation()">
 
+    <div class="modal-alerta-icone" [class.sucesso]="alertaTipo === 'success'"
+                                    [class.erro]="alertaTipo === 'error'"
+                                    [class.info]="alertaTipo === 'info'">
+      {{ alertaTipo === 'success' ? '✅' : alertaTipo === 'error' ? '❌' : 'ℹ️' }}
+    </div>
+
+    <p class="modal-alerta-texto">{{ alertaTexto }}</p>
+
+    <div class="modal-alerta-acoes">
+      <button type="button" class="btn-confirmar-alerta" (click)="fecharAlerta()">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>
   <!-- ============================================ -->
   <!-- CABEÇALHO SUPERIOR                            -->
   <!-- ============================================ -->
@@ -414,25 +435,50 @@
   <!-- GRIMÓRIO                                      -->
   <!-- ============================================ -->
   <div class="blocoGrimorio">
-    <h2>Grimório</h2>
+      <h2>Grimório</h2>
 
-    <div class="detalhesConjuracao">
-      <h3>CD Magia: {{ getCdMagia() }}</h3>
-      <h3>Bônus ataque mágico: {{ getAtaqueMagico() }}</h3>
-      <h3>Atributo-chave: {{ personagem.classePersonagem?.atributoConjuracao || '—' }}</h3>
-    </div>
+      <div class="detalhesConjuracao">
+        <h3>CD Magia: {{ getCdMagia() }}</h3>
+        <h3>Bônus ataque mágico: {{ getAtaqueMagico() }}</h3>
+        <h3>Atributo-chave: {{ personagem.classePersonagem?.atributoConjuracao || '—' }}</h3>
+      </div>
 
-    <div class="grimorioPersonagem">
-      <ng-container *ngFor="let faixa of [
-          { titulo: 'Truques',   niveis: ['0'] },
-          { titulo: 'Nível 1',   niveis: ['1'] },
-          { titulo: 'Nível 2',   niveis: ['2'] },
-          { titulo: 'Nível 3',   niveis: ['3'] }
-        ]">
-        <div class="listaMagiasSeção1" *ngIf="faixa.niveis.length">
-          <ng-container *ngFor="let nivel of faixa.niveis">
-            <h3>{{ faixa.titulo }}</h3>
-            <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio">
+      <div class="grimorioPersonagem">
+        <ng-container *ngFor="let faixa of [
+            { titulo: 'Truques',   niveis: ['0'] },
+            { titulo: 'Nível 1',   niveis: ['1'] },
+            { titulo: 'Nível 2',   niveis: ['2'] },
+            { titulo: 'Nível 3',   niveis: ['3'] }
+          ]">
+          <div class="listaMagiasSeção1" *ngIf="faixa.niveis.length">
+            <ng-container *ngFor="let nivel of faixa.niveis">
+              <h3>{{ faixa.titulo }}</h3>
+              <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio">
+                <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+                  <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                    <h4>{{ magia.name }}</h4>
+                  </div>
+                  <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+                    <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+                    <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
+                    <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
+                    <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+                    <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+                    <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
+                    <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+                    <p><strong>Descrição:</strong> {{ magia.description }}</p>
+                  </div>
+                </div>
+              </div>
+              <ng-template #vazio><p class="vazio-nivel">Nenhuma magia</p></ng-template>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *ngFor="let nivel of ['4','5','6']">
+          <div class="listaMagiasSeção2">
+            <h3>Nível {{ nivel }}</h3>
+            <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio2">
               <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
                 <div class="nomeMagia" (click)="selecionarMagia(magia)">
                   <h4>{{ magia.name }}</h4>
@@ -442,151 +488,126 @@
                   <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
                   <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
                   <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-                  <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
-                  <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
                   <h4><strong>Escola:</strong> {{ magia.school }}</h4>
                   <p><strong>Descrição:</strong> {{ magia.description }}</p>
                 </div>
               </div>
             </div>
-            <ng-template #vazio><p class="vazio-nivel">Nenhuma magia</p></ng-template>
-          </ng-container>
-        </div>
-      </ng-container>
+            <ng-template #vazio2><p class="vazio-nivel">Nenhuma magia</p></ng-template>
+          </div>
+        </ng-container>
 
-      <ng-container *ngFor="let nivel of ['4','5','6']">
-        <div class="listaMagiasSeção2">
-          <h3>Nível {{ nivel }}</h3>
-          <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio2">
-            <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
-              <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                <h4>{{ magia.name }}</h4>
-              </div>
-              <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-                <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-                <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
-                <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
-                <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-                <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-                <p><strong>Descrição:</strong> {{ magia.description }}</p>
+        <ng-container *ngFor="let nivel of ['7','8','9']">
+          <div class="listaMagiasSeção3">
+            <h3>Nível {{ nivel }}</h3>
+            <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio3">
+              <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+                <div class="nomeMagia" (click)="selecionarMagia(magia)">
+                  <h4>{{ magia.name }}</h4>
+                </div>
+                <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
+                  <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+                  <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
+                  <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
+                  <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+                  <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+                  <p><strong>Descrição:</strong> {{ magia.description }}</p>
+                </div>
               </div>
             </div>
+            <ng-template #vazio3><p class="vazio-nivel">Nenhuma magia</p></ng-template>
           </div>
-          <ng-template #vazio2><p class="vazio-nivel">Nenhuma magia</p></ng-template>
-        </div>
-      </ng-container>
-
-      <ng-container *ngFor="let nivel of ['7','8','9']">
-        <div class="listaMagiasSeção3">
-          <h3>Nível {{ nivel }}</h3>
-          <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazio3">
-            <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
-              <div class="nomeMagia" (click)="selecionarMagia(magia)">
-                <h4>{{ magia.name }}</h4>
-              </div>
-              <div class="quadrinhoMagiaExpandido" *ngIf="isMagiaSelecionada(magia)">
-                <h4><strong>Nível:</strong> {{ magia.level }}</h4>
-                <h4><strong>Tempo:</strong> {{ magia.casting_time }}</h4>
-                <h4><strong>Alcance:</strong> {{ magia.range }}</h4>
-                <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
-                <h4><strong>Escola:</strong> {{ magia.school }}</h4>
-                <p><strong>Descrição:</strong> {{ magia.description }}</p>
-              </div>
-            </div>
-          </div>
-          <ng-template #vazio3><p class="vazio-nivel">Nenhuma magia</p></ng-template>
-        </div>
-      </ng-container>
-    </div>
+        </ng-container>
+      </div>
 
     <button type="button" class="btn-add" (click)="abrirModal()">+ Adicionar Magia</button>
-    <div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModal()">
-  <div class="modal-magia" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>{{ novaMagia.name || 'Nova magia' }}</h3>
-      <button type="button" class="btn-fechar" (click)="fecharModal()">✖️</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="edit-card-grid">
-        <div class="campo-editavel">
-          <label>Nome</label>
-          <input type="text" [(ngModel)]="novaMagia.name" name="mag_name" placeholder="Nome da magia">
-        </div>
-
-        <div class="campo-editavel">
-          <label>Nível</label>
-            <select [(ngModel)]="novaMagia.level" name="mag_level">
-              <option *ngFor="let n of ['0','1','2','3','4','5','6','7','8','9']"
-                      [value]="n"
-                      [disabled]="!podeAprenderNivel(n)">
-                {{ n === '0' ? 'Truque' : 'Nível ' + n }}
-              </option>
-            </select>
-        </div>
-
-        <div class="campo-editavel">
-          <label>Escola</label>
-          <select [(ngModel)]="novaMagia.school" name="mag_school">
-            <option value="ABJURACAO">Abjuração</option>
-            <option value="ADIVINHACAO">Adivinhação</option>
-            <option value="CONJURACAO">Conjuração</option>
-            <option value="ENCANTACAO">Encantação</option>
-            <option value="EVOCACAO">Evocação</option>
-            <option value="ILUSAO">Ilusão</option>
-            <option value="NECROMANCIA">Necromancia</option>
-            <option value="TRANSMUTACAO">Transmutação</option>
-          </select>
-        </div>
-
-        <div class="campo-editavel">
-          <label>Tempo de conjuração</label>
-          <input type="text" [(ngModel)]="novaMagia.casting_time" name="mag_cast" placeholder="Ex: 1 ação">
-        </div>
-
-        <div class="campo-editavel">
-          <label>Alcance</label>
-          <input type="text" [(ngModel)]="novaMagia.range" name="mag_range" placeholder="Ex: 30 pés">
-        </div>
-
-        <div class="campo-editavel">
-          <label>Duração</label>
-          <input type="text" [(ngModel)]="novaMagia.duration" name="mag_dur" placeholder="Ex: Instantânea">
-        </div>
+      <div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModal()">
+    <div class="modal-magia" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ novaMagia.name || 'Nova magia' }}</h3>
+        <button type="button" class="btn-fechar" (click)="fecharModal()">✖️</button>
       </div>
 
-      <div class="componentes-edit">
-        <label class="checkbox-inline">
-          <input type="checkbox" [(ngModel)]="novaMagia.components.verbal" name="mag_v"> V
-        </label>
-        <label class="checkbox-inline">
-          <input type="checkbox" [(ngModel)]="novaMagia.components.somatic" name="mag_s"> S
-        </label>
-        <label class="checkbox-inline">
-          <input type="checkbox" [(ngModel)]="novaMagia.components.material" name="mag_m"> M
-        </label>
-        <input type="text" class="material" [(ngModel)]="novaMagia.components.raw" name="mag_raw" placeholder="Material (se houver)">
+        <div class="modal-body">
+          <div class="edit-card-grid">
+            <div class="campo-editavel">
+              <label>Nome</label>
+              <input type="text" [(ngModel)]="novaMagia.name" name="mag_name" placeholder="Nome da magia">
+            </div>
 
-        <label class="checkbox-inline">
-          <input type="checkbox" [(ngModel)]="novaMagia.ritual" name="mag_ritual"> Ritual
-        </label>
-        <label class="checkbox-inline">
-          <input type="checkbox" [(ngModel)]="novaMagia.concentration" name="mag_conc"> Concentração
-        </label>
-      </div>
+            <div class="campo-editavel">
+              <label>Nível</label>
+                <select [(ngModel)]="novaMagia.level" name="mag_level">
+                  <option *ngFor="let n of ['0','1','2','3','4','5','6','7','8','9']"
+                          [value]="n"
+                          [disabled]="!podeAprenderNivel(n)">
+                    {{ n === '0' ? 'Truque' : 'Nível ' + n }}
+                  </option>
+                </select>
+            </div>
 
-      <div class="campo-editavel">
-        <label>Descrição</label>
-        <textarea [(ngModel)]="novaMagia.description" name="mag_desc" rows="4" placeholder="Descrição da magia..."></textarea>
+            <div class="campo-editavel">
+              <label>Escola</label>
+              <select [(ngModel)]="novaMagia.school" name="mag_school">
+                <option value="ABJURACAO">Abjuração</option>
+                <option value="ADIVINHACAO">Adivinhação</option>
+                <option value="CONJURACAO">Conjuração</option>
+                <option value="ENCANTACAO">Encantação</option>
+                <option value="EVOCACAO">Evocação</option>
+                <option value="ILUSAO">Ilusão</option>
+                <option value="NECROMANCIA">Necromancia</option>
+                <option value="TRANSMUTACAO">Transmutação</option>
+              </select>
+            </div>
+
+            <div class="campo-editavel">
+              <label>Tempo de conjuração</label>
+              <input type="text" [(ngModel)]="novaMagia.casting_time" name="mag_cast" placeholder="Ex: 1 ação">
+            </div>
+
+            <div class="campo-editavel">
+              <label>Alcance</label>
+              <input type="text" [(ngModel)]="novaMagia.range" name="mag_range" placeholder="Ex: 30 pés">
+            </div>
+
+            <div class="campo-editavel">
+              <label>Duração</label>
+              <input type="text" [(ngModel)]="novaMagia.duration" name="mag_dur" placeholder="Ex: Instantânea">
+            </div>
+          </div>
+
+          <div class="componentes-edit">
+            <label class="checkbox-inline">
+              <input type="checkbox" [(ngModel)]="novaMagia.components.verbal" name="mag_v"> V
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" [(ngModel)]="novaMagia.components.somatic" name="mag_s"> S
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" [(ngModel)]="novaMagia.components.material" name="mag_m"> M
+            </label>
+            <input type="text" class="material" [(ngModel)]="novaMagia.components.raw" name="mag_raw" placeholder="Material (se houver)">
+
+            <label class="checkbox-inline">
+              <input type="checkbox" [(ngModel)]="novaMagia.ritual" name="mag_ritual"> Ritual
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" [(ngModel)]="novaMagia.concentration" name="mag_conc"> Concentração
+            </label>
+          </div>
+
+          <div class="campo-editavel">
+            <label>Descrição</label>
+            <textarea [(ngModel)]="novaMagia.description" name="mag_desc" rows="4" placeholder="Descrição da magia..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancelar-magia" (click)="fecharModal()">Cancelar</button>
+          <button type="button" class="btn-salvar-magia" (click)="adicionarMagia()">Salvar</button>
+        </div>
       </div>
     </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn-cancelar-magia" (click)="fecharModal()">Cancelar</button>
-      <button type="button" class="btn-salvar-magia" (click)="adicionarMagia()">Salvar</button>
-    </div>
-  </div>
-</div>
   </div>
 
   <!-- ============================================ -->

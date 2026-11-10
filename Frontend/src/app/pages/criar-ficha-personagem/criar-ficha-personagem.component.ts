@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import {ChangeDetectionStrategy, } from '@angular/core';
 
 import { PersonagemService } from '../../core/services/personagem.service';
 import { RpgService } from '../../core/services/rpg.service';
@@ -19,6 +20,7 @@ import { Magia } from '../../models/magia';
 import { Item } from '../../models/item';
 import { Classe } from '../../models/classe';
 import { Pericia } from '../../models/pericia';
+import { finalize } from 'rxjs/operators';
 
 import { TipoItem } from '../../models/enums/tipoItem.enum';
 import { RaridadeItem } from '../../models/enums/raridadeItem.enum';
@@ -31,6 +33,7 @@ import { OrigemHabilidade } from '../../models/enums/origemHabilidade.enum';
   imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './criar-ficha-personagem.html',
   styleUrl: './criar-ficha-personagem.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CriarFichaPersonagemComponent implements OnInit {
 
@@ -44,7 +47,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   private periciaService = inject(PericiaService);
 
   modalAberto = false;
-
+  salvando = false;
   classesDisponiveis: Classe[] = [];
 
   personagem: Personagem = {
@@ -88,6 +91,10 @@ export class CriarFichaPersonagemComponent implements OnInit {
   imagemPreview: string | null = null;
   nomeArquivo = '';
   imagemBase64: string | null = null;
+
+  alertaAberto = false;
+  alertaTexto = '';
+  alertaTipo: 'success' | 'error' | 'info' = 'info';
 
   // ============================================
   // UI
@@ -187,9 +194,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   carregarClasses(): void {
     this.classeService.listarClasses().subscribe({
       next: (classes: any[]) => {
-        console.log('🔍 CLASSES RECEBIDAS:', classes);
         classes.forEach(classe => {
-          console.log(`   Classe: ${classe.nomeClasse}, ID: ${classe.id}`);
         });
         this.classesDisponiveis = classes;
       },
@@ -201,7 +206,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     this.periciaService.listar().subscribe({
       next: (pericias) => {
         this.pericias = pericias;
-        console.log('🔍 PERÍCIAS RECEBIDAS DO BACKEND:', pericias);
       },
       error: (err) => console.error('❌ Erro ao carregar perícias', err)
     });
@@ -259,13 +263,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   onClasseSelecionada(classe: Classe | null): void {
-    console.log('📌 Classe selecionada:', classe);
     if (classe) {
       this.personagem.classePersonagem = {
         ...classe,
         id: classe.id || 0
       };
-      console.log('✅ Classe atribuída com ID:', this.personagem.classePersonagem.id);
       this.calcularValoresAutomaticos();
     }
   }
@@ -434,11 +436,19 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // MENSAGENS
   // ============================================
   mostrarMensagem(texto: string, tipo: 'success' | 'error' | 'info' = 'info'): void {
-    this.mensagem = texto;
-    this.tipoMensagem = tipo;
-    setTimeout(() => { this.mensagem = ''; }, 5000);
+    console.log('🔍 [mostrarMensagem] CHAMADO', { texto, tipo });
+    this.alertaTexto = texto;
+    this.alertaTipo = tipo;
+    this.alertaAberto = true;
+    console.log('🔍 [mostrarMensagem] alertaAberto =', this.alertaAberto);
+    this.cdr.detectChanges();
   }
 
+  fecharAlerta(): void {
+  this.alertaAberto = false;
+  this.alertaTexto = '';
+  this.cdr.detectChanges();
+  }
   // ============================================
   // HABILIDADES
   // ============================================
@@ -544,8 +554,6 @@ export class CriarFichaPersonagemComponent implements OnInit {
     if (!this.personagem.proficienciasPersonagem) this.personagem.proficienciasPersonagem = [];
     this.personagem.proficienciasPersonagem.push(dadosProficiencia);
 
-    console.log('🔍 Proficiência adicionada:', dadosProficiencia);
-
     this.mostrarMensagem(`✅ Proficiência "${dadosProficiencia.listaProficiencias}" adicionada!`, 'success');
 
     this.novaProficiencia = {
@@ -626,7 +634,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
         };
         this.personagem.inventarioPersonagem.push(novoItem);
         this.cdr.detectChanges();
-        this.mostrarMensagem(`✅ Item "${novoItem.nomeItem}" adicionado!`, 'success');
+        this.mostrarMensagem(`Item "${novoItem.nomeItem}" adicionado!`, 'success');
 
         setTimeout(() => {
           this.novoItem = {
@@ -675,6 +683,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
     }
   }
   abrirModal(magia?: any, event?: Event): void {
+    console.log('🔍 [abrirModal] CHAMADO');
     event?.stopPropagation();
 
     if (magia) {
@@ -697,6 +706,11 @@ export class CriarFichaPersonagemComponent implements OnInit {
       this.magiaOriginal = null;
     }
     this.modalAberto = true;
+    console.log('🔍 [abrirModal] modalAberto =', this.modalAberto);
+    this.cdr.detectChanges();
+    console.log('🔍 [abrirModal] detectChanges chamado');
+    this.cdr.detectChanges();   // ← obrigatório no OnPush
+
   }
   
   adicionarMagia(): void {
@@ -826,28 +840,21 @@ private getNivelMaximoMagia(): number {
   }
 }
 podeAprenderNivel(nivel: string | number): boolean {
-  console.log('🔍 [podeAprenderNivel]', {
-    nivel,
-    tipo: this.personagem?.classePersonagem?.tipoConjuracao,
-    nivelPersonagem: this.personagem?.nivelPersonagem,
-    isConjurador: this.personagem?.classePersonagem?.conjurador,
-    normalizado: this.normalizarTipoConjuracao(this.personagem?.classePersonagem?.tipoConjuracao),
-    nivelMaximo: this.getNivelMaximoMagia(),
-  });
-  return this.podeAprenderEssaMagia({ level: String(nivel) } as Magia);
+  return this.podeAprenderEssaMagia({ level: String(nivel) } as Partial<Magia>);
 }
 
   // ============================================
   // SALVAR PERSONAGEM
   // ============================================
   salvarPersonagem(): void {
-    console.log('========================================');
-    console.log('📤 DADOS DO PERSONAGEM ANTES DE SALVAR:');
-    console.log('   Nome:', this.personagem.nomePersonagem);
-    console.log('   Classe ID:', this.personagem.classePersonagem?.id);
-    console.log('   Perícias selecionadas:', this.slugsSelecionados.size);
-    console.log('========================================');
+    // 0) guarda de reentrada — evita clique duplo criar 2 personagens
+    if (this.salvando) return;
 
+    // 1) limpa erros anteriores
+    this.alertaAberto = false;
+    this.alertaTexto = '';
+
+    // 2) validações (cada uma abre o modal com a mensagem)
     if (!this.personagem.nomePersonagem?.trim()) {
       this.mostrarMensagem('⚠️ O nome do personagem é obrigatório!', 'error');
       return;
@@ -864,22 +871,40 @@ podeAprenderNivel(nivel: string | number): boolean {
       return;
     }
 
-    //checa se o usuário está tentando criar um personagem não conjurador com magias, e se sim, remove as magias
-    if(!this.personagem.classePersonagem?.conjurador && (this.personagem.magias || []).length > 0) {
-      this.mostrarMensagem('⚠️ Tentando criar um personagem não conjurador com magias, deletando magias...', 'error');
-      this.personagem.magias = [];
-    }
+    // validação dos atributos (1..30)
+    const atributos = [
+      { nome: 'Força', valor: this.personagem.valorForca },
+      { nome: 'Destreza', valor: this.personagem.valorDestreza },
+      { nome: 'Constituição', valor: this.personagem.valorConstituicao },
+      { nome: 'Inteligência', valor: this.personagem.valorInteligencia },
+      { nome: 'Sabedoria', valor: this.personagem.valorSabedoria },
+      { nome: 'Carisma', valor: this.personagem.valorCarisma }
+    ];
 
-    for (const magia of this.personagem.magias || []) {
-      const magiasValidas = (this.personagem.magias ?? []).filter(m => this.podeAprenderEssaMagia(m));
-      this.personagem.magias = magiasValidas;
-
-      const removidas = (this.personagem.magias ?? []).length - magiasValidas.length;
-      if (removidas > 0) {
-        console.warn(`⚠️ ${removidas} magia(s) inválida(s) removida(s) (nível acima do permitido).`);
+    for (const attr of atributos) {
+      if (attr.valor === undefined || attr.valor === null || attr.valor < 1 || attr.valor > 30) {
+        this.mostrarMensagem(`⚠️ ${attr.nome} deve ser entre 1 e 30!`, 'error');
+        return;
       }
     }
 
+    // 3) remove magias inválidas (sem abrir modal, só corrige)
+    const magiasValidas = (this.personagem.magias ?? [])
+      .filter((m: Partial<Magia>) => this.podeAprenderEssaMagia(m));
+
+    const removidas = (this.personagem.magias ?? []).length - magiasValidas.length;
+    if (removidas > 0) {
+      this.personagem.magias = magiasValidas;
+      console.warn(`⚠️ ${removidas} magia(s) inválida(s) removida(s).`);
+    }
+
+    // 4) se o personagem não é conjurador, remove as magias
+    if (!this.personagem.classePersonagem?.conjurador && (this.personagem.magias || []).length > 0) {
+      this.personagem.magias = [];
+      console.warn('⚠️ Personagem não conjurador — magias removidas.');
+    }
+
+    // 5) monta o DTO
     this.calcularValoresAutomaticos();
 
     const pericias = Array.from(this.slugsSelecionados).map(slug => ({
@@ -887,29 +912,22 @@ podeAprenderNivel(nivel: string | number): boolean {
       isProficiente: true
     }));
 
-    console.log('📤 PERÍCIAS PARA ENVIAR:', pericias);
-
     const dadosParaEnviar = {
       fotoBase64: this.imagemBase64 || null,
-
       nomePersonagem: this.personagem.nomePersonagem,
       nivelPersonagem: this.personagem.nivelPersonagem || 1,
       classeId: classeId,
-
       valorForca: this.personagem.valorForca || 10,
       valorDestreza: this.personagem.valorDestreza || 10,
       valorConstituicao: this.personagem.valorConstituicao || 10,
       valorInteligencia: this.personagem.valorInteligencia || 10,
       valorSabedoria: this.personagem.valorSabedoria || 10,
       valorCarisma: this.personagem.valorCarisma || 10,
-
       racaPersonagem: this.personagem.racaPersonagem || '',
-
       ca: this.personagem.caPersonagem || 10,
       iniciativa: this.personagem.iniciativaPersonagem || 0,
       movimento: this.personagem.movimentoPersonagem || 9,
       pontosVida: this.personagem.pontosVidaPersonagem || 10,
-
       historiaPersonagem: this.personagem.historiaPersonagem || '',
       aparenciaPersonagem: this.personagem.aparenciaPersonagem || '',
       escalaPersonagem: this.personagem.escalaPersonagem || '',
@@ -923,7 +941,6 @@ podeAprenderNivel(nivel: string | number): boolean {
       alturaPersonagem: this.personagem.alturaPersonagem || 0,
       generoPersonagem: this.personagem.generoPersonagem || '',
       pesoPersonagem: this.personagem.pesoPersonagem || 0.0,
-
       habilidades: this.personagem.habilidades || [],
       proficiencias: this.personagem.proficienciasPersonagem || [],
       inventario: this.personagem.inventarioPersonagem || [],
@@ -931,23 +948,52 @@ podeAprenderNivel(nivel: string | number): boolean {
       pericias: pericias
     };
 
-    console.log('📤 DTO COMPLETO:');
-    console.log(JSON.stringify(dadosParaEnviar, null, 2));
+    // 6) decide criar vs atualizar com base no id já existente
+    const id = this.personagem.idPersonagem;
+    const editando = id !== undefined && id !== null;
 
-    this.personagemService.criarPersonagem(dadosParaEnviar).subscribe({
-      next: (response) => {
-        this.mostrarMensagem(
-          `✅ Personagem "${response.nomePersonagem}" salvo com sucesso! ID: ${response.id}`,
-          'success'
-        );
-      },
-      error: (error) => {
-        console.error('❌ Erro ao salvar:', error);
-        this.mostrarMensagem('❌ Erro ao salvar personagem.', 'error');
-      }
-    });
+    console.log(`🔍 [salvarPersonagem] modo=${editando ? 'ATUALIZAR' : 'CRIAR'} id=${id}`);
+
+    this.salvando = true;
+    this.cdr.markForCheck();
+
+    const operacao$ = editando
+      ? this.personagemService.atualizarPersonagem(id!, dadosParaEnviar)
+      : this.personagemService.criarPersonagem(dadosParaEnviar);
+
+    operacao$
+      .pipe(
+        finalize(() => {
+          this.salvando = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          // ✅ ESSENCIAL: grava o id retornado para que próximos saves atualizem
+          if (!editando) {
+            const novoId = response?.idPersonagem ?? response?.id;
+            if (novoId !== undefined && novoId !== null) {
+              this.personagem.idPersonagem = novoId;
+            } else {
+              console.warn('⚠️ Backend não retornou id — próximos saves vão criar de novo!', response);
+            }
+          }
+
+          this.mostrarMensagem(
+            editando
+              ? `✅ Personagem atualizado com sucesso!`
+              : `✅ Personagem "${response.nomePersonagem}" salvo com sucesso! ID: ${this.personagem.idPersonagem}`,
+            'success'
+          );
+        },
+        error: (error) => {
+          console.error(`❌ Erro ao ${editando ? 'atualizar' : 'salvar'}:`, error);
+          const msgBackend = error?.error?.message || `Erro ao ${editando ? 'atualizar' : 'salvar'} personagem.`;
+          this.mostrarMensagem(`❌ ${msgBackend}`, 'error');
+        }
+      });
   }
-
   // ============================================
   // CÁLCULOS DE CONJURAÇÃO
   // ============================================

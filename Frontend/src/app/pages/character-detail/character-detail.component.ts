@@ -165,6 +165,17 @@ ativarEdicao(): void {
 
     this.salvando = true;
 
+    for (const magia of this.personagemEditavel.magias || []) {
+      const magiasValidas = (this.personagemEditavel.magias ?? [])
+        .filter((m: Magia) => this.podeAprenderEssaMagia(m));
+
+      const removidas = (this.personagemEditavel.magias ?? []).length - magiasValidas.length;
+      if (removidas > 0) {
+        console.warn(`⚠️ ${removidas} magia(s) inválida(s) removida(s).`);
+        this.personagemEditavel.magias = magiasValidas;
+      }
+    }
+
     const dto = {
       nomePersonagem: this.personagemEditavel.nomePersonagem,
       nivelPersonagem: this.personagemEditavel.nivelPersonagem,
