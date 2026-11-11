@@ -41,9 +41,10 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Map<String, String>> handleBusinessException(BusinessException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.status(ex.getStatus())
                 .body(Map.of("message", ex.getMessage()));
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         log.error("Erro interno não tratado", ex);   // ← loga o stack trace completo
