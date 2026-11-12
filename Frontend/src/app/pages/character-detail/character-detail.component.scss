@@ -1,0 +1,1399 @@
+// ============================================
+// TEMA (mesmo do criar-ficha-personagem.scss)
+// ============================================
+$bg-principal: #16213e;
+$bg-secundario: #0f3460;
+$bg-card: #1a1a2e;          // fundo de input (mais escuro)
+$bg-card-hover: #2a2a4e;    // fundo de card/painel
+$destaque: #8ab4f8;
+$destaque-forte: #4a6fa5;
+$texto: #e0e0e0;
+$texto-suave: #999;
+$borda: rgba(255, 255, 255, 0.05);
+$borda-forte: rgba(255, 255, 255, 0.1);
+
+$sucesso: #28a745;
+$sucesso-hover: #218838;
+$perigo: #c0392b;
+$perigo-hover: #a93226;
+$neutro: #6c757d;
+$neutro-hover: #5a6268;
+
+// ============================================
+// CONTAINER PRINCIPAL
+// ============================================
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 25px;
+  background: $bg-principal;
+  min-height: 100vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid $borda;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.6s ease-out;
+}
+
+// ============================================
+// TIPOGRAFIA GERAL (igual ao criar-ficha)
+// ============================================
+h1 {
+  font-size: clamp(20px, 4vw, 32px);
+  color: $texto;
+  font-weight: 300;
+  letter-spacing: 2px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  color: $destaque;
+  margin: 0 0 15px;
+  border-bottom: 2px solid $destaque-forte;
+  padding-bottom: 5px;
+}
+
+h3 {
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 400;
+  color: $texto;
+}
+
+h4 {
+  color: $texto;
+}
+
+// ============================================
+// CABEÇALHO (criar-ficha usa #cabecalho; aqui mantém #gridCabecalho
+// mas com o mesmo fundo, borda, radius e grid de colunas)
+// ============================================
+#gridCabecalho {
+  background-color: $bg-secundario;
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  grid-template-areas: "foto conteudoCabecalho conteudoCabecalho nivelXp";
+  gap: 15px;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+
+  .foto {
+    grid-area: foto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    img {
+      max-width: 200px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .foto-placeholder {
+      width: 200px;
+      height: 200px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: bold;
+      color: $destaque;
+      background: $bg-card-hover;
+    }
+  }
+
+  .conteudoCabecalho {
+    grid-area: conteudoCabecalho;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    h3 {
+      margin: 0;
+      color: $texto;
+      font-weight: 400;
+
+      strong {
+        color: $destaque;
+      }
+    }
+  }
+
+  .nivelXp {
+    grid-area: nivelXp;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    h3 {
+      margin: 0;
+      color: $texto;
+    }
+  }
+
+  .campo-editavel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      color: $destaque;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    input {
+      background: $bg-card;            // ← escuro, igual criar-ficha
+      color: $texto;
+      border: 1px solid $borda-forte;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:hover {
+        border-color: rgba(138, 180, 248, 0.35);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $destaque;
+        box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// ============================================
+// GRID TOPO (mantém layout de leitura; adota visual de card)
+// ============================================
+.gridTopo {
+  background: $bg-card;
+  display: grid;
+  grid-template-columns: 14% 10% auto;   // ← atributos maiores (era 100px 150px 1fr)
+  grid-template-areas:
+    "atributos bonusProf caVidaIniMov"
+    "atributos testesResistencia testesResistencia"
+    "atributos listaPericia listaPericia"
+    "percepcaoPassiva percepcaoPassiva percepcaoPassiva";
+  border-radius: 15px;
+  padding: 20px;
+  gap: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid $borda;
+  align-items: start;
+}
+
+// ============================================
+// CARDS INTERNOS (mesma base de criar-ficha)
+// ============================================
+.atributos,
+.bonusProf,
+.caVidaIniMov,
+.testesResistencia,
+.listaPericia,
+.percepcaoPassiva {
+  background-color: $bg-card-hover;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid $borda;
+}
+
+// ============================================
+// ATRIBUTOS (grandes, igual criar-ficha)
+// ============================================
+.atributos {
+  text-align: center;
+  grid-area: atributos;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 15px;
+  color: $texto;
+
+  .atributo {
+    margin-bottom: 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h6 {
+    font-size: 0.95rem;                // ← era clamp(11px, 1.5vw, 14px)
+    color: $destaque;
+    opacity: 1;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 2rem;                   // ← era clamp(18px, 3vw, 24px)
+    font-weight: 600;
+    margin: 2px 0;
+    color: $texto;
+  }
+
+  h4 {
+    font-size: 1.05rem;                // ← era clamp(12px, 1.8vw, 16px)
+    font-weight: bold;
+    color: $destaque;
+    margin: 0;
+  }
+}
+
+// ============================================
+// BÔNUS PROFICIÊNCIA
+// ============================================
+.bonusProf {
+  grid-area: bonusProf;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $texto;
+  font-weight: 500;
+  padding: 8px 12px;
+  align-self: start;
+
+  h3 {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    color: $texto;
+
+    &:last-child {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: $texto;
+      margin-top: 5px;
+    }
+  }
+}
+
+// ============================================
+// CA / VIDA / INI / MOV
+// ============================================
+.caVidaIniMov {
+  grid-area: caVidaIniMov;
+  display: flex;
+  text-align: center;
+  padding: 8px 12px;
+  color: $texto;
+  gap: 10px;
+  align-items: center;
+
+  .campo {
+    flex: 1;
+
+    label {
+      display: block;
+      color: $destaque;
+      font-weight: bold;
+      font-size: 0.75rem;
+      margin-bottom: 2px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: $texto;
+    }
+
+    small {
+      font-size: 0.65rem;
+      color: $texto-suave;
+      line-height: 1.3;
+    }
+  }
+}
+
+// ============================================
+// TESTES DE RESISTÊNCIA + LISTA DE PERÍCIAS
+// (mesma base visual; mantém os wrappers de leitura do detail)
+// ============================================
+.testesResistencia,
+.listaPericia {
+  color: $texto;
+
+  .teste-resistencia,
+  .pericia-item {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    align-items: center;
+
+    .valor {
+      font-weight: 600;
+      color: $destaque;
+      min-width: 30px;
+    }
+
+    .nome {
+      color: $texto;
+    }
+  }
+}
+
+// mantém o grid-area dos dois blocos
+.testesResistencia { grid-area: testesResistencia; }
+.listaPericia      { grid-area: listaPericia; }
+
+.percepcaoPassiva {
+  grid-area: percepcaoPassiva;
+  text-align: center;
+  color: $texto;
+}
+
+// ============================================
+// HABILIDADES (mesma estrutura do criar-ficha,
+// mas o detail usa .habilidade em vez de .itemHabilidade)
+// ============================================
+.habilidades {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+  .habilidade {
+    background-color: $bg-card-hover;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid $borda;
+    position: relative;
+    transition: background 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      background: #2f2f55;
+      transform: translateY(-2px);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .habilidade-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 15px;
+
+      h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: $destaque;
+        font-weight: 500;
+      }
+
+      .origem {
+        background-color: $destaque-forte;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+    }
+
+    .descricao {
+      color: $texto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0 0 8px;
+      white-space: pre-wrap;
+    }
+
+    .habilidade-info {
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: $texto-suave;
+      flex-wrap: wrap;
+
+      span {
+        background-color: $bg-card;
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid $borda;
+      }
+    }
+  }
+}
+
+// ============================================
+// PROFICIÊNCIAS (grade 150px 1fr do criar-ficha,
+// aplicada nos wrappers .proficiencia-item / header)
+// ============================================
+.proficiencias {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+  .proficiencias-header,
+  .proficiencia-item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid $borda;
+    color: $texto;
+    align-items: center;
+  }
+
+  .proficiencias-header {
+    background: rgba(74, 111, 165, 0.2);
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: $destaque;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+  }
+
+  .proficiencia-item {
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .tipo {
+      font-weight: 600;
+      color: $destaque;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .lista {
+      color: $texto;
+    }
+  }
+}
+
+// ============================================
+// INVENTÁRIO (grade 2fr 1fr 1fr 1fr do criar-ficha)
+// ============================================
+.inventario {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+  .inventario-header,
+  .inventario-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid $borda;
+    color: $texto;
+  }
+
+  .inventario-header {
+    background: rgba(74, 111, 165, 0.2);
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: $destaque;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+  }
+
+  .inventario-item {
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .resumo-inventario {
+    background-color: $bg-card-hover;
+    border-radius: 12px;
+    padding: 12px 15px;
+    margin: 15px 0;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    p {
+      margin: 0;
+      color: $texto;
+
+      strong {
+        color: $destaque;
+      }
+    }
+  }
+
+  .moedas {
+    margin-top: 20px;
+
+    > label {
+      display: block;
+      color: $destaque;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .moedas-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background-color: $bg-card-hover;
+      border-radius: 12px;
+      padding: 12px;
+
+      .moeda-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+
+        label {
+          font-size: 0.75rem;
+          color: $destaque;
+          text-align: center;
+        }
+
+        input {
+          text-align: center;
+          width: 100%;
+          background: $bg-card;
+          color: $texto;
+          border: 1px solid $borda-forte;
+          border-radius: 4px;
+          padding: 6px;
+
+          &:focus {
+            outline: none;
+            border-color: $destaque;
+            box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+          }
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// GRIMÓRIO
+// ============================================
+.blocoGrimorio {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+}
+
+.detalhesConjuracao {
+  background-color: $bg-card-hover;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 15px;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid $borda;
+
+  h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: $destaque;
+    font-weight: 500;
+  }
+}
+
+.containerMagias {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border: 1px solid $borda;
+
+  .nivel-titulo {
+    color: $destaque;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 20px 0 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid $destaque-forte;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .magias-nivel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.grimorioPersonagem {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  align-items: start;
+
+  .listaMagiasSeção1,
+  .listaMagiasSeção2,
+  .listaMagiasSeção3 {
+    background-color: $bg-card-hover;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid $borda;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+
+    h3 {
+      margin: 10px 0;
+      font-size: 1rem;
+      text-align: center;
+      color: $destaque;
+      border-bottom: 2px solid $destaque-forte;
+      padding-bottom: 5px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.nomeMagiaMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.magia-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.nomeMagia {
+  background-color: $bg-card;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  border: 1px solid $borda;
+
+  &:hover {
+    background-color: $bg-secundario;
+    transform: scale(1.02);
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: $texto;
+  }
+}
+
+.quadrinhoMagiaExpandido {
+  background-color: $bg-card;
+  margin: 4px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px solid $borda;
+  font-size: 0.85rem;
+  color: $texto;
+  animation: slideDown 0.3s ease;
+
+  .magia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    h4 {
+      margin: 0;
+      color: $destaque;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .escola {
+      font-size: 0.75rem;
+      background: $destaque-forte;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .magia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 4px 12px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+
+    strong {
+      color: $destaque;
+    }
+  }
+
+  .componentes {
+    font-size: 0.85rem;
+    color: #b0b0b0;
+    margin: 4px 0;
+  }
+
+  .descricao {
+    font-size: 0.9rem;
+    color: $texto;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    margin: 6px 0 0;
+  }
+
+  h4 {
+    margin: 4px 0;
+    font-weight: normal;
+
+    strong {
+      color: $destaque;
+    }
+  }
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================
+// ANOTAÇÕES
+// ============================================
+.anotacoes {
+  background-color: $bg-card;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid $borda;
+}
+
+.dadosPessoaisPersonagem {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+
+  .idadeContainer,
+  .alturaContainer,
+  .pesoContainer,
+  .tamanhoContainer,
+  .generoContainer,
+  .alinhamentoContainer,
+  .campo {
+    background-color: $bg-card-hover;
+    border-radius: 8px;
+    padding: 12px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: $bg-secundario;
+    }
+
+    label {
+      color: $destaque;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    input,
+    p {
+      width: 100%;
+      background-color: $bg-card;
+      border: 1px solid $borda-forte;
+      border-radius: 5px;
+      color: $texto;
+      padding: 8px 12px;
+      margin: 0;
+
+      &:focus {
+        outline: none;
+        border-color: $destaque;
+        box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+      }
+    }
+  }
+
+  .idadeContainer       { border-left: 4px solid #FF6B6B; }
+  .alturaContainer      { border-left: 4px solid #4ECDC4; }
+  .pesoContainer        { border-left: 4px solid #45B7D1; }
+  .tamanhoContainer     { border-left: 4px solid #96CEB4; }
+  .generoContainer      { border-left: 4px solid #FFEAA7; }
+  .alinhamentoContainer { border-left: 4px solid #DDA0DD; }
+  .campo                { border-left: 3px solid $destaque-forte; }
+}
+
+.anotacoesInferior {
+  display: grid;
+  grid-template-columns: 30% auto;
+  grid-template-areas:
+    "aparenciaContainer ideaisContainer"
+    "aparenciaContainer defeitosContainer"
+    "historiaContainer anotacoesContainer"
+    "historiaContainer personalidadeContainer";
+  gap: 15px;
+
+  .historiaContainer      { grid-area: historiaContainer; }
+  .aparenciaContainer     { grid-area: aparenciaContainer; }
+  .personalidadeContainer { grid-area: personalidadeContainer; }
+  .ideaisContainer        { grid-area: ideaisContainer; }
+  .defeitosContainer      { grid-area: defeitosContainer; }
+  .anotacoesContainer     { grid-area: anotacoesContainer; }
+
+  .historiaContainer,
+  .aparenciaContainer,
+  .personalidadeContainer,
+  .ideaisContainer,
+  .defeitosContainer,
+  .anotacoesContainer,
+  .campo {
+    background-color: $bg-card-hover;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid $borda;
+
+    label {
+      color: $destaque;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    textarea,
+    p {
+      width: 100%;
+      min-height: 100px;
+      resize: vertical;
+      background-color: $bg-card;
+      border: 2px solid $borda-forte;
+      border-radius: 8px;
+      color: $texto;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+      white-space: pre-wrap;
+
+      &:focus {
+        outline: none;
+        border-color: $destaque;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .anotacoes .dadosPessoaisPersonagem {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// ============================================
+// BOTÕES (mesmas cores do criar-ficha)
+// ============================================
+.btn-editar,
+.btn-voltar {
+  padding: 10px 20px;
+  background: $destaque-forte;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background: #3a5a85;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.btn-voltar {
+  margin-top: 2rem;
+}
+
+.btn-add {
+  padding: 10px 20px;
+  background: $destaque-forte;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background: #3a5a85;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.btn-remover {
+  padding: 5px 12px;
+  background: $perigo;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background: $perigo-hover;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.btn-salvar {
+  padding: 10px 20px;
+  background: $sucesso;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 10px rgba(40, 167, 69, 0.25);
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background: $sucesso-hover;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// ============================================
+// MENSAGENS
+// ============================================
+.mensagem {
+  text-align: center;
+  padding: 3rem;
+  color: $texto-suave;
+
+  &.erro {
+    color: #e74c3c;
+  }
+}
+
+.vazio {
+  text-align: center;
+  color: $texto-suave;
+  padding: 1rem;
+  font-style: italic;
+}
+
+// ============================================
+// MODAL DE ALERTA (mesmo do criar-ficha)
+// ============================================
+.alerta-overlay {
+  z-index: 2000;
+}
+
+.modal-alerta {
+  background: $bg-secundario;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px 25px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid $borda-forte;
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+
+  .modal-alerta-icone {
+    font-size: 3rem;
+    margin-bottom: 15px;
+
+    &.sucesso { color: $sucesso; }
+    &.erro    { color: #dc3545; }
+    &.info    { color: $destaque; }
+  }
+
+  .modal-alerta-texto {
+    color: $texto;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 25px;
+    white-space: pre-wrap;
+  }
+
+  .modal-alerta-acoes {
+    display: flex;
+    justify-content: center;
+
+    .btn-confirmar-alerta {
+      padding: 10px 40px;
+      background: $destaque-forte;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #3a5a85;
+      }
+    }
+  }
+}
+
+// ============================================
+// MODAL GENÉRICO + MODAL DE MAGIA (igual criar-ficha)
+// ============================================
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-magia {
+  background: $bg-secundario;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid $borda-forte;
+  animation: slideUp 0.3s ease-out;
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    background: $bg-card;
+    color: $texto;
+    border: 1px solid $borda-forte;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: $texto-suave;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      border-color: rgba(138, 180, 248, 0.35);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $destaque;
+      box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+    }
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid $borda;
+  position: sticky;
+  top: 0;
+  background: $bg-secundario;
+  z-index: 1;
+
+  h3 {
+    margin: 0;
+    color: $destaque;
+    font-size: 1.2rem;
+  }
+}
+
+.modal-body {
+  padding: 20px;
+
+  .edit-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .campo-editavel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    label {
+      color: $destaque;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+  }
+
+  .componentes-edit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    background: $bg-card-hover;
+    border-radius: 8px;
+    border: 1px solid $borda;
+    margin: 15px 0;
+
+    .checkbox-inline {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: $texto;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: normal;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: $destaque-forte;
+      }
+    }
+
+    .material {
+      flex: 1;
+      min-width: 150px;
+      background: $bg-card;
+      color: $texto;
+      border: 1px solid $borda-forte;
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid $borda;
+  position: sticky;
+  bottom: 0;
+  background: $bg-secundario;
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: $texto;
+  padding: 4px 8px;
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.btn-cancelar-magia {
+  padding: 8px 16px;
+  background: $neutro;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background: $neutro-hover;
+  }
+}
+
+.btn-salvar-magia {
+  padding: 8px 16px;
+  background: $sucesso;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background: $sucesso-hover;
+  }
+}
+
+// ============================================
+// ANIMAÇÕES
+// ============================================
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================
+// RESPONSIVIDADE
+// ============================================
+@media (max-width: 1024px) {
+  .grimorioPersonagem {
+    grid-template-columns: 1fr;
+  }
+
+  .anotacoesInferior {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "aparenciaContainer"
+      "historiaContainer"
+      "ideaisContainer"
+      "defeitosContainer"
+      "personalidadeContainer"
+      "anotacoesContainer";
+  }
+}
+
+@media (max-width: 768px) {
+  #gridCabecalho {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "foto"
+      "conteudoCabecalho"
+      "nivelXp";
+  }
+
+  .gridTopo {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "atributos"
+      "bonusProf"
+      "caVidaIniMov"
+      "testesResistencia"
+      "listaPericia"
+      "percepcaoPassiva";
+  }
+
+  .caVidaIniMov {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .conteudoCabecalho {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .anotacoes .dadosPessoaisPersonagem {
+    grid-template-columns: 1fr;
+  }
+
+  .habilidades .habilidade .habilidade-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .proficiencias .proficiencias-header,
+  .proficiencias .proficiencia-item {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .moedas-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .modal-magia {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}

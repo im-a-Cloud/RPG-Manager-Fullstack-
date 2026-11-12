@@ -1,0 +1,192 @@
+// ============================================
+// TEMA (mesmo do home / cadastro / character-detail)
+// ============================================
+$bg-principal: #16213e;
+$bg-secundario: #0f3460;
+$bg-card: #1a1a2e;
+$bg-card-hover: #2a2a4e;
+$destaque: #8ab4f8;
+$destaque-forte: #4a6fa5;
+$texto: #e0e0e0;
+$texto-suave: #999;
+$borda: rgba(255, 255, 255, 0.05);
+$borda-forte: rgba(255, 255, 255, 0.1);
+
+$sucesso: #28a745;
+$sucesso-hover: #218838;
+$perigo: #c0392b;
+$perigo-hover: #a93226;
+
+// ============================================
+// CONTAINER
+// ============================================
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-principal;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: $texto;
+  animation: fadeIn 0.6s ease-out;
+}
+
+// ============================================
+// CARD DE LOGIN
+// ============================================
+.login-box {
+  background: $bg-secundario;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid $borda;
+  width: 100%;
+  max-width: 420px;
+
+  h1 {
+    margin: 0 0 0.5rem;
+    text-align: center;
+    font-size: 1.75rem;
+    color: $texto;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+    color: $destaque;
+    font-weight: 400;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
+
+  // ============================================
+  // INPUTS
+  // ============================================
+  input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    background: $bg-card;
+    color: $texto;
+    border: 1px solid $borda-forte;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+    &::placeholder {
+      color: $texto-suave;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      border-color: rgba(138, 180, 248, 0.35);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $destaque;
+      box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+    }
+  }
+
+  // ============================================
+  // BOTÃO
+  // ============================================
+  button {
+    width: 100%;
+    padding: 0.85rem;
+    background: $destaque-forte;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 10px rgba(74, 111, 165, 0.35);
+
+    &:hover:not(:disabled) {
+      background: #3a5a85;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+
+  // ============================================
+  // MENSAGEM DE ERRO
+  // ============================================
+  .erro {
+    background: rgba(220, 53, 69, 0.12);
+    color: #ff8a8a;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    animation: slideDown 0.2s ease-out;
+  }
+
+  // ============================================
+  // LINK
+  // ============================================
+  .link {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: $texto-suave;
+
+    a {
+      color: $destaque;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: lighten($destaque, 10%);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ============================================
+// ANIMAÇÕES
+// ============================================
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================
+// RESPONSIVIDADE
+// ============================================
+@media (max-width: 480px) {
+  .login-box {
+    padding: 2rem 1.25rem;
+    border-radius: 12px;
+
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1rem; }
+  }
+}

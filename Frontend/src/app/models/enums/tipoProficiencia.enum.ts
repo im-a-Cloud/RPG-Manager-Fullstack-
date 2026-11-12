@@ -1,0 +1,8 @@
+export enum TipoProficiencia {
+    ARMAS = 'ARMAS',
+    ARMADURAS = 'ARMADURAS',
+    FERRAMENTAS = 'FERRAMENTAS',
+    INSTRUMENTOS = 'INSTRUMENTOS',
+    IDIOMAS = 'IDIOMAS',
+    OUTROS = 'OUTROS'
+}

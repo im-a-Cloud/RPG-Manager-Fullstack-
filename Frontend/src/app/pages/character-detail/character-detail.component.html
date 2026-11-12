@@ -1,0 +1,768 @@
+<div class="pagina" *ngIf="!carregando && personagem">
+  <div class="botaoEditar">
+    <button *ngIf="!modoEdicao" type="button" class="btn-editar" (click)="ativarEdicao()">
+      ✏️ Editar personagem
+    </button>
+
+    <div *ngIf="modoEdicao" class="acoes-edicao">
+      <button type="button" class="btn-salvar" (click)="salvarEdicao()" [disabled]="salvando">
+        {{ salvando ? '💾 Salvando...' : '💾 Salvar' }}
+      </button>
+      <button type="button" class="btn-cancelar" (click)="cancelarEdicao()" [disabled]="salvando">
+        ✖️ Cancelar
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="mensagemSucesso" class="mensagem sucesso">{{ mensagemSucesso }}</div>
+
+  <!-- ============================================ -->
+  <!-- CABEÇALHO                                    -->
+  <!-- ============================================ -->
+  <div id="gridCabecalho">
+    <div class="foto">
+      <ng-container *ngIf="!modoEdicao">
+        <img *ngIf="personagem.fotoBase64" [src]="personagem.fotoBase64" alt="{{ personagem.nomePersonagem }}">
+        <div *ngIf="!personagem.fotoBase64" class="foto-placeholder">
+          {{ personagem.nomePersonagem.charAt(0).toUpperCase() }}
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="modoEdicao">
+        <img *ngIf="personagemEditavel.fotoBase64" [src]="personagemEditavel.fotoBase64" alt="Preview">
+        <input type="file" accept="image/*" (change)="onFotoSelecionada($event)">
+      </ng-container>
+    </div>
+
+    <div class="conteudoCabecalho">
+      <ng-container *ngIf="!modoEdicao">
+        <h3>Nome: {{ personagem.nomePersonagem }}</h3>
+        <h3>Classe: {{ personagem.classe.nome }}</h3>
+        <h3>Raça: {{ personagem.racaPersonagem || '—' }}</h3>
+        <h3>Antecedente: {{ personagem.antecedentePersonagem || '—' }}</h3>
+        <h3>Gênero: {{ personagem.generoPersonagem || '—' }}</h3>
+        <h3>Escala: {{ personagem.escalaPersonagem || '—' }}</h3>
+      </ng-container>
+      <ng-container *ngIf="modoEdicao">
+        <div class="campo-editavel">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="personagemEditavel.nomePersonagem" name="nome">
+        </div>
+        <div class="campo-editavel">
+          <label>Classe</label>
+          <input type="text" [value]="personagem.classe.nome" disabled>
+        </div>
+        <div class="campo-editavel">
+          <label>Raça</label>
+          <input type="text" [(ngModel)]="personagemEditavel.racaPersonagem" name="raca">
+        </div>
+        <div class="campo-editavel">
+          <label>Antecedente</label>
+          <input type="text" [(ngModel)]="personagemEditavel.antecedentePersonagem" name="antecedente">
+        </div>
+        <div class="campo-editavel">
+          <label>Gênero</label>
+          <input type="text" [(ngModel)]="personagemEditavel.generoPersonagem" name="genero">
+        </div>
+        <div class="campo-editavel">
+          <label>Escala</label>
+          <input type="text" [(ngModel)]="personagemEditavel.escalaPersonagem" name="escala">
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="nivelXp">
+      <ng-container *ngIf="!modoEdicao">
+        <h3>Nível: {{ personagem.nivelPersonagem }}</h3>
+      </ng-container>
+      <ng-container *ngIf="modoEdicao">
+        <div class="campo-editavel">
+          <label>Nível</label>
+          <input type="number" [(ngModel)]="personagemEditavel.nivelPersonagem" name="nivel" min="1" max="20">
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- ATRIBUTOS / COMBATE / PERÍCIAS               -->
+  <!-- ============================================ -->
+  <div class="gridTopo">
+
+    <!-- ATRIBUTOS -->
+    <div class="atributos">
+      <div class="atributo">
+        <h6>Força</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.forca }}</h3>
+          <h4>{{ personagem.atributos.bonusForca >= 0 ? '+' : '' }}{{ personagem.atributos.bonusForca }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.forca" name="forca" min="1" max="30">
+        </ng-container>
+      </div>
+      <div class="atributo">
+        <h6>Destreza</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.destreza }}</h3>
+          <h4>{{ personagem.atributos.bonusDestreza >= 0 ? '+' : '' }}{{ personagem.atributos.bonusDestreza }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.destreza" name="destreza" min="1" max="30">
+        </ng-container>
+      </div>
+      <div class="atributo">
+        <h6>Constituição</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.constituicao }}</h3>
+          <h4>{{ personagem.atributos.bonusConstituicao >= 0 ? '+' : '' }}{{ personagem.atributos.bonusConstituicao }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.constituicao" name="constituicao" min="1" max="30">
+        </ng-container>
+      </div>
+      <div class="atributo">
+        <h6>Inteligência</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.inteligencia }}</h3>
+          <h4>{{ personagem.atributos.bonusInteligencia >= 0 ? '+' : '' }}{{ personagem.atributos.bonusInteligencia }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.inteligencia" name="inteligencia" min="1" max="30">
+        </ng-container>
+      </div>
+      <div class="atributo">
+        <h6>Sabedoria</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.sabedoria }}</h3>
+          <h4>{{ personagem.atributos.bonusSabedoria >= 0 ? '+' : '' }}{{ personagem.atributos.bonusSabedoria }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.sabedoria" name="sabedoria" min="1" max="30">
+        </ng-container>
+      </div>
+      <div class="atributo">
+        <h6>Carisma</h6>
+        <ng-container *ngIf="!modoEdicao">
+          <h3>{{ personagem.atributos.carisma }}</h3>
+          <h4>{{ personagem.atributos.bonusCarisma >= 0 ? '+' : '' }}{{ personagem.atributos.bonusCarisma }}</h4>
+        </ng-container>
+        <ng-container *ngIf="modoEdicao">
+          <input type="number" [(ngModel)]="personagemEditavel.atributos.carisma" name="carisma" min="1" max="30">
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- BÔNUS PROFICIÊNCIA -->
+    <div class="bonusProf">
+      <h3>Bônus prof</h3>
+      <h3>+{{ personagem.magia.bonusProficiencia }}</h3>
+    </div>
+
+    <!-- CA / VIDA / INICIATIVA / MOVIMENTO -->
+    <div class="caVidaIniMov">
+      <div class="campo">
+        <label>Classe de Armadura (CA)</label>
+        <h3 *ngIf="!modoEdicao">{{ personagem.ca }}</h3>
+        <input *ngIf="modoEdicao" type="number" [(ngModel)]="personagemEditavel.ca" name="ca" min="0">
+        <small>10 + Mod de Dex</small>
+      </div>
+      <div class="campo">
+        <label>Iniciativa</label>
+        <h3 *ngIf="!modoEdicao">{{ personagem.iniciativa >= 0 ? '+' : '' }}{{ personagem.iniciativa }}</h3>
+        <input *ngIf="modoEdicao" type="number" [(ngModel)]="personagemEditavel.iniciativa" name="iniciativa">
+        <small>Mod de Destreza</small>
+      </div>
+      <div class="campo">
+        <label>Movimentação</label>
+        <h3 *ngIf="!modoEdicao">{{ personagem.movimento }}m</h3>
+        <input *ngIf="modoEdicao" type="number" [(ngModel)]="personagemEditavel.movimento" name="movimento" min="0">
+        <small>Racial</small>
+      </div>
+      <div class="campo">
+        <label>Pontos de vida</label>
+        <h3 *ngIf="!modoEdicao">{{ personagem.pontosVidaPersonagem }}</h3>
+        <input *ngIf="modoEdicao" type="number" [(ngModel)]="personagemEditavel.pontosVidaPersonagem" name="pontosVida" min="0">
+        <small>Bônus de CON + dado de vida</small>
+      </div>
+    </div>
+
+    <!-- TESTES DE RESISTÊNCIA -->
+    <div class="testesResistencia">
+      <h2>Testes de Resistência</h2>
+      <div *ngFor="let atributo of personagem.classe.proficienciaSalvaguarda" class="teste-resistencia">
+        <span class="valor">+{{ getBonusAtributo(atributo) + personagem.magia.bonusProficiencia }}</span>
+        <span class="nome">{{ atributo }}</span>
+      </div>
+    </div>
+
+    <!-- PERÍCIAS -->
+<!-- PERÍCIAS -->
+<div class="listaPericia">
+  <h2>Perícias</h2>
+
+  <!-- VISUALIZAÇÃO — todas as 18, proficientes destacadas -->
+  <ng-container *ngIf="!modoEdicao">
+    <div *ngFor="let p of personagem.pericias"
+         class="pericia-item"
+         [class.proficiente]="p.proficiente">
+
+      <span class="valor">
+        {{ p.valorTotalPericia >= 0 ? '+' : '' }}{{ p.valorTotalPericia }}
+      </span>
+
+      <span class="nome">
+        {{ p.nomeExibicao }} ({{ abreviarAtributo(p.atributoChave) }})
+      </span>
+
+      <span *ngIf="p.proficiente" class="badge-prof" title="Proficiente">●</span>
+    </div>
+
+    <p *ngIf="!personagem.pericias || personagem.pericias.length === 0" class="vazio">
+      Nenhuma perícia disponível.
+    </p>
+  </ng-container>
+
+  <!-- EDIÇÃO — catálogo completo com checkbox -->
+  <ng-container *ngIf="modoEdicao">
+    <div *ngFor="let p of catalogoPericias"
+         class="pericia-item edit-item"
+         [class.proficiente]="isSelecionada(p.slug)">
+
+      <span class="valor">{{ getValorPericia(p.slug) }}</span>
+
+      <input type="checkbox"
+             [id]="'pericia_' + p.slug"
+             [name]="'pericia_' + p.slug"
+             [checked]="isSelecionada(p.slug)"
+             (change)="togglePericia(p.slug)">
+
+      <label [for]="'pericia_' + p.slug" class="nome">
+        {{ p.nomeExibicao }} ({{ abreviarAtributo(p.atributoChave) }})
+      </label>
+    </div>
+
+<p *ngIf="!catalogoPericias.length" class="vazio">Carregando perícias...</p>  </ng-container>
+</div>
+
+    <!-- PERCEPÇÃO PASSIVA -->
+    <div class="percepcaoPassiva">
+      <h3>{{ getPercepcaoPassiva() }} Percepção passiva</h3>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- HABILIDADES                                  -->
+  <!-- ============================================ -->
+  <div class="habilidades">
+    <h2>Habilidades</h2>
+
+    <!-- VISUALIZAÇÃO -->
+    <ng-container *ngIf="!modoEdicao">
+      <div *ngFor="let h of personagem.habilidades" class="habilidade">
+         <div class="habilidade-header">
+            <h4>{{ h.nomeHabilidade }}</h4>
+            <span class="origem">{{ h.origemHabilidade }}</span>
+          </div>
+
+          <p class="descricao" *ngIf="h.descricaoHabilidade">
+            {{ h.descricaoHabilidade }}
+          </p>
+
+          <div class="habilidade-info">
+            <span *ngIf="h.usosHabilidade">Usos: {{ h.usosHabilidade }}</span>
+            <span *ngIf="h.recargaHabilidade">Recarga: {{ h.recargaHabilidade }}</span>
+          </div>
+      </div>
+      <p *ngIf="!personagem.habilidades || personagem.habilidades.length === 0" class="vazio">
+        Nenhuma habilidade cadastrada.
+      </p>
+    </ng-container>
+
+    <!-- EDIÇÃO -->
+    <ng-container *ngIf="modoEdicao">
+      <div *ngFor="let h of personagemEditavel.habilidades; let i = index" class="habilidade edit-card">
+        <div class="edit-card-header">
+          <input type="text" [(ngModel)]="h.nomeHabilidade" [name]="'hab_nome_' + i" placeholder="Nome">
+          <button type="button" class="btn-remover" (click)="removerHabilidade(i)">🗑️</button>
+        </div>
+        <textarea [(ngModel)]="h.descricaoHabilidade" [name]="'hab_desc_' + i" placeholder="Descrição" rows="2"></textarea>
+        <div class="edit-card-info">
+          <h4>{{ h.nomeHabilidade }}</h4>
+            <label for="origemHabilidade">Origem Habilidade</label><br>
+            <select id="origemHabilidade" 
+                    name="origemHabilidade" 
+                    [(ngModel)]="h.origemHabilidade"
+                    required>
+                <option value="RACIAL">Racial</option>
+                <option value="CLASSE">Classe</option>
+                <option value="TALENTO">Talento</option>
+                <option value="ITEM">Item</option>
+                <option value="OUTROS">Outros</option>
+            </select><br>
+          <input type="text" [(ngModel)]="h.usosHabilidade" [name]="'hab_usos_' + i" placeholder="Usos">
+          <input type="text" [(ngModel)]="h.recargaHabilidade" [name]="'hab_rec_' + i" placeholder="Recarga">
+        </div>
+      </div>
+      <button type="button" class="btn-add" (click)="adicionarHabilidade()">+ Adicionar habilidade</button>
+    </ng-container>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PROFICIÊNCIAS                                -->
+  <!-- ============================================ -->
+  <h2>Proficiências</h2>
+  <div class="proficiencias">
+    <div class="proficiencias-header">
+      <span>Tipo</span>
+      <span>Lista</span>
+    </div>
+
+    <!-- VISUALIZAÇÃO -->
+    <ng-container *ngIf="!modoEdicao">
+      <div *ngFor="let prof of personagem.proficiencia" class="proficiencia-item">
+        <span class="tipo">{{ prof.tipoProficiencia }}</span>
+        <span class="lista">{{ prof.listaProficiencias }}</span>
+      </div>
+      <p *ngIf="!personagem.proficiencia || personagem.proficiencia.length === 0" class="vazio">
+        Nenhuma proficiência cadastrada.
+      </p>
+    </ng-container>
+
+    <!-- EDIÇÃO -->
+    <ng-container *ngIf="modoEdicao">
+      <div *ngFor="let prof of personagemEditavel.proficiencia; let i = index" class="proficiencia-item edit-card">
+        <div class="edit-card-header">
+                    <select name="tipoProfPersonagem"
+                    id = "tipoProfPersonagem"
+                    name="tipoProfPersonagem"
+                    [(ngModel)]="prof.tipoProficiencia"
+                    required="">
+                        <option value="ARMAS">Armas</option>
+                        <option value="ARMADURAS">Armaduras</option>
+                        <option value="IDIOMAS">Idiomas</option>
+                        <option value="INSTRUMENTOS,">Instrumentos</option>
+                        <option value="FERRAMENTAS,">Ferramentas</option>
+                        <option value="OUTROS">Outros</option>
+                    </select><br>          
+                    <button type="button" class="btn-remover" (click)="removerProficiencia(i)">🗑️</button>
+                  </div>
+        <input type="text" [(ngModel)]="prof.listaProficiencias" [name]="'prof_lista_' + i" placeholder="Lista">
+      </div>
+      <button type="button" class="btn-add" (click)="adicionarProficiencia()">+ Adicionar proficiência</button>
+    </ng-container>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- INVENTÁRIO                                   -->
+  <!-- ============================================ -->
+  <h2>Inventário</h2>
+  <div class="inventario">
+    <div class="inventario-header">
+      <span>Nome item</span>
+      <span>Quantidade</span>
+      <span>Peso</span>
+      <span>Peso Total</span>
+    </div>
+
+    <!-- VISUALIZAÇÃO -->
+    <ng-container *ngIf="!modoEdicao">
+      <div *ngFor="let item of personagem.inventario" class="inventario-item-container">
+        <!-- linha clicável -->
+        <div class="inventario-item" (click)="selecionarItem(item)">
+          <span>{{ item.nomeItem }}</span>
+          <span>{{ item.quantidade }}</span>
+          <span>{{ item.pesoItem }}</span>
+          <span>{{ item.pesoItem * item.quantidade }}</span>
+        </div>
+
+        <!-- detalhe (irmão da linha) -->
+        <div *ngIf="isItemSelecionado(item)" class="detalhes-item">
+          <p><strong>Raridade:</strong> {{ item.raridadeItem }}</p>
+          <p><strong>Tipo:</strong> {{ item.tipoItem }}</p>
+          <p><strong>Preço:</strong> {{ item.precoItem }}</p>
+          <p><strong>É mágico?</strong> {{ item.isMagico ? 'Sim' : 'Não' }}</p>
+          <p><strong>Precisa de sintonização?</strong> {{ item.precisaSintonizacao ? 'Sim' : 'Não' }}</p>
+          <p><strong>Descrição:</strong> {{ item.descricaoItem || 'Nenhuma descrição.' }}</p>
+        </div>
+      </div>
+      <p *ngIf="personagem.inventario.length === 0" class="vazio">Inventário vazio.</p>
+    </ng-container>
+
+    <!-- EDIÇÃO -->
+  <ng-container *ngIf="modoEdicao">
+    <div *ngFor="let item of personagemEditavel.inventario; let i = index" class="inventario-item edit-card">
+      <div class="edit-card-header">
+        <h4>Item {{ i + 1 }}</h4>
+        <button type="button" class="btn-remover" (click)="removerItem(i)">🗑️</button>
+      </div>
+
+      <div class="edit-card-grid">
+        <div class="campo-editavel">
+          <label [for]="'item_nome_' + i">Nome</label>
+          <input type="text"
+                 [id]="'item_nome_' + i"
+                 [name]="'item_nome_' + i"
+                 [(ngModel)]="item.nomeItem"
+                 placeholder="Nome do item">
+        </div>
+
+        <div class="campo-editavel">
+          <label [for]="'item_raridade_' + i">Raridade</label>
+          <select [id]="'item_raridade_' + i"
+                  [name]="'item_raridade_' + i"
+                  [(ngModel)]="item.raridadeItem">
+            <option value="COMUM">Comum</option>
+            <option value="INCOMUM">Incomum</option>
+            <option value="RARO">Raro</option>
+            <option value="MUITO_RARO">Muito raro</option>
+            <option value="LENDARIO">Lendário</option>
+            <option value="ARTEFATO">Artefato</option>
+          </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label [for]="'item_tipo_' + i">Tipo</label>
+          <select [id]="'item_tipo_' + i"
+                  [name]="'item_tipo_' + i"
+                  [(ngModel)]="item.tipoItem">
+            <option value="ARMA">Arma</option>
+            <option value="ARMADURA">Armadura</option>
+            <option value="POCAO">Poção</option>
+            <option value="FERRAMENTA">Ferramenta</option>
+            <option value="ITEM_MAGICO">Item Mágico</option>
+            <option value="TESOURO">Tesouro</option>
+            <option value="VARIADOS">Variados</option>
+          </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label [for]="'item_qtd_' + i">Quantidade</label>
+          <input type="number"
+                 [id]="'item_qtd_' + i"
+                 [name]="'item_qtd_' + i"
+                 [(ngModel)]="item.quantidade"
+                 min="1">
+        </div>
+
+        <div class="campo-editavel">
+          <label [for]="'item_peso_' + i">Peso</label>
+          <input type="number"
+                 step="0.1"
+                 [id]="'item_peso_' + i"
+                 [name]="'item_peso_' + i"
+                 [(ngModel)]="item.pesoItem"
+                 min="0">
+        </div>
+
+        <div class="campo-editavel">
+          <label [for]="'item_preco_' + i">Preço</label>
+          <input type="number"
+                 step="0.1"
+                 [id]="'item_preco_' + i"
+                 [name]="'item_preco_' + i"
+                 [(ngModel)]="item.precoItem"
+                 min="0">
+        </div>
+
+        <div class="campo-editavel checkbox">
+          <label>
+            <input type="checkbox"
+                   [id]="'item_magico_' + i"
+                   [name]="'item_magico_' + i"
+                   [(ngModel)]="item.isMagico">
+            É Mágico?
+          </label>
+        </div>
+
+        <div class="campo-editavel checkbox">
+          <label>
+            <input type="checkbox"
+                   [id]="'item_sintonizacao_' + i"
+                   [name]="'item_sintonizacao_' + i"
+                   [(ngModel)]="item.precisaSintonizacao">
+            Precisa sintonização?
+          </label>
+        </div>
+      </div>
+
+      <div class="campo-editavel">
+        <label [for]="'item_desc_' + i">Descrição</label>
+        <textarea [id]="'item_desc_' + i"
+                  [name]="'item_desc_' + i"
+                  rows="2"
+                  [(ngModel)]="item.descricaoItem"
+                  placeholder="Descreva o item..."></textarea>
+      </div>
+    </div>
+
+    <button type="button" class="btn-add" (click)="adicionarItem()">+ Adicionar item</button>
+  </ng-container>
+  </div>
+
+
+<!-- ============================================ -->
+<!-- GRIMÓRIO                                     -->
+<!-- ============================================ -->
+<h2>Grimório</h2>
+
+<div class="detalhesConjuracao">
+  <h3>CD Magia: {{ getCdMagia() }}</h3>
+  <h3>Bônus ataque mágico: {{ getAtaqueMagico() }}</h3>
+  <h3>Atributo-chave: {{ personagem.classe.atributoConjuracao || '—' }}</h3>
+</div>
+
+<!-- ============================================ -->
+<!-- LISTAGEM — 3 colunas (visualização e edição) -->
+<!-- ============================================ -->
+<div class="grimorioPersonagem" *ngIf="personagem.magias.length > 0">
+
+  <!-- Coluna 1: Truques, Nível 1, 2, 3 -->
+  <div class="listaMagiasSeção1">
+    <ng-container *ngFor="let nivel of ['0','1','2','3']">
+      <h3>{{ nivel === '0' ? 'Truques' : 'Nível ' + nivel }}</h3>
+      <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazioNivel1">
+        <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+          <div class="nomeMagia" (click)="selecionarMagia(magia)">
+            <h4>{{ magia.name }}</h4>
+            <button *ngIf="modoEdicao" type="button" class="btn-editar-magia"
+                    (click)="abrirModal(magia, $event)">✏️</button>
+          </div>
+          <div class="quadrinhoMagiaExpandido" *ngIf="!modoEdicao && isMagiaSelecionada(magia)">
+            <ng-container *ngTemplateOutlet="detalhesMagia; context: { $implicit: magia }"></ng-container>
+          </div>
+        </div>
+      </div>
+      <ng-template #vazioNivel1>
+        <p class="vazio-nivel">Nenhuma magia</p>
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <!-- Coluna 2: Nível 4, 5, 6 -->
+  <div class="listaMagiasSeção2">
+    <ng-container *ngFor="let nivel of ['4','5','6']">
+      <h3>Nível {{ nivel }}</h3>
+      <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazioNivel2">
+        <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+          <div class="nomeMagia" (click)="selecionarMagia(magia)">
+            <h4>{{ magia.name }}</h4>
+            <button *ngIf="modoEdicao" type="button" class="btn-editar-magia"
+                    (click)="abrirModal(magia, $event)">✏️</button>
+          </div>
+          <div class="quadrinhoMagiaExpandido" *ngIf="!modoEdicao && isMagiaSelecionada(magia)">
+            <ng-container *ngTemplateOutlet="detalhesMagia; context: { $implicit: magia }"></ng-container>
+          </div>
+        </div>
+      </div>
+      <ng-template #vazioNivel2>
+        <p class="vazio-nivel">Nenhuma magia</p>
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <!-- Coluna 3: Nível 7, 8, 9 -->
+  <div class="listaMagiasSeção3">
+    <ng-container *ngFor="let nivel of ['7','8','9']">
+      <h3>Nível {{ nivel }}</h3>
+      <div class="nomeMagiaMenu" *ngIf="getMagiasPorNivel(nivel).length > 0; else vazioNivel3">
+        <div *ngFor="let magia of getMagiasPorNivel(nivel)" class="magia-container">
+          <div class="nomeMagia" (click)="selecionarMagia(magia)">
+            <h4>{{ magia.name }}</h4>
+            <button *ngIf="modoEdicao" type="button" class="btn-editar-magia"
+                    (click)="abrirModal(magia, $event)">✏️</button>
+          </div>
+          <div class="quadrinhoMagiaExpandido" *ngIf="!modoEdicao && isMagiaSelecionada(magia)">
+            <ng-container *ngTemplateOutlet="detalhesMagia; context: { $implicit: magia }"></ng-container>
+          </div>
+        </div>
+      </div>
+      <ng-template #vazioNivel3>
+        <p class="vazio-nivel">Nenhuma magia</p>
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <!-- ⬇️ TEMPLATE ÚNICO reutilizado nas 3 colunas -->
+  <ng-template #detalhesMagia let-magia>
+    <h4><strong>Nível:</strong> {{ magia.level }}</h4>
+    <h4><strong>Tempo conjuração:</strong> {{ magia.casting_time }}</h4>
+    <h4><strong>Área/Alcance:</strong> {{ magia.range }}</h4>
+    <h4><strong>Componentes:</strong></h4>
+    <p>
+      V: {{ magia.components?.verbal ? 'Sim' : 'Não' }} |
+      S: {{ magia.components?.somatic ? 'Sim' : 'Não' }} |
+      M: {{ magia.components?.material ? 'Sim' : 'Não' }}
+    </p>
+    <h4><strong>Material:</strong> {{ magia.components?.material ? 'Sim' : 'Não' }}</h4>
+    <h4><strong>Duração:</strong> {{ magia.duration }}</h4>
+    <h4><strong>Ritual:</strong> {{ magia.ritual ? 'Sim' : 'Não' }}</h4>
+    <h4><strong>Concentração:</strong> {{ magia.concentration ? 'Sim' : 'Não' }}</h4>
+    <h4><strong>Escola:</strong> {{ magia.school }}</h4>
+    <h4><strong>Descrição:</strong> {{ magia.description }}</h4>
+  </ng-template>
+
+</div>
+
+<p *ngIf="personagem.magias.length === 0" class="vazio">Nenhuma magia cadastrada.</p>
+
+<!-- BOTÃO ADICIONAR (só no modo edição) -->
+<button *ngIf="modoEdicao" type="button" class="btn-add" (click)="abrirModal()">+ Adicionar magia</button>
+
+<!-- ============================================ -->
+<!-- MODAL DE MAGIA (fora do *ngIf de modo edição)-->
+<!-- ============================================ -->
+<div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModal()">
+  <div class="modal-magia" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ magiaEditando?.name || 'Nova magia' }}</h3>
+      <button type="button" class="btn-fechar" (click)="fecharModal()">✖️</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="edit-card-grid">
+        <div class="campo-editavel">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="magiaEditando.name" name="mag_name" placeholder="Nome da magia">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Nível</label>
+            <select [(ngModel)]="magiaEditando.level" name="mag_level">
+              <option *ngFor="let n of ['0','1','2','3','4','5','6','7','8','9']"
+                      [value]="n"
+                      [disabled]="!podeAprenderNivel(n)">
+                {{ n === '0' ? 'Truque' : 'Nível ' + n }}
+              </option>
+            </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label>Escola</label>
+          <select [(ngModel)]="magiaEditando.school" name="mag_school">
+            <option value="ABJURACAO">Abjuração</option>
+            <option value="ADIVINHACAO">Adivinhação</option>
+            <option value="CONJURACAO">Conjuração</option>
+            <option value="ENCANTACAO">Encantação</option>
+            <option value="EVOCACAO">Evocação</option>
+            <option value="ILUSAO">Ilusão</option>
+            <option value="NECROMANCIA">Necromancia</option>
+            <option value="TRANSMUTACAO">Transmutação</option>
+          </select>
+        </div>
+
+        <div class="campo-editavel">
+          <label>Tempo de conjuração</label>
+          <input type="text" [(ngModel)]="magiaEditando.casting_time" name="mag_cast" placeholder="Ex: 1 ação">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Alcance</label>
+          <input type="text" [(ngModel)]="magiaEditando.range" name="mag_range" placeholder="Ex: 30 pés">
+        </div>
+
+        <div class="campo-editavel">
+          <label>Duração</label>
+          <input type="text" [(ngModel)]="magiaEditando.duration" name="mag_dur" placeholder="Ex: Instantânea">
+        </div>
+      </div>
+
+      <div class="componentes-edit">
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="magiaEditando.components.verbal" name="mag_v"> V
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="magiaEditando.components.somatic" name="mag_s"> S
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="magiaEditando.components.material" name="mag_m"> M
+        </label>
+        <input type="text" class="material" [(ngModel)]="magiaEditando.components.raw" name="mag_raw" placeholder="Material (se houver)">
+
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="magiaEditando.ritual" name="mag_ritual"> Ritual
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" [(ngModel)]="magiaEditando.concentration" name="mag_conc"> Concentração
+        </label>
+      </div>
+
+      <div class="campo-editavel">
+        <label>Descrição</label>
+        <textarea [(ngModel)]="magiaEditando.description" name="mag_desc" rows="4" placeholder="Descrição da magia..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancelar-magia" (click)="fecharModal()">Cancelar</button>
+      <button type="button" class="btn-salvar-magia" (click)="salvarMagia()">Salvar</button>
+    </div>
+  </div>
+</div>
+  <!-- ============================================ -->
+  <!-- ANOTAÇÕES                                    -->
+  <!-- ============================================ -->
+  <h2>Anotações</h2>
+  <div class="anotacoes">
+    <div class="dadosPessoaisPersonagem">
+      <div class="campo">
+        <label>Idade</label>
+        <p *ngIf="!modoEdicao">{{ personagem.idadePersonagem || '—' }}</p>
+        <input *ngIf="modoEdicao" type="number" [(ngModel)]="personagemEditavel.idadePersonagem" name="idade">
+      </div>
+      <div class="campo">
+        <label>Altura</label>
+        <p *ngIf="!modoEdicao">{{ personagem.alturaPersonagem || '—' }}</p>
+        <input *ngIf="modoEdicao" type="number" step="0.01" [(ngModel)]="personagemEditavel.alturaPersonagem" name="altura">
+      </div>
+      <div class="campo">
+        <label>Peso</label>
+        <p *ngIf="!modoEdicao">{{ personagem.pesoPersonagem || '—' }}</p>
+        <input *ngIf="modoEdicao" type="number" step="0.01" [(ngModel)]="personagemEditavel.pesoPersonagem" name="peso">
+      </div>
+      <div class="campo">
+        <label>Alinhamento</label>
+        <p *ngIf="!modoEdicao">{{ personagem.alinhamentoPersonagem || '—' }}</p>
+        <input *ngIf="modoEdicao" type="text" [(ngModel)]="personagemEditavel.alinhamentoPersonagem" name="alinhamento">
+      </div>
+    </div>
+
+    <div class="anotacoesInferior">
+      <div class="campo">
+        <label>História do personagem</label>
+        <p *ngIf="!modoEdicao">{{ personagem.historiaPersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.historiaPersonagem" name="historia" rows="4"></textarea>
+      </div>
+      <div class="campo">
+        <label>Aparência do personagem</label>
+        <p *ngIf="!modoEdicao">{{ personagem.aparenciaPersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.aparenciaPersonagem" name="aparencia" rows="4"></textarea>
+      </div>
+      <div class="campo">
+        <label>Traços de personalidade</label>
+        <p *ngIf="!modoEdicao">{{ personagem.personalidadePersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.personalidadePersonagem" name="personalidade" rows="4"></textarea>
+      </div>
+      <div class="campo">
+        <label>Ideais</label>
+        <p *ngIf="!modoEdicao">{{ personagem.ideaisPersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.ideaisPersonagem" name="ideais" rows="4"></textarea>
+      </div>
+      <div class="campo">
+        <label>Defeitos</label>
+        <p *ngIf="!modoEdicao">{{ personagem.defeitosPersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.defeitosPersonagem" name="defeitos" rows="4"></textarea>
+      </div>
+      <div class="campo">
+        <label>Anotações</label>
+        <p *ngIf="!modoEdicao">{{ personagem.anotacoesPersonagem || '—' }}</p>
+        <textarea *ngIf="modoEdicao" [(ngModel)]="personagemEditavel.anotacoesPersonagem" name="anotacoes" rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <a routerLink="/" class="btn-voltar">← Voltar</a>
+</div>
+
+<div *ngIf="carregando" class="mensagem">Carregando personagem...</div>
+<div *ngIf="erro" class="mensagem erro">{{ erro }}</div>

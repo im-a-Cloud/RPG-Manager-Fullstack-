@@ -1,0 +1,226 @@
+// ============================================
+// TEMA (mesmo do home / login / character-detail)
+// ============================================
+$bg-principal: #16213e;
+$bg-secundario: #0f3460;
+$bg-card: #1a1a2e;
+$bg-card-hover: #2a2a4e;
+$destaque: #8ab4f8;
+$destaque-forte: #4a6fa5;
+$texto: #e0e0e0;
+$texto-suave: #999;
+$borda: rgba(255, 255, 255, 0.05);
+$borda-forte: rgba(255, 255, 255, 0.1);
+
+$sucesso: #28a745;
+$sucesso-hover: #218838;
+$perigo: #c0392b;
+$perigo-hover: #a93226;
+$neutro: #6c757d;
+$neutro-hover: #5a6268;
+
+// ============================================
+// CONTAINER PRINCIPAL
+// ============================================
+.cadastro-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px 25px;
+  background: $bg-principal;
+  min-height: 100vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid $borda;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: $texto;
+  animation: fadeIn 0.6s ease-out;
+}
+
+// ============================================
+// TÍTULO
+// ============================================
+h1 {
+  font-size: clamp(20px, 4vw, 32px);
+  color: $texto;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+// ============================================
+// FORMULÁRIO
+// ============================================
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: $bg-secundario;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid $borda;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+
+  label {
+    font-size: 0.9rem;
+    color: $destaque;
+    font-weight: 600;
+    margin-bottom: -4px;   // cola no input logo abaixo
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    background: $bg-card;
+    color: $texto;
+    border: 1px solid $borda-forte;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &::placeholder {
+      color: $texto-suave;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      border-color: rgba(138, 180, 248, 0.35);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $destaque;
+      box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // remove os <br> do HTML e usa gap entre campos
+  br {
+    display: none;
+  }
+
+  button[type="submit"] {
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: $destaque-forte;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 10px rgba(74, 111, 165, 0.35);
+
+    &:hover {
+      background: #3a5a85;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ============================================
+// MENSAGENS (success / error / info)
+// ============================================
+.mensagem {
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  border: 1px solid $borda-forte;
+  background: $bg-card;
+
+  // quando a classe dinâmica é aplicada, cada tipo tem sua cor
+  &.success {
+    background: rgba(40, 167, 69, 0.12);
+    border-color: rgba(40, 167, 69, 0.4);
+    color: #7ee08a;
+  }
+
+  &.error {
+    background: rgba(220, 53, 69, 0.12);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #ff8a8a;
+  }
+
+  &.info {
+    background: rgba(138, 180, 248, 0.1);
+    border-color: rgba(138, 180, 248, 0.35);
+    color: $destaque;
+  }
+}
+
+// ============================================
+// LINK
+// ============================================
+.link {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: $texto-suave;
+
+  a {
+    color: $destaque;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: lighten($destaque, 10%);
+      text-decoration: underline;
+    }
+  }
+}
+
+// ============================================
+// ANIMAÇÃO
+// ============================================
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================
+// RESPONSIVIDADE
+// ============================================
+@media (max-width: 768px) {
+  .cadastro-container {
+    padding: 20px 15px;
+    border-radius: 0;
+  }
+
+  form {
+    padding: 20px 15px;
+    max-width: 100%;
+  }
+
+  .mensagem {
+    max-width: 100%;
+  }
+}

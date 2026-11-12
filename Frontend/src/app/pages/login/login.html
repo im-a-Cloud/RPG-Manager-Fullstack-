@@ -1,0 +1,30 @@
+<div class="login-container">
+  <div class="login-box">
+    <h1>RPG Manager</h1>
+    <h2>Entrar</h2>
+
+    <div *ngIf="erro" class="erro">{{ erro }}</div>
+
+    <input type="email"
+           placeholder="Email"
+           [(ngModel)]="email"
+           name="email"
+           autocomplete="email">
+
+    <input type="password"
+           placeholder="Senha"
+           [(ngModel)]="senha"
+           name="senha"
+           (keyup.enter)="entrar()"
+           autocomplete="current-password">
+
+    <button type="button" (click)="entrar()" [disabled]="carregando">
+      {{ carregando ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <p class="link">
+      Não tem conta?
+      <a routerLink="/cadastro">Cadastre-se</a>
+    </p>
+  </div>
+</div>
