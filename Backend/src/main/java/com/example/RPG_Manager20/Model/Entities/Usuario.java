@@ -10,15 +10,15 @@ public class Usuario extends AbstractModel {
 
     @NotBlank
     @Column(nullable = false, unique = true)
-    private String email;            // ← tem que ser "email", não "emailUsuario"
+    private String email;
 
     @NotBlank
     @Column(nullable = false)
-    private String senha;            // ← "senha", não "senhaUsuario"
+    private String senha;
 
     @NotBlank
     @Column(nullable = false)
-    private String nome;             // ← "nome", não "nomeUsuario"
+    private String nome;
 
     // getters/setters
     public String getEmailUsuario() { return email; }

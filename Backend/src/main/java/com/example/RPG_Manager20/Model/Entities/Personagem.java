@@ -10,8 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_personagem")
-@Data  // ← ADICIONE (cria getters, setters, toString, equals, hashCode)
-@AllArgsConstructor  // ← ADICIONE (construtor com todos os campos)
+@Data
+@AllArgsConstructor
 public class Personagem extends AbstractModel {
 
     @Column(nullable = false)
@@ -71,7 +71,6 @@ public class Personagem extends AbstractModel {
     private Integer movimentoPersonagem = 9;
     @Column(nullable = false)
     private Integer pontosVidaPersonagem = 1;
-    //Ligacção com classe, permitindo que um personagem tenha classe
 
     @ManyToOne
     @JoinColumn(name = "classe_id")
@@ -79,27 +78,27 @@ public class Personagem extends AbstractModel {
     private Classe classePersonagem;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personagem_id")  // ← FK na tabela habilidade
+    @JoinColumn(name = "personagem_id")
     private List<Habilidade> habilidades = new ArrayList<>();
 
-    // 3️⃣ 🔥 PROFICIÊNCIAS (OneToMany com CASCADE)
+    //PROFICIÊNCIAS (OneToMany com CASCADE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personagem_id")  // ← FK na tabela proficiencia
+    @JoinColumn(name = "personagem_id")
     private List<Proficiencia> proficienciasPersonagem = new ArrayList<>();
 
-    // 4️⃣ 🔥 ITENS (OneToMany com CASCADE)
+    //ITENS (OneToMany com CASCADE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personagem_id")  // ← FK na tabela item
+    @JoinColumn(name = "personagem_id")
     private List<Item> inventarioPersonagem = new ArrayList<>();
 
-    // 5️⃣ 🔥 MAGIAS (OneToMany com CASCADE)
+    //MAGIAS (OneToMany com CASCADE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
+    @JoinColumn(name = "personagem_id")
     private List<Magia> magias = new ArrayList<>();
 
     //Pericias
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personagem_id")  // ← FK na tabela magia
+    @JoinColumn(name = "personagem_id")
     private List<PersonagemPericia> periciasPersonagem = new ArrayList<>();
 
     @Column(name = "foto_base64", columnDefinition = "TEXT")

@@ -18,7 +18,7 @@ public class Classe extends AbstractModel{
     private DadosDeVida dadoDeVida;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "classe_id")  // ← ADICIONE ESTA ANOTAÇÃO
+    @JoinColumn(name = "classe_id")
     @JsonIgnore
     private List<Proficiencia> listaProficienciasClasse;
 

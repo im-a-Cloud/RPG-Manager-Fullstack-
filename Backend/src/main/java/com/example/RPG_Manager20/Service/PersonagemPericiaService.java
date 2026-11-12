@@ -40,21 +40,6 @@ public class PersonagemPericiaService {
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
                         "Personagem não encontrado com ID: " + id));
     }
-    /*
-    @Transactional
-    public List<PericiaResponseDTO> listarPericiaPersonagem(Long idPersonagem) {
-        Personagem personagem = findPersonagemById(idPersonagem);
-        Classe classe = personagem.getClassePersonagem();
-
-        PersonagemResponseDTO personagemDTO = PersonagemResponseDTO.from(personagem, classe);
-
-        List<PersonagemPericia> periciasPersonagem = personagemPericiaRepository.findByPersonagemId(idPersonagem);
-
-        return periciasPersonagem.stream()
-                .map(pericias -> PericiaResponseDTO.from(pericias, personagemDTO))
-                .collect(Collectors.toList());
-    }
-    */
     @Transactional
     public PersonagemResponseDTO addPersonagemPericia(Long idPersonagem, Long periciaId, Boolean isProficiente) {
         Personagem personagem = findPersonagemById(idPersonagem);

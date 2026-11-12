@@ -144,13 +144,13 @@ export class CriarFichaPersonagemComponent implements OnInit {
   novaMagia: Magia = this.magiaVazia();
 
   // ============================================
-  // PERÍCIAS (fonte de verdade = backend)
+  // PERÍCIAS
   // ============================================
   pericias: Pericia[] = [];
   slugsSelecionados = new Set<string>();
 
   // ============================================
-  // RESISTÊNCIAS
+  // RESISTÊNCIAS (não funcionam)
   // ============================================
   resistencias: { [key: string]: boolean } = {
     forca: false,
@@ -162,7 +162,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   };
 
   // ============================================
-  // MAPA DE ABREVIAÇÃO DE ATRIBUTO
+  //ABREVIAÇÃO DE ATRIBUTO
   // ============================================
   private readonly mapaAbreviacao: Record<string, string> = {
     FORCA: 'FOR',
@@ -297,7 +297,7 @@ export class CriarFichaPersonagemComponent implements OnInit {
   }
 
   // ============================================
-  // PERÍCIAS — VALOR TOTAL (tempo real)
+  // PERÍCIAS — valor atualiza em tempo real
   // ============================================
   getValorPericia(slug: string): number {
     const pericia = this.pericias.find(p => p.slug === slug);
@@ -436,11 +436,9 @@ export class CriarFichaPersonagemComponent implements OnInit {
   // MENSAGENS
   // ============================================
   mostrarMensagem(texto: string, tipo: 'success' | 'error' | 'info' = 'info'): void {
-    console.log('🔍 [mostrarMensagem] CHAMADO', { texto, tipo });
     this.alertaTexto = texto;
     this.alertaTipo = tipo;
     this.alertaAberto = true;
-    console.log('🔍 [mostrarMensagem] alertaAberto =', this.alertaAberto);
     this.cdr.detectChanges();
   }
 
@@ -952,8 +950,6 @@ podeAprenderNivel(nivel: string | number): boolean {
     const id = this.personagem.idPersonagem;
     const editando = id !== undefined && id !== null;
 
-    console.log(`🔍 [salvarPersonagem] modo=${editando ? 'ATUALIZAR' : 'CRIAR'} id=${id}`);
-
     this.salvando = true;
     this.cdr.markForCheck();
 
@@ -970,7 +966,6 @@ podeAprenderNivel(nivel: string | number): boolean {
       )
       .subscribe({
         next: (response) => {
-          // ✅ ESSENCIAL: grava o id retornado para que próximos saves atualizem
           if (!editando) {
             const novoId = response?.idPersonagem ?? response?.id;
             if (novoId !== undefined && novoId !== null) {
@@ -1023,12 +1018,10 @@ podeAprenderNivel(nivel: string | number): boolean {
     private normalizarTipoConjuracao(tipo: any): 'COMPLETO' | 'MEIO' | 'TERCIARIO' | 'NENHUM' {
     if (tipo === null || tipo === undefined) return 'NENHUM';
 
-    // se vier como número (ordinal do enum)
     if (typeof tipo === 'number') {
       return ['NENHUM', 'COMPLETO', 'MEIO', 'TERCIARIO'][tipo] as any ?? 'NENHUM';
     }
 
-    // se vier como string
     const s = String(tipo).toUpperCase();
     if (s === 'COMPLETO' || s === 'MEIO' || s === 'TERCIARIO' || s === 'NENHUM') {
       return s as any;

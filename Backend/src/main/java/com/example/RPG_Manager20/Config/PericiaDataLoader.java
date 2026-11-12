@@ -44,7 +44,6 @@ public class PericiaDataLoader implements CommandLineRunner {
                 build("sobrevivencia",    "Sobrevivência",    Atributos.SABEDORIA)
         ));
 
-        System.out.println("✅ Catálogo de perícias populado: " + periciaRepository.count() + " registros");
     }
 
     private Pericia build(String slug, String nomeExibicao, Atributos atributo) {

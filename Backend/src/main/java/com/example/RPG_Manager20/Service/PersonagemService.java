@@ -40,25 +40,11 @@ public class PersonagemService {
     @Autowired
     private PericiaRepository periciaRepository;
 
-    // ============================================
-    // 1️⃣ CRIAR PERSONAGEM
-    // ============================================
     @Transactional
     public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO, Long idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
-        System.out.println("========================================");
-        System.out.println("📤 CRIANDO PERSONAGEM COMPLETO:");
-        System.out.println("   Nome: " + requestDTO.nomePersonagem());
-        System.out.println("   Raça: " + requestDTO.racaPersonagem());
-        System.out.println("   Nível: " + requestDTO.nivelPersonagem());
-        System.out.println("   Classe ID: " + requestDTO.classeId());
-        System.out.println("   Habilidades: " + (requestDTO.habilidades() != null ? requestDTO.habilidades().size() : 0));
-        System.out.println("   Itens: " + (requestDTO.inventario() != null ? requestDTO.inventario().size() : 0));
-        System.out.println("   Magias: " + (requestDTO.magias() != null ? requestDTO.magias().size() : 0));
-        System.out.println("   Perícias: " + (requestDTO.pericias() != null ? requestDTO.pericias().size() : 0));
-        System.out.println("========================================");
 
         // 1. Buscar a classe
         Classe classe = classeRepository.findById(requestDTO.classeId())
@@ -75,7 +61,6 @@ public class PersonagemService {
 
         // 4. Salvar o personagem
         Personagem savedPersonagem = personagemRepository.save(personagem);
-        System.out.println("✅ Personagem salvo com ID: " + savedPersonagem.getId());
 
         // 5. Sincronizar coleções filhas
         sincronizarPericias(savedPersonagem, requestDTO.pericias());
@@ -207,7 +192,6 @@ public class PersonagemService {
     public void deletarPersonagem(Long id) {
         Personagem personagem = findById(id);
         personagemRepository.delete(personagem);
-        System.out.println("🗑️ Personagem deletado ID: " + id);
     }
 
     // ============================================

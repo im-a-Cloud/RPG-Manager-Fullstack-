@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "tb_proficiencia")
 //evitar confusões futuras, isso serve para idiomas,
-//outras proficiênias que o personagem venha conseguir futuramente(talentos, multi-classe)
 //e também para editar antigas
 public class Proficiencia extends AbstractModel{
     private TipoProficiencia tipoProficiencia;

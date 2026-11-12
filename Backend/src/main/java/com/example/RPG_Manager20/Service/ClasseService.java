@@ -33,7 +33,7 @@ public class ClasseService {
     private ProficienciaRepository proficienciaRepository;
 
     // ============================================
-    // CRIAÇÃO
+    // CRIAÇÃO(Mantido caso expanda para criar classes Homebrew)
     // ============================================
     @Transactional
     public ClasseDTO criarClasse(ClasseDTO classeDTO) {
@@ -48,7 +48,6 @@ public class ClasseService {
 
             for (Proficiencia proficiencia : classe.getListaProficienciasClasse()) {
                 if (proficiencia.getId() != null) {
-                    // 🔥 JÁ EXISTE - BUSCAR DO BANCO
                     Proficiencia existente = proficienciaRepository.findById(proficiencia.getId())
                             .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
                                     "Proficiência não encontrada com ID: " + proficiencia.getId()));
@@ -76,9 +75,6 @@ public class ClasseService {
     // ============================================
     public List<ClasseDTO> listarTodas() {
         List<Classe> classes = classeRepository.findAll();
-
-        System.out.println("📋 Encontradas " + classes.size() + " classes");
-
         return classes.stream()
                 .map(classe -> {
                     ClasseDTO dto = classeMapper.toDto(classe);

@@ -39,25 +39,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println("🔍 [JWT] " + request.getMethod() + " " + request.getRequestURI());
 
         String header = request.getHeader("Authorization");
-        System.out.println("🔍 [JWT] Header Authorization: " + header);
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            System.out.println("🔍 [JWT] Token (início): " + token.substring(0, Math.min(30, token.length())));
 
             boolean valido = jwtService.tokenValido(token);
-            System.out.println("🔍 [JWT] Token válido? " + valido);
 
             if (valido) {
                 String email = jwtService.getEmail(token);
                 Long idUsuario = jwtService.getUsuarioId(token);
-                System.out.println("🔍 [JWT] Email: " + email + " | ID: " + idUsuario);
 
                 Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
-                System.out.println("🔍 [JWT] Usuário existe? " + usuarioOpt.isPresent());
 
                 if (usuarioOpt.isPresent()) {
                     Usuario usuario = usuarioOpt.get();
@@ -70,8 +64,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                    System.out.println("✅ [JWT] Autenticado: " + usuario.getEmailUsuario());
                 }
             }
         } else {

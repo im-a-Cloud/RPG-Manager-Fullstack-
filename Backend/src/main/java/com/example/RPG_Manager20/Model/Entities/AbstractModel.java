@@ -12,9 +12,9 @@ public abstract class AbstractModel {
     protected Long id;
 
     @Column(updatable = false)
-    @JsonIgnore  // 🔥 ADICIONE ISSO!
+    @JsonIgnore
     protected LocalDate createdAt = LocalDate.now();
-    @JsonIgnore  // 🔥 ADICIONE ISSO!
+    @JsonIgnore
     protected boolean deleted = false;
 
     public Long getId() {

@@ -36,7 +36,6 @@ public enum DadosDeVida {
     public static DadosDeVida fromString(String value) {
         if (value == null) return D6;
 
-        // Tenta converter por nome (D4, D6, etc.)
         try {
             return DadosDeVida.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {

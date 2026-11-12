@@ -35,16 +35,11 @@ public enum Classes {
         this.tipoConjuracao = tipoConjuracao;
     }
 
-    // ─── @JsonValue: o que sai no JSON ───
-    // Escolha UM: tagJson ("fighter") ou nomePortugues ("Guerreiro").
-    // Para o front mostrar PT, use nomePortugues.
     @JsonValue
     public String getNomePortugues() {
         return nomePortugues;
     }
 
-    // ─── @JsonCreator: o que entra do JSON ───
-    // Aceita os três formatos (name, tagJson, nomePortugues) para compatibilidade.
     @JsonCreator
     public static Classes fromString(String value) {
         if (value == null) return null;
@@ -58,13 +53,12 @@ public enum Classes {
         throw new IllegalArgumentException("Classe não encontrada: " + value);
     }
 
-    // ─── Getters auxiliares (não vão para o JSON) ───
+
     public String getTagJson() { return tagJson; }
     public DadosDeVida getDadoDeVida() { return dadoDeVida; }
     public boolean isConjurador() { return isConjurador; }
     public Atributos getAtributoConjuracao() { return atributoConjuracao; }
     public TipoConjuracao getTipoConjuracao() { return tipoConjuracao; }
 
-    // Alias para o front ler "nomeExibicao" também, se quiser
     public String getNomeExibicao() { return nomePortugues; }
 }

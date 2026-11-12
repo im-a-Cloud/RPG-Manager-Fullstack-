@@ -47,7 +47,6 @@ public class ClasseDataLoader implements CommandLineRunner {
         );
 
         classeRepository.saveAll(classes);
-        System.out.println("✅ Catálogo de classes populado: " + classeRepository.count() + " registros");
     }
 
     // ============================================
