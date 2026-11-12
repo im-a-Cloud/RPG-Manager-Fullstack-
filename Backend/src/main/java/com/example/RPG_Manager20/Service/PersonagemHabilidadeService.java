@@ -87,7 +87,6 @@ public class PersonagemHabilidadeService {
                 .map(habilidadeMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
-    //deixar isso aqui como exclusivo de ADM
     //Atualiza a habildiade de forma geral
     public HabilidadeResponseDTO atualizarHabilidade(Long id, HabilidadeDTO dto) {
         Habilidade habilidade = habilidadeRepository.findById(id)

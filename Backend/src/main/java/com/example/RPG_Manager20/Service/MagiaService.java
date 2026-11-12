@@ -79,37 +79,6 @@ public class MagiaService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     String.format("Personagem já conhece a magia %s", magia.getName()));
         }
-
-        /*
-        switch (personagem.getClassePersonagem().getTipoConjuracao()){
-            case COMPLETO:
-                if (nivelMagia <= (personagem.getNivelPersonagem()+1)/2){
-                    if ()
-                }
-                break;
-            case MEIO:
-                if (personagem.getNivelPersonagem() < 2){
-                    return;
-                }
-                if (nivelMagia <= (personagem.getNivelPersonagem()+3)/4){
-
-                }
-                break;
-            case TERCIARIO:
-                if (personagem.getNivelPersonagem() < 3){
-                    return;
-                }
-                if (nivelMagia <= (personagem.getNivelPersonagem()+1)/3) {
-                    throw new BusinessException(HttpStatus.BAD_REQUEST,
-                            String.format("A classe %s não é uma classe conjuradora",
-                                    personagem.getClassePersonagem().getNomeClasse()));
-                }
-                break;
-            default:
-                break;
-        }
-
-         */
     }
     private int converterNivelMagia(String levelString) {
         if (levelString == null) return 0;

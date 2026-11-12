@@ -249,12 +249,6 @@ public record PersonagemResponseDTO(
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
-        System.out.println("📊 RESPOSTA - Habilidades: " + habilidadesDTO.size());
-        System.out.println("📊 RESPOSTA - Magias: " + magiasDTO.size());
-        System.out.println("📊 RESPOSTA - Itens: " + inventarioDTO.size());
-        System.out.println("📊 RESPOSTA - Proficiências: " + proficienciaDTO.size());
-        System.out.println("📊 RESPOSTA - Perícias: " + pericias.size());
-
         return new PersonagemResponseDTO(
                 personagem.getId(),
                 personagem.getNomePersonagem(),

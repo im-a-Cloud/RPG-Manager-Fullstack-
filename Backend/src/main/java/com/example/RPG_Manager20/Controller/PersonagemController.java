@@ -41,14 +41,6 @@ public class PersonagemController {
         PersonagemResponseDTO response = personagemService.buscarPersonagemPorId(id);
         return ResponseEntity.ok(response);
     }
-    /*
-    @GetMapping
-    @Operation(summary = "Listar todos os personagens")
-    public ResponseEntity<List<PersonagemResponseDTO>> listarTodos() {
-        List<PersonagemResponseDTO> lista = personagemService.listarTodos();
-        return ResponseEntity.ok(lista);
-    }
-    */
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar personagem")
     public ResponseEntity<PersonagemResponseDTO> atualizar(
@@ -56,7 +48,6 @@ public class PersonagemController {
             @Valid @RequestBody PersonagemRequestDTO requestDTO,
             @AuthenticationPrincipal Usuario usuario) {
         PersonagemResponseDTO response = personagemService.atualizarPersonagem(id, requestDTO, usuario.getId());
-        System.out.println("🔍 [Controller] pericias no request: " + requestDTO.pericias());
         return ResponseEntity.ok(response);
     }
 

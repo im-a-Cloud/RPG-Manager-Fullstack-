@@ -28,7 +28,7 @@ public class HabilidadeController {
     @PostMapping
     public ResponseEntity<HabilidadeDTO> crate(@RequestBody HabilidadeDTO habilidadeDTO){
         Habilidade habilidade = habilidadeMapper.toEntity(habilidadeDTO);
-        habilidadeService.save(habilidade);// ← Veja o que chega
+        habilidadeService.save(habilidade);
         return new ResponseEntity<>(habilidadeMapper.toDto(habilidade), HttpStatus.CREATED);
     }
     @GetMapping("/listarTodos")

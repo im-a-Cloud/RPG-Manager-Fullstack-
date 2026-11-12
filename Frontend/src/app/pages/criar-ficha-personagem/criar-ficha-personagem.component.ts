@@ -909,7 +909,7 @@ podeAprenderNivel(nivel: string | number): boolean {
 
     const pericias = Array.from(this.slugsSelecionados).map(slug => ({
       slug,
-      isProficiente: true
+      proficiente: true
     }));
 
     const dadosParaEnviar = {

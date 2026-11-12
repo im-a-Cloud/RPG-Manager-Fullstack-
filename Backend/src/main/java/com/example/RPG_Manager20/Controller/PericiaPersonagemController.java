@@ -20,13 +20,7 @@ import java.util.List;
 public class PericiaPersonagemController {
     @Autowired
     private PersonagemPericiaService personagemPericiaService;
-    /*
-    @GetMapping
-    public ResponseEntity<List<PericiaResponseDTO>> listarPericias(@PathVariable Long personagemId) {
-        List<PericiaResponseDTO> pericias = personagemPericiaService.listarPericiaPersonagem(personagemId);
-        return ResponseEntity.ok(pericias);
-    }
-    */
+
     @PutMapping("/{periciaId}/proficiencia")
     public ResponseEntity<PersonagemResponseDTO> atualizarProficiencia(
             @PathVariable Long personagemId,

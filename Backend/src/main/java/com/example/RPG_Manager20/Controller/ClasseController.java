@@ -30,7 +30,7 @@ public class ClasseController {
     private ClasseRepository classeRepository;
 
     // ============================================
-    // POST - Criar classe
+    // POST - Criar classe(MANTER PARA CASOS FUTUTOS)
     // ============================================
     @PostMapping
     public ResponseEntity<ClasseDTO> criarClasse(@RequestBody ClasseDTO classeDTO) {
@@ -46,24 +46,14 @@ public class ClasseController {
     public ResponseEntity<List<ClasseDTO>> listarTodas() {
         System.out.println("📋 GET /classes - Listando todas as classes");
         List<ClasseDTO> classes = classeService.listarTodas();
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(classes);
-            System.out.println("🔍 JSON ENVIADO: " + json);
-        } catch (Exception e) {
-            System.err.println("❌ Erro ao converter JSON: " + e.getMessage());
-        }
         return ResponseEntity.ok(classes);
     }
     @GetMapping("/{idClasse}")
     public ResponseEntity<ClasseDTO> buscarClasse(@PathVariable("idClasse") Long idClasse) {
-        System.out.println("🔍 GET /classes/" + idClasse);
         try {
             ClasseDTO classe = classeService.buscarPorId(idClasse);
-            System.out.println("A classe " + classe.nomeClasse() + ", é conjuradora:" + classe.isConjurador());
             return ResponseEntity.ok(classe);
         } catch (Exception e) {
-            System.err.println("❌ Classe não encontrada: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

@@ -41,7 +41,7 @@ public class PersonagemService {
     private PericiaRepository periciaRepository;
 
     // ============================================
-    // 1️⃣ CRIAR PERSONAGEM (COMPLETO)
+    // 1️⃣ CRIAR PERSONAGEM
     // ============================================
     @Transactional
     public PersonagemResponseDTO criarPersonagem(PersonagemRequestDTO requestDTO, Long idUsuario) {
@@ -73,7 +73,7 @@ public class PersonagemService {
         // 3. Calcular valores automáticos
         calcularValoresAutomaticos(personagem);
 
-        // 4. Salvar o personagem (primeiro para ter o ID)
+        // 4. Salvar o personagem
         Personagem savedPersonagem = personagemRepository.save(personagem);
         System.out.println("✅ Personagem salvo com ID: " + savedPersonagem.getId());
 
@@ -115,7 +115,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 4️⃣ ATUALIZAR PERSONAGEM
+    // ATUALIZAR PERSONAGEM
     // ============================================
     @Transactional
     public PersonagemResponseDTO atualizarPersonagem(Long id, PersonagemRequestDTO requestDTO, Long idUsuario) {
@@ -201,7 +201,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 5️⃣ DELETAR PERSONAGEM
+    // DELETAR PERSONAGEM
     // ============================================
     @Transactional
     public void deletarPersonagem(Long id) {
@@ -211,7 +211,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 6️⃣ MÉTODOS LEGADO
+    // MÉTODOS LEGADO
     // ============================================
     public Personagem save(Personagem personagem) {
         return personagemRepository.save(personagem);
@@ -232,7 +232,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 7️⃣ MÉTODO BASE (findById)
+    // MÉTODO BASE findById
     // ============================================
     public Personagem findById(Long idPersonagem) {
         return personagemRepository.findById(idPersonagem)
@@ -241,7 +241,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 8️⃣ MÉTODOS AUXILIARES — CÁLCULOS
+    // MÉTODOS AUXILIARES — CÁLCULOS
     // ============================================
     private void calcularValoresAutomaticos(Personagem personagem) {
         int destrezaBonus = calcularBonusAtributo(personagem.getValorDestreza());
@@ -264,7 +264,7 @@ public class PersonagemService {
     }
 
     // ============================================
-    // 9️⃣ SINCRONIZADORES (clear + recriar)
+    // SINCRONIZADORES (clear + recriar)
     // ============================================
     private void sincronizarPericias(Personagem personagem, List<PericiaPersonagemRequestDTO> dtos) {
         personagem.getPericiasPersonagem().clear();
@@ -402,7 +402,7 @@ public class PersonagemService {
         return PersonagemResponseDTO.from(
                 personagem,
                 personagem.getClassePersonagem(),
-                catalogo()   // o catalogo() que já existe no PersonagemService
+                catalogo()
         );
     }
 }
