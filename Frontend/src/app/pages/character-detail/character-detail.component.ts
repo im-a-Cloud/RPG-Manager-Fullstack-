@@ -140,7 +140,6 @@ ativarEdicao(): void {
     inventario: [...(this.personagem.inventario || [])],
   };
 
-  // ✅ só as proficientes entram no Set
   this.periciasMarcadas = new Set(
     (this.personagem.pericias ?? [])
       .filter(p => p.proficiente === true)
@@ -348,7 +347,6 @@ ativarEdicao(): void {
 
     const attr = this.atributoParaCampo(pericia.atributoChave);
 
-    // ✅ cast resolve o TS7053
     const attrsEdicao = this.personagemEditavel?.atributos as Record<string, number> | undefined;
     const attrsView   = this.personagem?.atributos           as Record<string, number> | undefined;
     const valorAttr = attrsEdicao?.[attr] ?? attrsView?.[attr] ?? 10;
@@ -569,12 +567,10 @@ salvarMagia(): void {
   private normalizarTipoConjuracao(tipo: any): 'COMPLETO' | 'MEIO' | 'TERCIARIO' | 'NENHUM' {
     if (tipo === null || tipo === undefined) return 'NENHUM';
 
-    // se vier como número (ordinal do enum)
     if (typeof tipo === 'number') {
       return ['NENHUM', 'COMPLETO', 'MEIO', 'TERCIARIO'][tipo] as any ?? 'NENHUM';
     }
 
-    // se vier como string
     const s = String(tipo).toUpperCase();
     if (s === 'COMPLETO' || s === 'MEIO' || s === 'TERCIARIO' || s === 'NENHUM') {
       return s as any;
@@ -583,41 +579,33 @@ salvarMagia(): void {
     return 'NENHUM';
   }
 
-podeAprenderEssaMagia(magia: Magia): boolean {
-  const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
-  if (tipo === 'NENHUM') return false;
+  podeAprenderEssaMagia(magia: Magia): boolean {
+    const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
+    if (tipo === 'NENHUM') return false;
 
-  const nivelMagia = Number(magia.level ?? 0);
-  const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
+    const nivelMagia = Number(magia.level ?? 0);
+    const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
 
-  switch (tipo) {
-    case 'COMPLETO':  return nivelMagia <= Math.ceil(nivelPersonagem / 2);
-    case 'MEIO':      return nivelMagia <= Math.ceil(nivelPersonagem / 4);
-    case 'TERCIARIO': return nivelMagia <= Math.ceil(nivelPersonagem / 6);
-    default:          return false;
+    switch (tipo) {
+      case 'COMPLETO':  return nivelMagia <= Math.ceil(nivelPersonagem / 2);
+      case 'MEIO':      return nivelMagia <= Math.ceil(nivelPersonagem / 4);
+      case 'TERCIARIO': return nivelMagia <= Math.ceil(nivelPersonagem / 6);
+      default:          return false;
+    }
   }
-}
 
-private getNivelMaximoMagia(): number {
-  const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
-  const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
+  private getNivelMaximoMagia(): number {
+    const tipo = this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo);
+    const nivelPersonagem = this.personagemEditavel?.nivelPersonagem ?? 1;
 
-  switch (tipo) {
-    case 'COMPLETO':  return Math.ceil(nivelPersonagem / 2);
-    case 'MEIO':      return Math.ceil(nivelPersonagem / 4);
-    case 'TERCIARIO': return Math.ceil(nivelPersonagem / 6);
-    default:          return 0;
+    switch (tipo) {
+      case 'COMPLETO':  return Math.ceil(nivelPersonagem / 2);
+      case 'MEIO':      return Math.ceil(nivelPersonagem / 4);
+      case 'TERCIARIO': return Math.ceil(nivelPersonagem / 6);
+      default:          return 0;
+    }
   }
-}
-podeAprenderNivel(nivel: string | number): boolean {
-  console.log('🔍 [podeAprenderNivel]', {
-    nivel,
-    tipo: this.personagemEditavel?.classe?.tipo,
-    nivelPersonagem: this.personagemEditavel?.nivelPersonagem,
-    isConjurador: this.personagemEditavel?.classe?.isConjurador,
-    normalizado: this.normalizarTipoConjuracao(this.personagemEditavel?.classe?.tipo),
-    nivelMaximo: this.getNivelMaximoMagia(),
-  });
-  return this.podeAprenderEssaMagia({ level: String(nivel) } as Magia);
-}
+  podeAprenderNivel(nivel: string | number): boolean {
+    return this.podeAprenderEssaMagia({ level: String(nivel) } as Magia);
+  }
 }
