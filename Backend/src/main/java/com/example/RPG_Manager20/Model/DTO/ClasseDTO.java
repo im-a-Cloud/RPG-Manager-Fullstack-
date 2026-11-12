@@ -14,7 +14,7 @@ import java.util.List;
 public record ClasseDTO(
         Long id,  // ← ESSENCIAL!
 
-        @NotNull(message = "Nome da classe é obrigatóriossss")
+        @NotNull(message = "Nome da classe é obrigatórios")
         Classes nomeClasse,
 
         @Min(value = 6, message = "Dado de vida deve ser no mínimo 6")
